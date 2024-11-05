@@ -1,0 +1,1 @@
+// Individual plant detail page

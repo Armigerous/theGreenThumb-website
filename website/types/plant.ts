@@ -1,4 +1,6 @@
-type PlantData = {
+import { PlantImage, Synonym } from "./plantsList";
+
+export type PlantData = {
   id: number; // Unique identifier for the plant
   slug: string; // Slug for plant identification
   genus: string; // Genus of the plant

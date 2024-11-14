@@ -147,7 +147,11 @@ export function FilterPanel({
           <SidebarGroupContent>
             <SidebarMenu>
               {filtersToDisplay.map((section) => (
-                <Collapsible key={section.id} asChild>
+                <Collapsible
+                  key={section.id}
+                  asChild
+                  className="group/collapsible"
+                >
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton>
@@ -164,6 +168,7 @@ export function FilterPanel({
                           <Collapsible
                             key={`${section.id}-${category.id}`}
                             asChild
+                            className="group/categoryCollapsible"
                           >
                             <SidebarMenuSubItem>
                               <CollapsibleTrigger asChild>
@@ -172,7 +177,7 @@ export function FilterPanel({
                                     <category.icon className="mr-2 size-4" />
                                   )}
                                   <span>{category.name}</span>
-                                  <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                                  <ChevronRight className="ml-auto transition-transform group-data-[state=open]/categoryCollapsible:rotate-90" />
                                 </SidebarMenuSubButton>
                               </CollapsibleTrigger>
                               <CollapsibleContent>

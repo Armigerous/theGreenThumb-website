@@ -181,7 +181,7 @@ export function FilterPanel({
                                 </SidebarMenuSubButton>
                               </CollapsibleTrigger>
                               <CollapsibleContent>
-                                <div className="space-y-1 pl-6">
+                                <div className="space-y-2 pl-6">
                                   {category.options.map((option) => {
                                     const optionKey = `${section.id}-${category.id}-${option}`;
                                     return (

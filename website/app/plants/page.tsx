@@ -1,27 +1,19 @@
 import { MaxWidthWrapper } from "@/components/maxWidthHeader";
 import Header from "@/components/PlantSearch/Header";
-import Pagination from "@/components/PlantSearch/Pagination";
-import { FilterPanel } from "@/components/PlantSearch/Filter/FilterPanel";
-import SearchBar from "@/components/PlantSearch/SearchBar/SearchBar";
-import SearchResults from "@/components/PlantSearch/SearchResults";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import Search from "@/components/PlantSearch/Search";
 
 export default async function page({
   searchParams,
 }: {
-  searchParams: Promise<{ query?: string }>;
+  searchParams: Promise<{ query?: string; page?: string }>;
 }) {
-  const query = (await searchParams).query;
+  const query = (await searchParams).query || "";
+  const page = parseInt((await searchParams).page || "1", 10);
 
   return (
-    <SidebarProvider>
-      <FilterPanel />
-      <MaxWidthWrapper className="text-center">
-        <Header>{/* Plant Database image */}</Header>
-        <SearchBar query={query}>{/* SearchBar */}</SearchBar>
-        <SearchResults query={query}>{/* Search Results */}</SearchResults>
-        <Pagination></Pagination>
-      </MaxWidthWrapper>
-    </SidebarProvider>
+    <MaxWidthWrapper className="text-center">
+      <Header>{/* Plant Database image */}</Header>
+      <Search query={query} page={page} />
+    </MaxWidthWrapper>
   );
 }

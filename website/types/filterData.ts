@@ -108,8 +108,8 @@ export const basicFilters: FilterSection[] = [
         icon: Mountain,
       },
       {
-        id: "basic-usda-plant-hardiness-zone",
-        name: "USDA Plant Hardiness Zone",
+        id: "basic-usda-zone",
+        name: "USDA Zone",
         options: [
           "1a",
           "1b",
@@ -148,8 +148,8 @@ export const basicFilters: FilterSection[] = [
     name: "Landscape",
     categories: [
       {
-        id: "landscape-location",
-        name: "Landscape Location",
+        id: "location",
+        name: "Location",
         options: [
           "Coastal",
           "Container",

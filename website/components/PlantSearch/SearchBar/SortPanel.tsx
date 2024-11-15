@@ -11,10 +11,7 @@ interface SortPanelProps {
   setSortOption: (option: string) => void;
 }
 
-export default function SortPanel({
-  sortOption,
-  setSortOption,
-}: SortPanelProps) {
+export default function SortPanel({ setSortOption }: SortPanelProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

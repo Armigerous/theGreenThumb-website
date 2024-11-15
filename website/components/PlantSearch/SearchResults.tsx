@@ -34,6 +34,9 @@ const SearchResults = async ({
         <h2 className="text-2xl sm:text-3xl font-heading font-semibold tracking-tight text-zinc-800">
           {query ? `Search results for "${query}"` : "All Plants"}
         </h2>
+        <p className="text-sm text-muted-foreground">
+          {data.count} result{data.count !== 1 ? "s" : ""} found
+        </p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {data.results.map((plant) => (

@@ -1,4 +1,4 @@
-import { FilterPanel } from "@/components/PlantSearch/Filter/FilterPanel";
+import { FilterPanel } from "@/components/Database/Filter/FilterPanel";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function PlantsLayout({

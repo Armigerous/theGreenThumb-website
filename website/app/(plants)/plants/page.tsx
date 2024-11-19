@@ -1,6 +1,6 @@
 import { MaxWidthWrapper } from "@/components/maxWidthHeader";
-import Header from "@/components/PlantSearch/Header";
-import Search from "@/components/PlantSearch/Search";
+import Header from "@/components/Database/Header";
+import Search from "@/components/Database/Search";
 
 export default async function page({
   searchParams,

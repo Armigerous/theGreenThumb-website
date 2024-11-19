@@ -81,7 +81,7 @@ export type PlantData = {
   url?: string; // URL to the plant’s detailed page
   created_time?: string; // ISO date string of creation time
   update_time?: string; // ISO date string of last update
-  scientific_name?: string; // Scientific name of the plant
+  scientific_name: string; // Scientific name of the plant
   family?: string; // Family of the plant
   sound_file?: string; // URL to an audio file for pronunciation
   phonetic_spelling?: string; // Phonetic spelling of the scientific name
@@ -124,4 +124,3 @@ export type PlantData = {
   play_value?: number[]; // Array of play values associated with the plant
   climbing_method?: string[]; // Array of climbing methods if applicable
 };
-

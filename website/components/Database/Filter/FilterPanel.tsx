@@ -243,7 +243,7 @@ export function FilterPanel({
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
             >
               {showAdvancedFilters
-                ? "Show Basic Filters"
+                ? "Hide Advanced Filters"
                 : "Show Advanced Filters"}
             </Button>
           </SidebarMenuItem>

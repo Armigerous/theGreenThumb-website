@@ -34,6 +34,18 @@ const config: Config = {
           "900": "#233C1B",
           "950": "#162814",
         },
+        cream: {
+          "50": "#fff8e8",
+          "100": "#ded8ca",
+          "200": "#beb8ac",
+          "300": "#9e9a90",
+          "400": "#807c74",
+          "500": "#636059",
+          "600": "#484540",
+          "700": "#2e2c29",
+          "800": "#161513",
+          "900": "#030303",
+        },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

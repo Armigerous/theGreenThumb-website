@@ -15,11 +15,11 @@ const Header = () => {
       />
 
       <div className="absolute inset-0 flex flex-col justify-center items-center text-center">
-        <div className="bg-gray-400 bg-opacity-90 p-4 md:p-6 rounded-lg">
-          <Heading className="text-4xl md:text-5xl font-bold mb-2 text-green-700">
+        <div className="bg-cream-100 bg-opacity-50 p-4 md:p-6 rounded-lg">
+          <Heading className="text-6xl md:text-7xl font-bold mb-2 text-green-700">
             Discover
           </Heading>
-          <Heading className="text-lg md:text-xl sm:text-xl text-black">
+          <Heading className="text-lg sm:text-xl md:text-2xl  text-black">
             Amazing Plants in North Carolina
           </Heading>
         </div>

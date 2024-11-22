@@ -1,13 +1,12 @@
 import { PlantData } from "@/types/plant";
-import { MDXRemote } from "next-mdx-remote/rsc";
 import ImageGallery from "./ImageGallery";
-import sanitizeHtml from "sanitize-html";
+import DOMPurify from "isomorphic-dompurify";
 
 type PlantDetailsProps = {
   plant: PlantData;
 };
 
-const PlantDetails: React.FC<PlantDetailsProps> = ({ plant }) => {
+const PlantDetails = ({ plant }: PlantDetailsProps) => {
   const {
     commonname_set,
     scientific_name,
@@ -34,31 +33,13 @@ const PlantDetails: React.FC<PlantDetailsProps> = ({ plant }) => {
     width_max,
   } = plant;
 
-  const renderDescription = () => {
-    try {
-      const sanitizedDescription = sanitizeHtml(description || "", {
-        allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
-        allowedAttributes: {
-          ...sanitizeHtml.defaults.allowedAttributes,
-          "*": ["style"], // Allow inline styles
-        },
-      });
-      return <MDXRemote source={sanitizedDescription} />;
-    } catch (error) {
-      console.error("MDX rendering error for plant:", {
-        name: commonname_set?.[0] || scientific_name,
-        error,
-      });
-      return (
-        <p className="text-yellow-500">
-          Description is unavailable due to formatting issues.
-        </p>
-      );
-    }
-  };
+  const sanitizedDescription = DOMPurify.sanitize(description || "", {
+    ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
+    // Need to add support for links <a> tags
+  });
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-8 py-6">
       {/* Hero Section */}
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Image Gallery */}
@@ -72,7 +53,11 @@ const PlantDetails: React.FC<PlantDetailsProps> = ({ plant }) => {
           <h2 className="text-xl font-serif italic text-gray-600">
             {scientific_name}
           </h2>
-          {renderDescription()}
+          <div
+            dangerouslySetInnerHTML={{
+              __html: sanitizedDescription,
+            }}
+          />
         </div>
       </div>
 

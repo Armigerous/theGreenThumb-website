@@ -4,11 +4,14 @@ import Link from "next/link";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import PaginationComponent from "./Pagination";
 import { ApiResponse } from "@/types/plantsList";
+import DOMPurify from "isomorphic-dompurify";
 
 export const revalidate = 86400; // Revalidate every 24 hours
 
@@ -80,7 +83,7 @@ const SearchResults = async ({
                     src={
                       plant.plantimage_set && plant.plantimage_set.length > 0
                         ? plant.plantimage_set[0].img
-                        : "https://placehold.co/600x400"
+                        : "/no-plant-image.png"
                     }
                     alt={plant.scientific_name || "Plant image"}
                     width={300}
@@ -88,17 +91,22 @@ const SearchResults = async ({
                     className="w-full object-cover h-48"
                   />
                   <CardHeader className="p-4">
-                    <h3 className="text-lg font-semibold">
+                    <CardTitle className="text-lg font-semibold">
                       {plant.scientific_name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
+                    </CardTitle>
+                    <CardDescription className="text-sm text-muted-foreground">
                       {plant.commonname_set?.[0]}
-                    </p>
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="p-4">
-                    <p className="text-sm text-muted-foreground line-clamp-3">
-                      {plant.description}
-                    </p>
+                    <div
+                      className="text-sm text-muted-foreground line-clamp-3"
+                      dangerouslySetInnerHTML={{
+                        __html: DOMPurify.sanitize(plant.description || "", {
+                          ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
+                        }),
+                      }}
+                    />
                   </CardContent>
                   <CardFooter className="p-4">
                     <p className="text-sm text-primary group-hover:underline">

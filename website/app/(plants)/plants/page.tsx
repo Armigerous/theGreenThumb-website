@@ -12,7 +12,8 @@ export default async function page({
 
   return (
     <MaxWidthWrapper className="text-center">
-      <Header>{/* Plant Database image */}</Header>
+      <Header />
+      {/* Plant Database image */}
       <Search query={query} page={page} />
     </MaxWidthWrapper>
   );

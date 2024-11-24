@@ -12,6 +12,7 @@ import {
 import PaginationComponent from "./Pagination";
 import { ApiResponse } from "@/types/plantsList";
 import DOMPurify from "isomorphic-dompurify";
+import { fetchSearchResults } from "@/lib/utils";
 
 export const revalidate = 86400; // Revalidate every 24 hours
 
@@ -25,25 +26,12 @@ const SearchResults = async ({
   const limit = 28;
   const offset = (page - 1) * limit;
 
-  const API_URL = query
-    ? `https://plants.ces.ncsu.edu/api/plants/?format=json&limit=${limit}&offset=${offset}&q=${encodeURIComponent(
-        query
-      )}`
-    : `https://plants.ces.ncsu.edu/api/plants/?format=json&limit=${limit}&offset=${offset}`;
-
   try {
-    const res = await fetch(API_URL);
-
-    // Check if the response is ok (status 200-299)
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-
-    const data: ApiResponse = await res.json();
+    const data: ApiResponse = await fetchSearchResults(query, limit, offset);
     const totalPages = Math.ceil(data.count / limit);
 
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <div className="text-left mb-8">
           <h2 className="text-2xl sm:text-3xl font-heading font-semibold tracking-tight text-zinc-800">
             {query ? `Search results for "${query}"` : "All Plants"}

@@ -86,9 +86,7 @@ function mergeFilters(
   return Object.values(sectionMap);
 }
 
-export function FilterPanel({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) {
+export function FilterPanel({}: React.ComponentProps<typeof Sidebar>) {
   const [showAdvancedFilters, setShowAdvancedFilters] = React.useState(false);
   const [selectedOptions, setSelectedOptions] = React.useState<{
     [key: string]: boolean;
@@ -121,7 +119,7 @@ export function FilterPanel({
     .filter((section) => section.categories.length > 0);
 
   return (
-    <Sidebar {...props}>
+    <Sidebar side="left">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

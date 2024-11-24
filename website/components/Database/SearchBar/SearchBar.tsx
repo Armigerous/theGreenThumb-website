@@ -4,15 +4,24 @@ import { SearchIcon, SlidersHorizontalIcon } from "lucide-react";
 import Form from "next/form";
 import SearchReset from "../SearchReset";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import SortPanel from "../Sort/SortPanel";
 
 export default function SearchBar({ query }: { query?: string }) {
   return (
     <div className="w-full mx-auto space-y-4 py-6 pt-0">
       <div className="w-full flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 justify-between">
+        <div className="flex flex-row gap-2">
+          <SidebarTrigger className="flex items-center space-x-2 bg-brand-300 hover:bg-brand-200 text-brand-800 text-lg py-2">
+            <SlidersHorizontalIcon className="h-5 w-5" />
+            <span>Filters</span>
+          </SidebarTrigger>
+          <SortPanel />
+        </div>
+
         <Form
           action={"plants/"}
           scroll={false}
-          className="relative flex-grow search-bar max-w-4xl"
+          className="relative flex-grow search-bar"
         >
           <div className="relative flex items-center w-full">
             <Input
@@ -37,16 +46,6 @@ export default function SearchBar({ query }: { query?: string }) {
             </div>
           </div>
         </Form>
-        <div className="flex flex-row gap-2">
-          <SidebarTrigger className="flex items-center space-x-2 bg-brand-300 hover:bg-brand-200 text-brand-800 text-lg py-2">
-            <SlidersHorizontalIcon className="h-5 w-5" />
-            <span>Filters</span>
-          </SidebarTrigger>
-          <Button className="flex items-center space-x-2 bg-yellow-500 hover:bg-yellow-400 text-brand-800 text-lg py-2">
-            <SlidersHorizontalIcon className="h-5 w-5" />
-            <span>Sort</span>
-          </Button>
-        </div>
       </div>
     </div>
   );

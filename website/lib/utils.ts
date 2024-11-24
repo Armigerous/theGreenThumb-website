@@ -1,5 +1,4 @@
 import { clsx, type ClassValue } from "clsx";
-import { remark } from "remark";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -16,12 +15,22 @@ export async function fetchPlantData(slug: string) {
   return await response.json();
 }
 
-export async function validateMDX(content: string): Promise<boolean> {
-  try {
-    await remark().process(content);
-    return true; // Valid content
-  } catch (error) {
-    console.error("MDX validation error:", error);
-    return false; // Invalid content
+export async function fetchSearchResults(
+  query?: string,
+  limit = 28,
+  offset = 0
+) {
+  const API_URL = query
+    ? `https://plants.ces.ncsu.edu/api/plants/?format=json&limit=${limit}&offset=${offset}&q=${encodeURIComponent(
+        query
+      )}`
+    : `https://plants.ces.ncsu.edu/api/plants/?format=json&limit=${limit}&offset=${offset}`;
+
+  const response = await fetch(API_URL);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch search results: ${response.status}`);
   }
+
+  return await response.json();
 }

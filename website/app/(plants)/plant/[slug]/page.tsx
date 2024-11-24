@@ -2,7 +2,7 @@
 
 import PlantDetails from "@/components/Database/Plant/PlantDetails";
 import { MaxWidthWrapper } from "@/components/maxWidthHeader";
-import { fetchPlantData, validateMDX } from "@/lib/utils";
+import { fetchPlantData } from "@/lib/utils";
 import { ApiResponse } from "@/types/plantsList";
 import { Metadata } from "next";
 
@@ -77,16 +77,6 @@ export default async function PlantPage({
   if (!plant || !plant.description) {
     // Handle the error gracefully
     return <div className="text-center text-red-500">Plant not found</div>;
-  }
-
-  const isValidMDX = await validateMDX(plant.description);
-  if (!isValidMDX) {
-    console.warn("Invalid MDX content for plant:", slug);
-    return (
-      <div className="text-center text-yellow-500">
-        Plant details are temporarily unavailable due to formatting issues.
-      </div>
-    );
   }
 
   return (

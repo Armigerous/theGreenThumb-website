@@ -1,13 +1,7 @@
 import { client } from "@/sanity/lib/client";
 import { POSTS_QUERY } from "@/sanity/lib/queries";
 
-export default async function page({
-  searchParams,
-}: {
-  searchParams: Promise<{ query?: string }>;
-}) {
-  const query = (await searchParams).query;
-  const params = { search: query || null };
+export default async function page({}) {
   const tips = await client.fetch(POSTS_QUERY);
 
   console.log(tips);

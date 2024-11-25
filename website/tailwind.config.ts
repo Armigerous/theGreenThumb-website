@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 import tailwindAnimate from "tailwindcss-animate";
 import typography from "@tailwindcss/typography";
+import { nextui } from "@nextui-org/react";
 
 const config: Config = {
   darkMode: ["class"],
@@ -9,6 +10,7 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./sanity/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
 
   theme: {
@@ -126,6 +128,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [tailwindAnimate, typography],
+  plugins: [tailwindAnimate, typography, nextui()],
 };
 export default config;

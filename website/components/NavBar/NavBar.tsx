@@ -113,10 +113,10 @@ const NavBar = () => {
         <NavbarMenuToggle />
       </NavbarContent>
 
-      <NavbarMenu>
+      <NavbarMenu className="items-center gap-12 h-full justify-center">
         {navMenuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
-            <Link className="w-full" href={item.href} size="lg">
+            <Link className="w-full text-4xl" href={item.href} size="lg">
               {item.label}
             </Link>
           </NavbarMenuItem>

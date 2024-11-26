@@ -1,32 +1,54 @@
 "use client";
 
-import React from "react";
 import {
-  Navbar as NextUINavbar,
+  Link,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
   NavbarMenu,
   NavbarMenuItem,
-  Link,
   NavbarMenuToggle,
+  Navbar as NextUINavbar,
 } from "@nextui-org/react";
 import NextLink from "next/link";
 
 import siteMetaData from "@/lib/siteMetaData";
-import { nav } from "./nav";
-import DropdownFeatures from "./DropdownFeatures";
 import {
   FacebookIconBlack,
   InstagramIconBlack,
   YoutubeIconBlack,
 } from "../Icons";
-import { cn } from "@/lib/utils";
 import { MaxWidthWrapper } from "../maxWidthHeader";
+import DropdownFeatures from "./DropdownFeatures";
+import { navMenuItems } from "./nav";
+import { usePathname } from "next/navigation";
 
 const NavBar = () => {
+  const pathname = usePathname(); // Get the current pathname
+
   return (
-    <NextUINavbar shouldHideOnScroll isBordered maxWidth="full">
+    <NextUINavbar
+      shouldHideOnScroll
+      isBordered
+      maxWidth="full"
+      className="bg-cream-50"
+      classNames={{
+        item: [
+          "flex",
+          "relative",
+          "h-full",
+          "items-center",
+          "data-[active=true]:after:content-['']",
+          "data-[active=true]:after:absolute",
+          "data-[active=true]:after:bottom-0",
+          "data-[active=true]:after:left-0",
+          "data-[active=true]:after:right-0",
+          "data-[active=true]:after:h-[2px]",
+          "data-[active=true]:after:rounded-[2px]",
+          "data-[active=true]:after:bg-primary",
+        ],
+      }}
+    >
       <MaxWidthWrapper className="flex">
         {/* Logo */}
         <NavbarBrand>
@@ -37,25 +59,33 @@ const NavBar = () => {
 
         {/* Centered Navigation */}
         <NavbarContent className="hidden lg:flex" justify="center">
-          <DropdownFeatures />
-          <ul className="flex gap-4 ml-2">
-            {nav.navItems.map((item) => (
-              <NavbarItem key={item.href}>
-                <NextLink
-                  className={cn(
-                    "data-[active=true]:text-secondary data-[active=true]:font-bold text-xl"
-                  )}
-                  href={item.href}
-                >
-                  {item.label}
-                </NextLink>
-              </NavbarItem>
-            ))}
-          </ul>
+          <NavbarItem>
+            <DropdownFeatures />
+          </NavbarItem>
+          <NavbarItem isActive={pathname === "/plants"}>
+            <Link href="/plants" className="text-black text-lg">
+              Plants
+            </Link>
+          </NavbarItem>
+          <NavbarItem isActive={pathname === "/tips"}>
+            <Link href="/tips" className="text-black text-lg">
+              Tips
+            </Link>
+          </NavbarItem>
+          <NavbarItem isActive={pathname === "/contact"}>
+            <Link href="/contact" className="text-black text-lg">
+              Contact
+            </Link>
+          </NavbarItem>
+          <NavbarItem isActive={pathname === "/about"}>
+            <Link href="/about" className="text-black text-lg">
+              About
+            </Link>
+          </NavbarItem>
         </NavbarContent>
 
         {/* Icons on the Right */}
-        <NavbarContent justify="end">
+        <NavbarContent className="hidden lg:flex" justify="end">
           <NavbarItem>
             <Link isExternal aria-label="Facebook" href={siteMetaData.facebook}>
               <FacebookIconBlack />
@@ -84,19 +114,13 @@ const NavBar = () => {
       </NavbarContent>
 
       <NavbarMenu>
-        <div className="mx-4 mt-2 flex flex-col gap-5">
-          {nav.navMenuItems.map((item) => (
-            <NavbarMenuItem key={`${item}`}>
-              <Link
-                href={item.href}
-                size="lg"
-                className="text-black flex justify-center items-center text-3xl"
-              >
-                {item.label}
-              </Link>
-            </NavbarMenuItem>
-          ))}
-        </div>
+        {navMenuItems.map((item, index) => (
+          <NavbarMenuItem key={`${item}-${index}`}>
+            <Link className="w-full" href={item.href} size="lg">
+              {item.label}
+            </Link>
+          </NavbarMenuItem>
+        ))}
       </NavbarMenu>
     </NextUINavbar>
   );

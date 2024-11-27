@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
@@ -44,14 +45,14 @@ const AppFeatures: React.FC = () => {
 
   return (
     <motion.div
-      className="h-full flex flex-col justify-between w-screen p-20 pr-0 overflow-hidden "
+      className="h-screen flex flex-col justify-between w-screen p-20 pr-0 overflow-hidden "
       variants={variants}
       initial="initial"
       ref={ref}
       animate={isInView && "animate"}
     >
       <motion.div
-        className="mt-[10vh] flex self-end items-center gap-5 text-right text-cream-400 text-2xl"
+        className="mt-[10vh] flex self-end items-center gap-5 text-right text-cream-600 text-2xl"
         variants={variants}
       >
         <p>
@@ -72,29 +73,23 @@ const AppFeatures: React.FC = () => {
             alt="Planting"
             className="w-72 h-24 rounded-full object-cover"
           />
-          <h1 className="text-8xl font-thin text-dark dark:text-light">
-            <motion.b className="hover:text-secondary dark:hover:text-secondaryDark font-black">
+          <h1 className="text-8xl font-thin text-cream-800 ">
+            <motion.b className="hover:text-green-700 font-black">
               A New
             </motion.b>{" "}
             Assistant
           </h1>
         </div>
-        <div className="flex flex-row items-center text-center gap-5 mt-5 text-dark dark:text-light">
+        <div className="flex flex-row items-center text-center gap-5 mt-5 text-cream-800">
           <h1 className="text-8xl font-thin">
-            <motion.b className="hover:text-secondary dark:hover:text-secondaryDark font-black">
+            <motion.b className="hover:text-green-700 font-black">
               For Your
             </motion.b>{" "}
             Garden.
           </h1>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.9 }}
-            className="w-72 h-20 rounded-full text-2xl font-bold
-          text-light dark:text-dark
-          bg-secondary dark:bg-secondaryDark "
-          >
+          <Button className="w-72 h-20 rounded-full text-2xl font-bold text-cream-50 bg-brand-700">
             ASK US DIRECTLY
-          </motion.button>
+          </Button>
         </div>
       </motion.div>
       <motion.div
@@ -114,13 +109,12 @@ const AppFeatures: React.FC = () => {
             <p className="hidden sm:block">
               {feature.content.substring(0, 100)}...
             </p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.9 }}
-              className="bg-secondary dark:bg-secondaryDark text-light dark:text-dark text-xl border-none rounded-xl p-3 w-48 cursor-pointer"
+            <Button
+              variant={"ghost"}
+              className="bg-green-700 text-cream-50 text-xl h-full"
             >
               Read more
-            </motion.button>
+            </Button>
           </motion.div>
         ))}
       </motion.div>

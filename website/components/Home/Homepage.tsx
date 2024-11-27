@@ -1,3 +1,4 @@
+import AppFeatures from "./AppFeatures/AppFeatures";
 import Hero from "./Hero/Hero";
 import Parallax from "./Parallax";
 import ProductFeatures from "./ProductFeatures/ProductFeatures";
@@ -18,6 +19,9 @@ const Homepage = () => {
       </section>
       <section>
         <Parallax type={"app"} />
+      </section>
+      <section id="AppFeatures">
+        <AppFeatures />
       </section>
     </>
   );

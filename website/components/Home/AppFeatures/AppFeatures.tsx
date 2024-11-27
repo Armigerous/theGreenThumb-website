@@ -45,49 +45,49 @@ const AppFeatures: React.FC = () => {
 
   return (
     <motion.div
-      className="h-screen flex flex-col justify-between w-screen p-20 pr-0 overflow-hidden "
+      className="h-auto lg:h-screen flex flex-col justify-between w-screen py-10 sm:py-20 overflow-hidden"
       variants={variants}
       initial="initial"
       ref={ref}
       animate={isInView && "animate"}
     >
       <motion.div
-        className="mt-[10vh] flex self-end items-center gap-5 text-right text-cream-600 text-2xl"
+        className="mt-[8vh] flex flex-col sm:flex-row self-end items-center text-right text-cream-600 text-md sm:text-2xl font-light"
         variants={variants}
       >
         <p>
           We are planning on helping your garden grow
           <br /> and be more beautiful
         </p>
-        <hr className="w-80 border-t border-cream-400" />
+        <hr className="hidden sm:block w-80 border-t border-cream-400" />
       </motion.div>
       <motion.div
-        className="flex-2 flex flex-col items-center"
+        className="flex-2 flex flex-col items-center text-center sm:text-left"
         variants={variants}
       >
-        <div className="flex items-center gap-12">
+        <div className="flex flex-col sm:flex-row items-center gap-8 sm:gap-12">
           <Image
             width={72}
             height={24}
             src="/planting.png"
             alt="Planting"
-            className="w-72 h-24 rounded-full object-cover"
+            className="w-36 sm:w-72 h-12 sm:h-24 rounded-full object-cover"
           />
-          <h1 className="text-8xl font-thin text-cream-800 ">
+          <h1 className="text-4xl sm:text-8xl font-thin text-cream-800">
             <motion.b className="hover:text-green-700 font-black">
               A New
             </motion.b>{" "}
             Assistant
           </h1>
         </div>
-        <div className="flex flex-row items-center text-center gap-5 mt-5 text-cream-800">
-          <h1 className="text-8xl font-thin">
+        <div className="flex flex-col sm:flex-row items-center gap-5 mt-5 text-cream-800">
+          <h1 className="text-4xl sm:text-8xl font-thin">
             <motion.b className="hover:text-green-700 font-black">
               For Your
             </motion.b>{" "}
             Garden.
           </h1>
-          <Button className="w-72 h-20 rounded-full text-2xl font-bold text-cream-50 bg-brand-700">
+          <Button className="w-48 sm:w-72 h-16 sm:h-20 rounded-full text-lg sm:text-2xl font-bold text-cream-50 bg-brand-700">
             ASK US DIRECTLY
           </Button>
         </div>
@@ -97,21 +97,23 @@ const AppFeatures: React.FC = () => {
         initial="initial"
         ref={ref}
         animate={isInView && "animate"}
-        className="flex flex-row mr-20 justify-between gap-5"
+        className="flex flex-wrap justify-center sm:justify-between gap-5 sm:gap-8"
       >
         {featureDetails.map((feature, index) => (
           <motion.div
             key={index}
-            className="p-12 border-2 border-dark flex flex-col justify-between rounded-2xl"
+            className="p-6 sm:p-12 border-2 border-dark flex flex-col justify-between rounded-2xl w-full sm:w-[30%]"
             variants={variants}
           >
-            <h2 className="text-2xl font-semibold">{feature.title}</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold">
+              {feature.title}
+            </h2>
             <p className="hidden sm:block">
               {feature.content.substring(0, 100)}...
             </p>
             <Button
               variant={"ghost"}
-              className="bg-green-700 text-cream-50 text-xl h-full"
+              className="bg-green-700 text-cream-50 text-base sm:text-xl h-full"
             >
               Read more
             </Button>

@@ -13,6 +13,10 @@ import { useState } from "react";
 const DropdownFeatures = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleSelect = () => {
+    setIsOpen(false);
+  };
+
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
@@ -30,7 +34,7 @@ const DropdownFeatures = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuGroup>
-          <DropdownMenuItem className="cursor-pointer">
+          <DropdownMenuItem asChild onSelect={handleSelect}>
             <Link
               href="/#ProductFeatures"
               className="flex items-center gap-2 w-full text-lg"
@@ -39,7 +43,7 @@ const DropdownFeatures = () => {
               Product Features
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
+          <DropdownMenuItem asChild onSelect={handleSelect}>
             <Link
               href="/#AppFeatures"
               className="flex items-center gap-2 w-full text-lg"

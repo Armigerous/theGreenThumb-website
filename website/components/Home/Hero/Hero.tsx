@@ -1,4 +1,4 @@
-import { MaxWidthWrapper } from "@/components/maxWidthHeader";
+import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import Model from "./Model";
 import Text from "./Text";
 

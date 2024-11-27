@@ -1,7 +1,7 @@
 // app/plant/[slug]/page.tsx
 
 import PlantDetails from "@/components/Database/Plant/PlantDetails";
-import { MaxWidthWrapper } from "@/components/maxWidthHeader";
+import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import { fetchPlantData } from "@/lib/utils";
 import { ApiResponse } from "@/types/plantsList";
 import { Metadata } from "next";

@@ -15,8 +15,8 @@ const Header = () => {
       />
 
       <div className="absolute inset-0 flex flex-col justify-center items-center text-center">
-        <div className="bg-cream-100 bg-opacity-50 p-4 md:p-6 rounded-lg">
-          <Heading className="text-6xl md:text-7xl font-bold mb-2 text-green-700">
+        <div className="bg-cream-300 bg-opacity-50 p-4 md:p-6 rounded-lg">
+          <Heading className="text-6xl md:text-7xl font-bold mb-2 text-brand-700">
             Discover
           </Heading>
           <Heading className="text-lg sm:text-xl md:text-2xl  text-black">

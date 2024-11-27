@@ -47,10 +47,10 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
 
         {/* Basic Details */}
         <div className="lg:w-1/2 space-y-4">
-          <h1 className="text-4xl font-bold text-green-800">
+          <h1 className="text-4xl font-bold text-brand-800">
             {commonname_set?.[0] || scientific_name}
           </h1>
-          <h2 className="text-xl font-serif italic text-gray-600">
+          <h2 className="text-xl font-serif italic text-cream-600">
             {scientific_name}
           </h2>
           <div
@@ -64,12 +64,12 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
       {/* Tags */}
       {tags && (
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-700">Tags</h3>
+          <h3 className="text-xl font-semibold text-cream-700">Tags</h3>
           <div className="flex flex-wrap gap-2">
             {tags.map((tag, index) => (
               <span
                 key={index}
-                className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm"
+                className="px-3 py-1 bg-brand-300 text-brand-700 rounded-full text-sm"
               >
                 {tag}
               </span>
@@ -80,7 +80,7 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
 
       {/* General Information */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-700">
+        <h3 className="text-xl font-semibold text-cream-700">
           General Information
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -119,7 +119,7 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
 
       {/* Flower Details */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-700">Flower Details</h3>
+        <h3 className="text-xl font-semibold text-cream-700">Flower Details</h3>
         <p>{flower_description || "No flower description available."}</p>
         <p>
           <strong>Colors:</strong> {flower_color?.join(", ") || "Unknown"}
@@ -128,19 +128,19 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
 
       {/* Leaf Details */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-700">Leaf Details</h3>
+        <h3 className="text-xl font-semibold text-cream-700">Leaf Details</h3>
         <p>{leaf_description || "No leaf description available."}</p>
       </div>
 
       {/* Stem Details */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-700">Stem Details</h3>
+        <h3 className="text-xl font-semibold text-cream-700">Stem Details</h3>
         <p>{stem_description || "No stem description available."}</p>
       </div>
 
       {/* Wildlife and Resistance */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-700">
+        <h3 className="text-xl font-semibold text-cream-700">
           Wildlife and Resistance
         </h3>
         <p>

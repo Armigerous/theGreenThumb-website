@@ -51,14 +51,14 @@ const AppFeatures: React.FC = () => {
       animate={isInView && "animate"}
     >
       <motion.div
-        className="mt-[10vh] flex self-end items-center gap-5 text-right text-gray-400 text-2xl"
+        className="mt-[10vh] flex self-end items-center gap-5 text-right text-cream-400 text-2xl"
         variants={variants}
       >
         <p>
           We are planning on helping your garden grow
           <br /> and be more beautiful
         </p>
-        <hr className="w-80 border-t border-gray-400" />
+        <hr className="w-80 border-t border-cream-400" />
       </motion.div>
       <motion.div
         className="flex-2 flex flex-col items-center"

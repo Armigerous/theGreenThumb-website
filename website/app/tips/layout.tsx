@@ -1,4 +1,4 @@
-import { MaxWidthWrapper } from "@/components/maxWidthHeader";
+import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 
 export default function PlantsLayout({
   children,

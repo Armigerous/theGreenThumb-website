@@ -1,4 +1,4 @@
-import { MaxWidthWrapper } from "@/components/maxWidthHeader";
+import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import Header from "@/components/Database/Header";
 import Search from "@/components/Database/Search";
 

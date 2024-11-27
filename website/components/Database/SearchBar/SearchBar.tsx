@@ -39,7 +39,7 @@ export default function SearchBar({ query }: { query?: string }) {
                 type="submit"
                 variant="ghost"
                 size="icon"
-                className="h-5 w-5 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                className="h-5 w-5 text-cream-500 hover:text-cream-900 dark:text-cream-400 dark:hover:text-cream-100"
                 aria-label="Search"
               >
                 <SearchIcon />

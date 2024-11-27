@@ -18,7 +18,7 @@ import {
   InstagramIconBlack,
   YoutubeIconBlack,
 } from "../Icons";
-import { MaxWidthWrapper } from "../maxWidthHeader";
+import { MaxWidthWrapper } from "../maxWidthWrapper";
 import DropdownFeatures from "./DropdownFeatures";
 import { navMenuItems } from "./nav";
 import { usePathname } from "next/navigation";
@@ -31,7 +31,7 @@ const NavBar = () => {
       shouldHideOnScroll
       isBordered
       maxWidth="full"
-      className="bg-cream-50"
+      className="bg-cream-100"
       classNames={{
         item: [
           "flex",

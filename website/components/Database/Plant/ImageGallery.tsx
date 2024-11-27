@@ -25,7 +25,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
   const [selectedImage, setSelectedImage] = useState(validImages[0]?.img);
 
   if (validImages.length === 0) {
-    return <p className="text-gray-500">No images available.</p>; // Error handling
+    return <p className="text-cream-500">No images available.</p>; // Error handling
   }
 
   const currentImage = validImages.find((img) => img.img === selectedImage);
@@ -35,7 +35,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
       {/* Main Display Image with Dialog Trigger */}
       <Dialog>
         <DialogTrigger asChild>
-          <div className="relative w-full max-w-3xl h-[500px] bg-gray-200 rounded-lg overflow-hidden cursor-pointer">
+          <div className="relative w-full max-w-3xl h-[500px] bg-cream-100 rounded-lg overflow-hidden cursor-pointer">
             <Image
               src={selectedImage}
               alt={currentImage?.alt_text || "Plant image"}
@@ -57,10 +57,12 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
             />
           </div>
           {currentImage?.caption && (
-            <p className="text-sm text-gray-600 mt-2">{currentImage.caption}</p>
+            <p className="text-sm text-cream-600 mt-2">
+              {currentImage.caption}
+            </p>
           )}
           {currentImage?.attribution && (
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-cream-500 mt-2">
               Attribution: {currentImage.attribution}
             </p>
           )}
@@ -73,11 +75,11 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
           <Button
             key={index}
             onClick={() => setSelectedImage(image.img)}
-            className={`relative w-24 h-24 bg-gray-200 rounded-lg overflow-hidden border ${
+            className={`relative w-24 h-24 bg-cream-100 rounded-lg overflow-hidden border ${
               selectedImage === image.img
-                ? "border-green-500"
-                : "border-gray-300"
-            } hover:shadow focus:outline-none focus:ring-2 focus:ring-green-500`}
+                ? "border-brand-500"
+                : "border-cream-300"
+            } hover:shadow focus:outline-none focus:ring-2 focus:ring-brand-700`}
           >
             <Image
               src={image.thumbnail_med || image.img}
@@ -90,7 +92,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
         {validImages.length > 5 && (
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="w-24 h-24 bg-gray-200 rounded-lg border border-gray-300 text-gray-500">
+              <Button className="w-24 h-24 bg-cream-100 rounded-lg border border-cream-300 text-cream-600">
                 +{validImages.length - 5}
               </Button>
             </DialogTrigger>
@@ -100,7 +102,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
               </DialogHeader>
               <div className="flex gap-4 h-[80vh]">
                 {/* Large Main Image */}
-                <div className="flex-1 relative bg-gray-200 rounded-lg">
+                <div className="flex-1 relative bg-cream-100 rounded-lg">
                   <Image
                     src={selectedImage}
                     alt={currentImage?.alt_text || "Main image"}
@@ -109,16 +111,16 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
                   />
                 </div>
                 {/* Thumbnail Column */}
-                <div className="w-1/3 h-full overflow-y-auto bg-gray-100 rounded-lg p-4 space-y-4">
+                <div className="w-1/3 h-full overflow-y-auto bg-cream-50 rounded-lg p-4 space-y-4">
                   {validImages.map((image, index) => (
                     <Button
                       key={index}
                       onClick={() => setSelectedImage(image.img)}
-                      className={`relative w-full h-24 bg-gray-200 rounded-lg overflow-hidden border ${
+                      className={`relative w-full h-24 bg-cream-100 rounded-lg overflow-hidden border ${
                         selectedImage === image.img
-                          ? "border-green-500"
-                          : "border-gray-300"
-                      } hover:shadow focus:outline-none focus:ring-2 focus:ring-green-500`}
+                          ? "border-brand-500"
+                          : "border-cream-300"
+                      } hover:shadow focus:outline-none focus:ring-2 focus:ring-brand-500`}
                     >
                       <Image
                         src={image.thumbnail_med || image.img}
@@ -137,7 +139,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
 
       {/* Captions and Attribution */}
       {currentImage?.caption && (
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-cream-600">
           <p>{currentImage.caption}</p>
           {currentImage.attribution && (
             <p className="italic">Attribution: {currentImage.attribution}</p>

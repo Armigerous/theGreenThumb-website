@@ -54,7 +54,7 @@ const ProductFeatures: React.FC = () => {
 
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end end"],
+    offset: ["start end", "end start"], // Improved offset for smoother triggers
   });
 
   const scaleX = useSpring(scrollYProgress, {
@@ -63,21 +63,34 @@ const ProductFeatures: React.FC = () => {
   });
 
   return (
-    <div className="no-scrollbar relative m-5" ref={ref}>
-      <div className="sticky top-[5vh] left-0 pt-24 lg:pt-16 text-dark dark:text-light">
-        <div className="flex w-full flex-col items-center justify-center m-2 gap-5">
-          <h1 className="font-black text-6xl w-fit">Product Features</h1>
-
+    <div className="relative m-5" ref={ref}>
+      <div className="sticky top-[5vh] pt-24 lg:pt-16 text-brand-900 mb-36">
+        <div className="flex w-full flex-col items-center gap-5">
+          <h1 className="font-black text-6xl">Product Features</h1>
           <motion.div
             style={{ scaleX }}
-            className="w-full h-3 bg-secondary dark:bg-secondaryDark rounded-md"
+            className="w-full h-3 bg-brand-600 rounded-md"
           />
         </div>
       </div>
 
-      {items.map((item) => (
-        <Single item={item} key={item.id} />
-      ))}
+      <div className="flex flex-col">
+        {items.map((item, index) => (
+          <motion.div
+            key={item.id}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{
+              delay: index * 0.2,
+              duration: 0.6,
+              ease: "easeOut",
+            }}
+            viewport={{ once: true }}
+          >
+            <Single item={item} />
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useLottie } from "lottie-react";
 import React, { useRef } from "react";
@@ -16,45 +17,43 @@ interface SingleProps {
 
 const Single: React.FC<SingleProps> = ({ item }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref });
-  const y = useTransform(scrollYProgress, [0, 1], [-200, 200]);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "center start"],
+  });
+  const y = useTransform(scrollYProgress, [0, 1], [-50, 50]);
+  const opacity = useTransform(scrollYProgress, [0.3, 0.6, 1], [0, 1, 0]);
 
-  // Options for light mode animation
-  const optionsLight = {
+  const options = {
     animationData: item.animationData,
     loop: true,
     autoplay: true,
   };
 
-  const style = {
-    height: "auto",
-    width: "auto",
-  };
-
-  const lottieLight = useLottie(optionsLight, style);
+  const style = { height: "auto", width: "auto" };
+  const lottie = useLottie(options, style);
 
   return (
-    <section>
-      <div className="flex items-center justify-center h-full w-full overflow-hidden mt-10">
-        <div className="max-w-[1366px] lg:max-w-screen-lg h-full m-auto flex items-center justify-center gap-12">
-          <div className="flex-1 h-1/2" ref={ref}>
+    <section ref={ref}>
+      <motion.div
+        className="flex items-center justify-center h-screen w-full overflow-hidden"
+        style={{ y, opacity }}
+      >
+        <div className="max-w-[1366px] lg:max-w-screen-lg h-full flex items-center gap-12">
+          <div className="flex-1">
             <div className="bg-cream-700 border-black rounded-3xl">
-              {lottieLight.View}
+              {lottie.View}
             </div>
           </div>
-          <motion.div className="flex-1 flex flex-col gap-7" style={{ y }}>
+          <div className="flex-1 flex flex-col gap-7">
             <h2 className="text-7xl">{item.title}</h2>
             <p className="text-xl">{item.desc}</p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.9 }}
-              className="bg-secondary text-light text-xl border-none rounded-xl p-3 w-48 cursor-pointer"
-            >
+            <Button className="px-4 py-2 bg-brand-600 text-white rounded-md">
               Read More
-            </motion.button>
-          </motion.div>
+            </Button>
+          </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

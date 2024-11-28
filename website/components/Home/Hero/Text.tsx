@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 
 const Text = () => {
   return (
-    <div className="text-left md:w-1/2 mb-6 md:mb-0">
-      <p className="text-lg mb-4 italic">For North Carolina Gardeners</p>
+    <div className="text-left md:w-1/2 mb-6 md:mb-0 pt-20 lg:pt-0 px-5">
+      <p className="text-medium sm:text-base lg:text-lg mb-4 italic">
+        For North Carolina Gardeners
+      </p>
       {/* Big */}
       <h1 className="text-3xl md:text-5xl font-bold mb-4">
         Your Garden&apos;s{" "}

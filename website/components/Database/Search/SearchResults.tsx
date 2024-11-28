@@ -1,18 +1,9 @@
-import React from "react";
+import { fetchSearchResults } from "@/lib/utils";
+import { ApiResponse } from "@/types/plantsList";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import PaginationComponent from "./Pagination";
-import { ApiResponse } from "@/types/plantsList";
-import DOMPurify from "isomorphic-dompurify";
-import { fetchSearchResults } from "@/lib/utils";
+import PaginationComponent from "../Pagination";
+import PlantCard from "@/components/Database/PlantCard";
 
 export const revalidate = 86400; // Revalidate every 24 hours
 
@@ -61,48 +52,7 @@ const SearchResults = async ({
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {data.results.map((plant) => (
-              <Link
-                href={`/plant/${plant.slug}`}
-                key={plant.slug}
-                className="group"
-              >
-                <Card className="overflow-hidden transition-shadow hover:shadow-lg text-left">
-                  <Image
-                    src={
-                      plant.plantimage_set && plant.plantimage_set.length > 0
-                        ? plant.plantimage_set[0].img
-                        : "/no-plant-image.png"
-                    }
-                    alt={plant.scientific_name || "Plant image"}
-                    width={300}
-                    height={200}
-                    className="w-full object-cover h-48"
-                  />
-                  <CardHeader className="p-4">
-                    <CardTitle className="text-lg font-semibold">
-                      {plant.scientific_name}
-                    </CardTitle>
-                    <CardDescription className="text-sm text-muted-foreground">
-                      {plant.commonname_set?.[0]}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-4">
-                    <div
-                      className="text-sm text-muted-foreground line-clamp-3"
-                      dangerouslySetInnerHTML={{
-                        __html: DOMPurify.sanitize(plant.description || "", {
-                          ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
-                        }),
-                      }}
-                    />
-                  </CardContent>
-                  <CardFooter className="p-4">
-                    <p className="text-sm text-primary group-hover:underline">
-                      Learn more
-                    </p>
-                  </CardFooter>
-                </Card>
-              </Link>
+              <PlantCard key={plant.slug} plant={plant} />
             ))}
           </div>
         )}

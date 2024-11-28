@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { NextUIProvider } from "@nextui-org/react";
 import NavBar from "@/components/NavBar/NavBar";
+import Footer from "@/components/Footer";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,11 +30,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-cream-200`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-cream-50 scroll-smooth`}
       >
         <NextUIProvider>
           <NavBar />
           {children}
+          <Footer />
         </NextUIProvider>
       </body>
     </html>

@@ -6,8 +6,8 @@ const Header = () => {
   return (
     <div className="relative">
       <Image
-        src="/plant-search.png"
-        alt="Plant Database"
+        src="/tips-search.png"
+        alt="Tips & Tricks"
         width={800}
         height={400}
         className="w-full"
@@ -15,12 +15,12 @@ const Header = () => {
       />
 
       <div className="absolute inset-0 flex flex-col justify-center items-center text-center">
-        <div className="bg-cream-300 bg-opacity-70 p-4 md:p-6 rounded-lg">
+        <div className="bg-cream-300 bg-opacity-50 p-4 md:p-6 rounded-lg">
           <Heading className="text-6xl md:text-7xl font-bold mb-2 text-brand-600">
-            Discover
+            Tips & Tricks
           </Heading>
           <Heading className="text-lg sm:text-xl md:text-2xl  text-cream-900">
-            Amazing Plants in North Carolina
+            Read these tips idfk
           </Heading>
         </div>
       </div>

@@ -2,13 +2,21 @@ import { defineQuery } from "next-sanity";
 
 export const POSTS_QUERY = defineQuery(
   `
-       *[_type=="post" && defined(slug.current) && publishedAt < now()] | order(publishedAt desc) {
+    *[_type=="post" && defined(slug.current) && publishedAt < now()] | order(publishedAt desc) {
       _id, 
-      categories,
-      body, 
       slug,
       title,
+      categories[] -> {title, slug, description},
+      body, 
       publishedAt,
-      author -> {name, slug, image, bio}
-  } `
+      author -> {_id, name, slug, image, bio},
+      mainImage {
+        asset -> {
+          _id,
+          url
+        },
+          alt
+      }
+    } 
+  `
 );

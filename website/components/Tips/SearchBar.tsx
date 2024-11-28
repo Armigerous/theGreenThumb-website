@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Form from "next/form";
-import SearchReset from "../SearchReset";
+import SearchReset from "./SearchReset";
 import { SearchIcon } from "lucide-react";
 // import { SearchIcon, SlidersHorizontalIcon } from "lucide-react";
 // import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -20,7 +20,7 @@ export default function SearchBar({ query }: { query?: string }) {
         </div> */}
 
         <Form
-          action={"plants/"}
+          action={"tips/"}
           scroll={false}
           className="relative flex-grow search-bar"
         >
@@ -29,7 +29,7 @@ export default function SearchBar({ query }: { query?: string }) {
               name="query"
               defaultValue={query}
               type="text"
-              placeholder="Search plants..."
+              placeholder="Search for tips & tricks..."
               className="w-full pl-3 pr-20 py-2 text-lg bg-background border-input"
             />
 

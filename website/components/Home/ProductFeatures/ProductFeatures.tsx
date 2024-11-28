@@ -20,7 +20,7 @@ const ProductFeatures: React.FC = () => {
 
   return (
     <div className="relative m-5" ref={ref}>
-      <MaxWidthWrapper>
+      <MaxWidthWrapper className="max-w-screen-xl">
         <div className="sticky top-[2vh] pt-14 lg:pt-16 text-brand-900 mb-36">
           <div className="flex w-full flex-col items-center gap-5">
             <h1 className="font-black text-3xl md:text-5xl lg:text-6xl text-center">
@@ -28,7 +28,7 @@ const ProductFeatures: React.FC = () => {
             </h1>
             <motion.div
               style={{ scaleX }}
-              className="w-full h-4 bg-brand-600 rounded-3xl"
+              className="w-full h-4 bg-brand-600 rounded-full"
             />
           </div>
         </div>

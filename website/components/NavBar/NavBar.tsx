@@ -31,7 +31,7 @@ const NavBar = () => {
       shouldHideOnScroll
       isBordered
       maxWidth="full"
-      className="bg-cream-100"
+      className="bg-white"
       classNames={{
         item: [
           "flex",
@@ -59,26 +59,38 @@ const NavBar = () => {
 
         {/* Centered Navigation */}
         <NavbarContent className="hidden lg:flex" justify="center">
-          <NavbarItem>
+          <NavbarItem className="transition hover:text-primary">
             <DropdownFeatures />
           </NavbarItem>
           <NavbarItem isActive={pathname === "/plants"}>
-            <Link href="/plants" className="text-black text-lg">
+            <Link
+              href="/plants"
+              className="text-black text-lg transition hover:text-primary"
+            >
               Plants
             </Link>
           </NavbarItem>
           <NavbarItem isActive={pathname === "/tips"}>
-            <Link href="/tips" className="text-black text-lg">
+            <Link
+              href="/tips"
+              className="text-black text-lg transition hover:text-primary"
+            >
               Tips
             </Link>
           </NavbarItem>
           <NavbarItem isActive={pathname === "/contact"}>
-            <Link href="/contact" className="text-black text-lg">
+            <Link
+              href="/contact"
+              className="text-black text-lg transition hover:text-primary"
+            >
               Contact
             </Link>
           </NavbarItem>
           <NavbarItem isActive={pathname === "/about"}>
-            <Link href="/about" className="text-black text-lg">
+            <Link
+              href="/about"
+              className="text-black text-lg transition hover:text-primary"
+            >
               About
             </Link>
           </NavbarItem>
@@ -87,7 +99,12 @@ const NavBar = () => {
         {/* Icons on the Right */}
         <NavbarContent className="hidden lg:flex" justify="end">
           <NavbarItem>
-            <Link isExternal aria-label="Facebook" href={siteMetaData.facebook}>
+            <Link
+              isExternal
+              aria-label="Facebook"
+              href={siteMetaData.facebook}
+              className="transition hover:opacity-80"
+            >
               <FacebookIconBlack />
             </Link>
           </NavbarItem>
@@ -96,12 +113,18 @@ const NavBar = () => {
               isExternal
               aria-label="Instagram"
               href={siteMetaData.instagram}
+              className="transition hover:opacity-80"
             >
               <InstagramIconBlack />
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link isExternal aria-label="Youtube" href={siteMetaData.youtube}>
+            <Link
+              isExternal
+              aria-label="Youtube"
+              href={siteMetaData.youtube}
+              className="transition hover:opacity-80"
+            >
               <YoutubeIconBlack />
             </Link>
           </NavbarItem>
@@ -109,14 +132,18 @@ const NavBar = () => {
       </MaxWidthWrapper>
 
       {/* Mobile Menu Toggle */}
-      <NavbarContent className="sm:hidden pl-4">
+      <NavbarContent className="lg:hidden pl-4">
         <NavbarMenuToggle />
       </NavbarContent>
 
       <NavbarMenu className="items-center gap-12 h-full justify-center">
         {navMenuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
-            <Link className="w-full text-4xl" href={item.href} size="lg">
+            <Link
+              className="w-full text-4xl font-semibold transition hover:text-primary"
+              href={item.href}
+              size="lg"
+            >
               {item.label}
             </Link>
           </NavbarMenuItem>

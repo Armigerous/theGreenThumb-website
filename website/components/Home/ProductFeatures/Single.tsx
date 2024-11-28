@@ -36,6 +36,7 @@ const Single: React.FC<{ item: Item }> = ({ item }) => {
           <h2 className="text-2xl md:text-4xl lg:text-5xl">{item.title}</h2>
           <p className="text-sm md:text-base lg:text-lg">{item.desc}</p>
           <Button className="px-4 py-2 bg-brand-600 text-cream-50 rounded-md mx-auto lg:mx-0">
+            {/* Write a blog post about each of the features and the button will redirect there.  */}
             Read More
           </Button>
         </div>

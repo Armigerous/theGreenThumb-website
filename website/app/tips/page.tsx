@@ -1,17 +1,19 @@
-import { client } from "@/sanity/lib/client";
-import { POSTS_QUERY } from "@/sanity/lib/queries";
+import Header from "@/components/Tips/Header";
+import Search from "@/components/Tips/Search";
 
-export default async function page({}) {
-  const tips = await client.fetch(POSTS_QUERY);
-
-  console.log(tips);
-  console.log(JSON.stringify(tips, null, 2));
+export default async function page({
+  searchParams,
+}: {
+  searchParams: Promise<{ query?: string; page?: string }>;
+}) {
+  // Search Query
+  const query = (await searchParams).query || "";
+  const page = parseInt((await searchParams).page || "1", 10);
 
   return (
     <>
-      <>
-        <h1>Tips</h1>
-      </>
+      <Header />
+      <Search query={query} page={page} />
     </>
   );
 }

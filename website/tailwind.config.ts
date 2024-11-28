@@ -2,6 +2,7 @@ import type { Config } from "tailwindcss";
 import tailwindAnimate from "tailwindcss-animate";
 import typography from "@tailwindcss/typography";
 import { nextui } from "@nextui-org/react";
+import type { PluginAPI } from "tailwindcss/types/config";
 
 const config: Config = {
   darkMode: ["class"],
@@ -37,7 +38,7 @@ const config: Config = {
           "950": "#162814",
         },
         cream: {
-          "50": "#fffdf8",
+          "50": "#fffefa",
           "100": "#fffaef",
           "200": "#fff8e8",
           "300": "#ded8ca",
@@ -45,64 +46,73 @@ const config: Config = {
           "500": "#807c74",
           "600": "#636059",
           "700": "#484540",
-          "800": "#2e2c29",
+          "800": "#161513",
           "900": "#030303",
         },
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        accent: {
+          "50": "#ffea92",
+          "100": "#ffe264",
+          "200": "#ffd900",
+          "300": "#debc00",
+          "400": "#bea100",
+          "500": "#9e8600",
+          "600": "#806c00",
+          "700": "#635300",
+          "800": "#483b00",
+          "900": "#161100",
+        },
+        background: "#ffffff", // Cream 200
+        foreground: "#2e2c29", // Cream 800
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "#ffffff", // Cream 50
+          foreground: "#2e2c29", // Cream 700
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "#ffffff", // Cream 50
+          foreground: "#636059", // Cream 600
         },
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "#77B860", // Brand 200
+          foreground: "#2e2c29", // Cream 800
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "#ffd900", // Cream 300
+          foreground: "#807c74", // Cream 500
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "#ded8ca", // Cream 300
+          foreground: "#636059", // Cream 600
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "#E50000", // RED
+          foreground: "#161100", // Accent 900
         },
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
+        border: "#161513", // Cream 800
+        input: "#161513", // Cream 800
+        ring: "#161513", // Cream 800
         chart: {
-          "1": "#6A994E", // Leafy green for chart elements
-          "2": "#A7C957", // Soft lime green
-          "3": "#FFBC42", // Bright floral yellow accent
-          "4": "#F28D35", // Warm terracotta
-          "5": "#D96C2B", // Deep earthy orange
+          "1": "#6A994E",
+          "2": "#A7C957",
+          "3": "#FFBC42",
+          "4": "#F28D35",
+          "5": "#D96C2B",
         },
         sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
+          DEFAULT: "#fffdf8", // Cream 50
+          foreground: "#2e2c29", // Cream 800
+          primary: "#ffd900", // Accent 200
+          "primary-foreground": "#2e2c29", // Cream 800
+          accent: "#ffe264", // Accent 100
+          "accent-foreground": "#2e2c29", // Cream 800
+          border: "#DED8CA", // Cream 300
+          ring: "#ffd900", // Accent 200
         },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        DEFAULT: "0.5rem",
+        lg: "0.5rem",
+        md: "calc(0.5rem - 2px)",
+        sm: "calc(0.5rem - 4px)",
       },
       keyframes: {
         "accordion-down": {
@@ -128,6 +138,21 @@ const config: Config = {
       },
     },
   },
-  plugins: [tailwindAnimate, typography, nextui()],
+  plugins: [
+    tailwindAnimate,
+    typography,
+    nextui(),
+    function ({ addBase, theme }: PluginAPI) {
+      addBase({
+        body: {
+          backgroundColor: theme("colors.background.DEFAULT", "#ffffff"),
+          color: theme("colors.foreground.DEFAULT", "#000000"),
+        },
+        "*": {
+          borderColor: theme("colors.border.DEFAULT", "#e5e5e5"),
+        },
+      });
+    },
+  ],
 };
 export default config;

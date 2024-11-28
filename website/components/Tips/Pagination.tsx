@@ -33,13 +33,12 @@ const PaginationComponent = ({
 
   return (
     <Pagination className="py-10">
-      <PaginationContent className="flex items-center space-x-2">
+      <PaginationContent>
         {/* Previous Page Button */}
         <PaginationItem>
           <PaginationPrevious
             href={generateLink(Math.max(1, currentPage - 1))}
             aria-label="Previous page"
-            className="hover:bg-brand-200"
           />
         </PaginationItem>
 
@@ -47,12 +46,7 @@ const PaginationComponent = ({
         {showEllipsisBefore && (
           <>
             <PaginationItem>
-              <PaginationLink
-                href={generateLink(1)}
-                className="hover:bg-brand-50 text-sm transition"
-              >
-                1
-              </PaginationLink>
+              <PaginationLink href={generateLink(1)}>1</PaginationLink>
             </PaginationItem>
             <PaginationEllipsis />
           </>
@@ -66,11 +60,6 @@ const PaginationComponent = ({
               <PaginationLink
                 href={generateLink(page)}
                 isActive={page === currentPage}
-                className={` ${
-                  page === currentPage
-                    ? "bg-brand-200 text-cream-800"
-                    : "hover:bg-brand-50 text-sm transition"
-                }`}
               >
                 {page}
               </PaginationLink>
@@ -82,10 +71,7 @@ const PaginationComponent = ({
           <>
             <PaginationEllipsis />
             <PaginationItem>
-              <PaginationLink
-                href={generateLink(totalPages)}
-                className="hover:bg-brand-50 text-sm transition"
-              >
+              <PaginationLink href={generateLink(totalPages)}>
                 {totalPages}
               </PaginationLink>
             </PaginationItem>
@@ -97,7 +83,6 @@ const PaginationComponent = ({
           <PaginationNext
             href={generateLink(Math.min(totalPages, currentPage + 1))}
             aria-label="Next page"
-            className="hover:bg-brand-200"
           />
         </PaginationItem>
       </PaginationContent>

@@ -9,7 +9,7 @@ const Text = () => {
         For North Carolina Gardeners
       </p>
       {/* Big */}
-      <h1 className="text-3xl md:text-5xl font-bold mb-4">
+      <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-normal md:leading-relaxed lg:leading-normal">
         Your Garden&apos;s{" "}
         <span className="bg-brand-700 p-2 rounded-xl text-white">Smartest</span>{" "}
         Tool is Here!

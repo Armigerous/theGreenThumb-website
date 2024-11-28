@@ -15,7 +15,7 @@ const TipCard = ({ tip }: { tip: TipCardType }) => {
 
   return (
     <li className="group">
-      <Card className="rounded-xl overflow-hidden shadow-md transition-transform hover:scale-105">
+      <Card className="rounded-xl overflow-hidden shadow-md transition-transform hover:scale-105 text-left">
         {/* Image Section */}
         <Link href={`/tip/${slug?.current}`}>
           <Image

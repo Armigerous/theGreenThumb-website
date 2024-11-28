@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import { useRef } from "react";
+import Link from "next/link";
 
 const variants = {
   initial: {
@@ -100,7 +101,7 @@ const AppFeatures: React.FC = () => {
               Garden.
             </h1>
             <Button className="w-48 sm:w-72 h-16 sm:h-20 rounded-full text-lg sm:text-2xl font-bold text-cream-50 bg-brand-700">
-              ASK US DIRECTLY
+              <Link href="/contact">ASK US DIRECTLY</Link>
             </Button>
           </div>
         </motion.div>

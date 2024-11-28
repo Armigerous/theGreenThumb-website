@@ -21,7 +21,7 @@ const ProductFeatures: React.FC = () => {
   return (
     <div className="relative m-5" ref={ref}>
       <MaxWidthWrapper className="max-w-screen-xl">
-        <div className="sticky top-[2vh] pt-14 lg:pt-16 text-brand-900 mb-36">
+        <div className="sticky top-[2vh] pt-14 lg:pt-16 text-cream-800 mb-36">
           <div className="flex w-full flex-col items-center gap-5">
             <h1 className="font-black text-3xl md:text-5xl lg:text-6xl text-center">
               Product Features
@@ -41,7 +41,7 @@ const ProductFeatures: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{
                 delay: index * 0.2,
-                duration: 0.6,
+                duration: 0.3,
                 ease: "easeOut",
               }}
               viewport={{ once: true }}

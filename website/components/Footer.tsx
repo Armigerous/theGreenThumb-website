@@ -30,11 +30,11 @@ const Footer: React.FC = () => {
       mt-8 sm:mt-16 
       font-medium "
       >
-        Interesting Stories | Updates | Guides
+        🌱 Gardening Tips | Seasonal Advice | Community Updates 🌱
       </h3>
       <p className="mt-5 px-4 text-center w-full sm:w-3/5 font-cream-50 text-sm sm:text-base">
-        Subscribe to learn about new technology and updates. Join over 5000+
-        members community to stay up to date with latest news.
+        Subscribe to explore the world of gardening with tips, tools, and
+        updates. Join over 2000+ green thumbs staying connected!
       </p>
 
       <form
@@ -60,7 +60,7 @@ const Footer: React.FC = () => {
       {/* Social Media Icons */}
       <div className="flex flex-center mt-8">
         {/* Facebook */}
-        <a
+        <Link
           href={siteMetaData.facebook}
           className="inline-block w-6 h-6 mr-4"
           target="_blank"
@@ -69,9 +69,9 @@ const Footer: React.FC = () => {
             className="hover:scale-125 transition-all ease duration-200 
             fill-accent-200 "
           />
-        </a>
+        </Link>
         {/* Instagram */}
-        <a
+        <Link
           href={siteMetaData.instagram}
           className="inline-block w-6 h-6 mr-4"
           target="_blank"
@@ -80,9 +80,9 @@ const Footer: React.FC = () => {
             className="hover:scale-125 transition-all ease duration-200
             fill-accent-200"
           />
-        </a>
+        </Link>
         {/* TikTok */}
-        <a
+        <Link
           href={siteMetaData.tiktok}
           className="inline-block w-6 h-6 mr-4"
           target="_blank"
@@ -91,9 +91,9 @@ const Footer: React.FC = () => {
             className="hover:scale-125 transition-all ease duration-200
             fill-accent-200 "
           />
-        </a>
+        </Link>
         {/* YouTube */}
-        <a
+        <Link
           href={siteMetaData.youtube}
           className="inline-block w-6 h-6 mr-4"
           target="_blank"
@@ -102,7 +102,7 @@ const Footer: React.FC = () => {
             className="hover:scale-125 transition-all ease duration-200
           fill-accent-200 "
           />
-        </a>
+        </Link>
       </div>
 
       {/* Footer Bottom */}

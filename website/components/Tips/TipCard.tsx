@@ -11,7 +11,8 @@ import {
 } from "../ui/card";
 
 const TipCard = ({ tip }: { tip: TipCardType }) => {
-  const { slug, title, publishedAt, body, author, categories, mainImage } = tip;
+  const { _id, slug, title, description, categories, publishedAt, mainImage } =
+    tip;
 
   return (
     <li className="group">
@@ -41,29 +42,33 @@ const TipCard = ({ tip }: { tip: TipCardType }) => {
                 {formatDate(publishedAt)}
               </span>
               {categories?.[0] && (
-                <span className="px-2 py-1 text-xs font-semibold text-white bg-primary rounded-full">
-                  {categories[0].title}
-                </span>
+                <Link href={`tips/category/${categories[0].slug.current}`}>
+                  <span className="px-2 py-1 text-xs font-semibold text-white bg-primary rounded-full">
+                    {categories[0].title}
+                  </span>
+                </Link>
               )}
             </div>
           </CardDescription>
         </CardHeader>
 
         {/* Content Section */}
-        <CardContent>
-          <p className="text-sm text-muted-foreground line-clamp-3">
-            {body
-              ?.map((block: any) =>
-                block.children.map((child: any) => child.text).join(" ")
-              )
-              .join(" ") || "No content available."}
-          </p>
+        <CardContent className="line-clamp-3">
+          {description ? (
+            <p className="text-sm text-muted-foreground line-clamp-3">
+              {description}
+            </p>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              No content available.
+            </p>
+          )}
         </CardContent>
 
         {/* Footer Section */}
         <CardFooter>
           <Link href={`/tip/${slug?.current}`}>
-            <span className="text-sm text-primary font-medium hover:underline flex items-center">
+            <span className="text-sm text-primary font-medium group-hover:underline flex items-center">
               Read more <span className="ml-1">→</span>
             </span>
           </Link>

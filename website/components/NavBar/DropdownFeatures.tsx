@@ -47,7 +47,7 @@ const DropdownFeatures = () => {
             <DropdownMenuItem asChild>
               <Link
                 href="/#ProductFeatures"
-                className="flex items-center gap-2 w-full text-lg"
+                className="flex items-center gap-2 w-full text-lg transition hover:text-primary"
               >
                 <ListChecks className="h-4 w-4" />
                 Product Features
@@ -56,7 +56,7 @@ const DropdownFeatures = () => {
             <DropdownMenuItem asChild>
               <Link
                 href="/#AppFeatures"
-                className="flex items-center gap-2 w-full text-lg"
+                className="flex items-center gap-2 w-full text-lg transition hover:text-primary"
               >
                 <Smartphone className="h-4 w-4" />
                 App Features

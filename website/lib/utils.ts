@@ -65,3 +65,8 @@ export async function fetchTips() {
 
   return tips;
 }
+
+export async function fetchTipBySlug(slug: string) {
+  const tip = await client.fetch(POSTS_QUERY, { slug });
+  return tip;
+}

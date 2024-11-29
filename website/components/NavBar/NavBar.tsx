@@ -103,7 +103,7 @@ const NavBar = () => {
               isExternal
               aria-label="Facebook"
               href={siteMetaData.facebook}
-              className="transition hover:opacity-80"
+              className="hover:scale-125 transition-all ease-in"
             >
               <FacebookIconBlack />
             </Link>
@@ -113,7 +113,7 @@ const NavBar = () => {
               isExternal
               aria-label="Instagram"
               href={siteMetaData.instagram}
-              className="transition hover:opacity-80"
+              className="hover:scale-125 transition-all ease-in"
             >
               <InstagramIconBlack />
             </Link>
@@ -123,7 +123,7 @@ const NavBar = () => {
               isExternal
               aria-label="Youtube"
               href={siteMetaData.youtube}
-              className="transition hover:opacity-80"
+              className="hover:scale-125 transition-all ease-in"
             >
               <YoutubeIconBlack />
             </Link>

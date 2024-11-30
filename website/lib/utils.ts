@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { POSTS_QUERY } from "@/sanity/lib/queries";
+import { ALL_POSTS_TITLES_QUERY, POSTS_QUERY } from "@/sanity/lib/queries";
 import { client } from "@/sanity/lib/client";
 
 export function cn(...inputs: ClassValue[]) {
@@ -60,8 +60,6 @@ export async function fetchAllPlants() {
 export async function fetchTips() {
   // Fetch Tips
   const tips = await client.fetch(POSTS_QUERY);
-  console.log(tips);
-  console.log(JSON.stringify(tips, null, 2));
 
   return tips;
 }
@@ -69,4 +67,19 @@ export async function fetchTips() {
 export async function fetchTipBySlug(slug: string) {
   const tip = await client.fetch(POSTS_QUERY, { slug });
   return tip;
+}
+
+export async function fetchTipsByCategory(category: string) {
+  const tips = await client.fetch(POSTS_QUERY, { category });
+  return tips;
+}
+
+export async function fetchAllTipTitles() {
+  try {
+    const tips = await client.fetch(ALL_POSTS_TITLES_QUERY);
+    return tips; // Extract and return just the titles
+  } catch (error) {
+    console.error("Error fetching titles:", error);
+    throw new Error("Failed to fetch titles");
+  }
 }

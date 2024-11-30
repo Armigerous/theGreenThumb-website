@@ -36,7 +36,7 @@ export default function SearchBar({ query }: { query?: string }) {
         <Form
           action={"plants/"}
           scroll={false}
-          className="relative flex-grow search-bar "
+          className="relative flex-grow search-bar"
         >
           <div className="relative flex items-center w-full ">
             <Input

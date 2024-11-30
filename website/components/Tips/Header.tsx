@@ -16,7 +16,7 @@ const Header = () => {
 
       <div className="absolute inset-0 flex flex-col justify-center items-center text-center">
         <div className="bg-cream-300 bg-opacity-50 p-4 md:p-6 rounded-lg">
-          <Heading className="text-6xl md:text-7xl font-bold mb-2 text-brand-600">
+          <Heading className="text-5xl md:text-6xl font-bold mb-2 text-brand-600">
             Tips & Tricks
           </Heading>
           <Heading className="text-lg sm:text-xl md:text-2xl  text-cream-900">

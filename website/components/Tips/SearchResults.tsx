@@ -26,9 +26,6 @@ const SearchResults = async ({
 
   return (
     <div className="container mx-auto py-8">
-      {/* Featured Posts */}
-      {/* Recent Posts */}
-      {/* Search Combobox that pops up in front kinda like a modal */}
       <div className="text-left mb-8">
         <h2 className="text-2xl sm:text-3xl font-heading font-semibold tracking-tight text-zinc-800">
           {query ? `Search results for "${query}"` : "All Tips & Tricks"}

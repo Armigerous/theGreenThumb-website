@@ -1,5 +1,5 @@
-import Main from "@/components/Tips/Main";
 import Search from "@/components/Tips/Search";
+import SearchResults from "@/components/Tips/SearchResults";
 
 export default async function page({
   searchParams,
@@ -12,7 +12,7 @@ export default async function page({
 
   return (
     <>
-      <Main />
+      <SearchResults query={query} page={page} />
     </>
   );
 }

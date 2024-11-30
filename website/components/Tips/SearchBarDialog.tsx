@@ -13,17 +13,24 @@ import { CoffeeIcon, PenBoxIcon, Search } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation"; // Import useRouter
+import { Tip } from "@/types/Tip";
 
-export default function SearchBarDialog({ tips }) {
+type SearchBarDialogProps = {
+  tips: Tip[]; // Use the Tip interface
+};
+
+export default function SearchBarDialog({ tips }: SearchBarDialogProps) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter(); // Initialize router
 
   return (
     <>
       <Button
         variant="ghost"
         onClick={() => setOpen(true)}
-        className="justify-start w-full max-w-screen-sm relative flex items-center gap-2 px-4 py-2 border-2 border-cream-800 rounded-lg bg-white shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-cream-800 focus:ring-offset-2 transition-all duration-200"
+        className="justify-start w-full max-w-screen-sm relative flex items-center gap-2 my-2 px-4 py-2 border-2 border-cream-800 rounded-lg bg-white shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-cream-800 focus:ring-offset-2 transition-all duration-200"
       >
         <Search className="w-4 h-4 text-cream-800" />
         <span className="text-cream-800">Search for Tips & Tricks...</span>
@@ -34,6 +41,15 @@ export default function SearchBarDialog({ tips }) {
           placeholder="Search for Tips & Tricks..."
           value={searchQuery}
           onValueChange={(value) => setSearchQuery(value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              router.push(
+                `/tips/search?query=${encodeURIComponent(searchQuery)}`
+              );
+              setOpen(false);
+            }
+          }}
         />
         <CommandList>
           {searchQuery.trim() === "" ? (
@@ -56,8 +72,8 @@ export default function SearchBarDialog({ tips }) {
           ) : (
             <>
               {tips.length > 0 ? (
-                <CommandGroup heading="Results">
-                  {tips.map((tip: TipType, index: number) => (
+                <CommandGroup heading="Similar Results">
+                  {tips.map((tip, index: number) => (
                     <Link href={`/tip/${tip.slug}`} key={index}>
                       <CommandItem key={index} className="cursor-pointer">
                         <PenBoxIcon className="w-5 h-5 mr-2" />

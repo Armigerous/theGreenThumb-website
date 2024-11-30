@@ -1,7 +1,17 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { ALL_POSTS_TITLES_QUERY, POSTS_QUERY } from "@/sanity/lib/queries";
+import {
+  ALL_POSTS_SLUGS_QUERY,
+  ALL_POSTS_TITLES_QUERY,
+  FILTERED_POSTS_QUERY,
+  LATEST_SIX_POSTS_QUERY,
+  PAGINATED_POSTS_QUERY,
+  POST_BY_SLUG_QUERY,
+  POST_VIEWS_QUERY,
+  POSTS_QUERY,
+} from "@/sanity/lib/queries";
 import { client } from "@/sanity/lib/client";
+import { TipSlug } from "@/types/Tip";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -64,16 +74,6 @@ export async function fetchTips() {
   return tips;
 }
 
-export async function fetchTipBySlug(slug: string) {
-  const tip = await client.fetch(POSTS_QUERY, { slug });
-  return tip;
-}
-
-export async function fetchTipsByCategory(category: string) {
-  const tips = await client.fetch(POSTS_QUERY, { category });
-  return tips;
-}
-
 export async function fetchAllTipTitles() {
   try {
     const tips = await client.fetch(ALL_POSTS_TITLES_QUERY);
@@ -81,5 +81,74 @@ export async function fetchAllTipTitles() {
   } catch (error) {
     console.error("Error fetching titles:", error);
     throw new Error("Failed to fetch titles");
+  }
+}
+
+export async function fetchAllTipSlugs(): Promise<TipSlug[]> {
+  try {
+    return await client.fetch(ALL_POSTS_SLUGS_QUERY);
+  } catch (error) {
+    console.error("Error fetching slugs:", error);
+    throw new Error("Failed to fetch slugs");
+  }
+}
+
+export async function fetchPostViewsById(id: string) {
+  try {
+    return await client
+      .withConfig({ useCdn: false })
+      .fetch(POST_VIEWS_QUERY, { id });
+  } catch (error) {
+    console.error("Error fetching post views:", error);
+    throw new Error("Failed to fetch post views");
+  }
+}
+
+export async function fetchFilteredTips(search: string) {
+  try {
+    return await client.fetch(FILTERED_POSTS_QUERY, { search });
+  } catch (error) {
+    console.error("Error fetching filtered tips:", error);
+    throw new Error("Failed to fetch filtered tips");
+  }
+}
+
+export async function fetchPaginatedPosts(
+  start: number,
+  end: number,
+  input: string = ""
+) {
+  try {
+    const data = await client.fetch(PAGINATED_POSTS_QUERY, {
+      start,
+      end,
+      input,
+    });
+    return {
+      tips: data.posts,
+      totalCount: data.totalCount,
+    };
+  } catch (error) {
+    console.error("Error fetching paginated posts:", error);
+    throw new Error("Failed to fetch paginated posts");
+  }
+}
+
+export async function fetchLastSixPosts() {
+  try {
+    return await client.fetch(LATEST_SIX_POSTS_QUERY);
+  } catch (error) {
+    console.error("Error fetching last six posts:", error);
+    throw new Error("Failed to fetch last six posts");
+  }
+}
+
+export async function fetchTipBySlug(slug: string) {
+  try {
+    const tip = await client.fetch(POST_BY_SLUG_QUERY, { slug });
+    return tip;
+  } catch (error) {
+    console.error("Error fetching tip by slug:", error);
+    throw new Error("Failed to fetch tip by slug");
   }
 }

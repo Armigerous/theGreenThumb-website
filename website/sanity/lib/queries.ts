@@ -78,3 +78,107 @@ export const ALL_POSTS_SLUGS_QUERY = defineQuery(
 
   `
 );
+
+export const FILTERED_POSTS_QUERY = defineQuery(
+  `
+    *[_type=="post" && defined(slug.current) && publishedAt < now() && 
+      (title match $search || description match $search)] | order(publishedAt desc) {
+      _id, 
+      slug,
+      title,
+      description,
+      categories[] -> {title, slug, description},
+      publishedAt,
+      mainImage {
+        asset -> {
+          _id,
+          url
+        },
+        alt
+      }
+    } 
+  `
+);
+
+export const POSTS_BY_CATEGORY_QUERY = defineQuery(
+  `
+    *[_type=="post" && defined(slug.current) && publishedAt < now() && 
+      $category in categories[]->slug.current] | order(publishedAt desc) {
+      _id, 
+      slug,
+      title,
+      description,
+      categories[] -> {title, slug, description},
+      publishedAt,
+      mainImage {
+        asset -> {
+          _id,
+          url
+        },
+        alt
+      }
+    } 
+  `
+);
+
+export const PAGINATED_POSTS_QUERY = defineQuery(
+  `
+    {
+      "posts": *[
+        _type == "post" && 
+        defined(slug.current) && 
+        publishedAt < now() && 
+        (!$input || $input == "" || 
+          title match "*" + $input + "*" || 
+          description match "*" + $input + "*" || 
+          categories[]->title match "*" + $input + "*"
+        )
+      ] | order(publishedAt desc)[$start...$end] {
+        _id, 
+        slug,
+        title,
+        description,
+        categories[] -> {title, slug, description},
+        publishedAt,
+        mainImage {
+          asset -> {
+            _id,
+            url
+          },
+          alt
+        }
+      },
+      "totalCount": count(*[
+        _type == "post" && 
+        defined(slug.current) && 
+        publishedAt < now() && 
+        (!$input || 
+          title match "*" + $input + "*" || 
+          description match "*" + $input + "*" || 
+          categories[]->title match "*" + $input + "*"
+        )
+      ])
+    }
+  `
+);
+
+export const LATEST_SIX_POSTS_QUERY = defineQuery(
+  `
+    *[_type=="post" && defined(slug.current) && publishedAt < now()] 
+    | order(publishedAt desc)[0...6] {
+      _id, 
+      slug,
+      title,
+      description,
+      categories[] -> {title, slug, description},
+      publishedAt,
+      mainImage {
+        asset -> {
+          _id,
+          url
+        },
+        alt
+      }
+    } 
+  `
+);

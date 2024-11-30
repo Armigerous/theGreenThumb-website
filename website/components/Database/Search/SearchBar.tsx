@@ -1,22 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Form from "next/form";
-import SearchReset from "./SearchReset";
 import { SearchIcon } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import Form from "next/form";
 import { Autocomplete } from "./Autocomplete";
+import SearchReset from "./SearchReset";
 // import { SearchIcon, SlidersHorizontalIcon } from "lucide-react";
 // import { SidebarTrigger } from "@/components/ui/sidebar";
 // import SortPanel from "../Sort/SortPanel";

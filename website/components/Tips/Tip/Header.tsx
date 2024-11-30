@@ -1,7 +1,8 @@
+import { Tip } from "@/types/Tip";
 import Image from "next/image";
 import React from "react";
 
-const Header = ({ tip }: { tip: TipType }) => {
+const Header = ({ tip }: { tip: Tip }) => {
   const { title, categories, mainImage } = tip;
 
   return (

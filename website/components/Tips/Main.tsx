@@ -1,11 +1,15 @@
 import React from "react";
+import Featured from "./Featured";
+import Recent from "./Recent";
 
 const Main = () => {
   return (
     <div>
-      Main
       {/* Featured Posts */}
+      <Featured />
+
       {/* Recent Posts */}
+      <Recent />
     </div>
   );
 };

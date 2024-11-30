@@ -1,6 +1,7 @@
 import React from "react";
 import { CheckmarkIcon } from "@sanity/icons";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const Text = () => {
   return (
@@ -47,9 +48,11 @@ const Text = () => {
           </span>
         </li>
       </ul>
-      <Button variant={"default"} className="mt-6 w-full">
-        Start Growing Smarter
-      </Button>
+      <Link href="/tips">
+        <Button variant={"default"} className="mt-6 w-full">
+          Start Growing Smarter
+        </Button>
+      </Link>
     </div>
   );
 };

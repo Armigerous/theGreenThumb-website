@@ -20,7 +20,7 @@ const Header = () => {
             Tips & Tricks
           </Heading>
           <Heading className="text-lg sm:text-xl md:text-2xl  text-cream-900">
-            Read these tips idfk
+            Learn more about gardening!
           </Heading>
         </div>
       </div>

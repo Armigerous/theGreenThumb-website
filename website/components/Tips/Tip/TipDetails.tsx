@@ -3,10 +3,11 @@ import Link from "next/link";
 import ViewCounter from "./ViewCounter";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tip } from "@/types/Tip";
 
 // Define the BlogDetails functional component
-const TipDetails = ({ tip }: { tip: TipType }) => {
-  const { _id, slug, title, publishedAt, body, categories, mainImage } = tip;
+const TipDetails = ({ tip }: { tip: Tip }) => {
+  const { _id } = tip;
   return (
     // Main container for the blog details
     <div className="py-2 my-10 flex items-center border-2 justify-around flex-wrap font-medium rounded-lg text-lg sm:text-xl px-2 md:px-10 bg-primary text-cream-50 border-cream-800">

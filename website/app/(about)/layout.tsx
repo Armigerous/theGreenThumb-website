@@ -1,5 +1,5 @@
+import InsightRoll from "@/components/About/InsightRoll";
 import React from "react";
-import InsightRoll from "../../components/About/InsightRoll";
 
 interface AboutLayoutProps {
   children: React.ReactNode;

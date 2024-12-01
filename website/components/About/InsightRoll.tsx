@@ -11,8 +11,8 @@ const InsightRoll: React.FC<InsightRollProps> = ({ insights }) => {
     // Main container for the insight roll, with styling for background and text colors
     <div
       className="w-full whitespace-nowrap overflow-hidden
-    bg-accent dark:bg-accentDark 
-    text-light dark:text-dark"
+    bg-primary 
+    text-cream-50"
     >
       {/* Inner container with animation and text styling */}
       <div

@@ -117,12 +117,12 @@ const AppFeatures: React.FC = () => {
           className="flex flex-wrap justify-center sm:justify-between gap-5 sm:gap-8"
         >
           {featureDetails.map((feature, index) => (
-            <Card key={index} className="w-full sm:w-[30%]">
+            <Card key={index} className="w-full sm:w-[30%] h-full">
               <CardHeader>
                 <CardTitle>{feature.title}</CardTitle>
                 <CardDescription>{feature.description}</CardDescription>
               </CardHeader>
-              <CardContent className="line-clamp-3">
+              <CardContent className="line-clamp-3 my-2">
                 <p>{feature.content} </p>
               </CardContent>
               <CardFooter>

@@ -1,8 +1,11 @@
 // Confetti.tsx
 import React, { useCallback } from "react";
-import Particles from "react-tsparticles";
 import { Engine } from "tsparticles-engine";
 import { loadConfettiPreset } from "tsparticles-preset-confetti";
+import dynamic from "next/dynamic";
+
+// Dynamically import the Particles component with SSR disabled
+const Particles = dynamic(() => import("react-tsparticles"), { ssr: false });
 
 const Confetti: React.FC = () => {
   const particlesInit = useCallback(async (engine: Engine) => {
@@ -15,11 +18,10 @@ const Confetti: React.FC = () => {
       init={particlesInit}
       options={{
         preset: "confetti",
-        fullScreen: { enable: true, zIndex: 1000 }, // Higher z-index to ensure it's on top
-
+        fullScreen: { enable: true, zIndex: 1000 },
         emitters: [
           {
-            position: { x: 0, y: 50 }, // Left side of the screen
+            position: { x: 0, y: 50 },
             rate: {
               delay: 0.1,
               quantity: 5,
@@ -30,7 +32,7 @@ const Confetti: React.FC = () => {
             },
           },
           {
-            position: { x: 100, y: 50 }, // Right side of the screen
+            position: { x: 100, y: 50 },
             rate: {
               delay: 0.1,
               quantity: 5,

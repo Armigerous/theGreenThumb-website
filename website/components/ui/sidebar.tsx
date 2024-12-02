@@ -76,14 +76,17 @@ const SidebarProvider = React.forwardRef<
     const setOpen = React.useCallback(
       (value: boolean | ((value: boolean) => boolean)) => {
         const openState = typeof value === "function" ? value(open) : value;
+
         if (setOpenProp) {
           setOpenProp(openState);
         } else {
           _setOpen(openState);
         }
 
-        // This sets the cookie to keep the sidebar state.
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+        // Check if running in the browser before setting the cookie
+        if (typeof window !== "undefined") {
+          document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+        }
       },
       [setOpenProp, open]
     );

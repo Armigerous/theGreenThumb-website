@@ -2,6 +2,8 @@ import { writeClient } from "@/sanity/lib/writeClient";
 import { unstable_after as after } from "next/server";
 import { fetchPostViewsById } from "@/lib/utils";
 
+export const dynamic = "force-static"; // Mark this component as server-side only
+
 const ViewCounter = async ({ id }: { id: string }) => {
   try {
     // Fetch the current views using the utility function

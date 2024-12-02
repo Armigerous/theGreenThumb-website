@@ -67,7 +67,11 @@ export default function ContactForm() {
       />
       {/* Submit button */}
       <div className="w-full flex justify-center md:justify-start mt-8">
-        <Button type="submit" variant={"default"}>
+        <Button
+          type="submit"
+          variant={"default"}
+          className="text-cream-50 font-semibold px-4"
+        >
           Submit
         </Button>
       </div>

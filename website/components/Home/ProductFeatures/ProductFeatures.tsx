@@ -1,9 +1,9 @@
 "use client";
+import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
+import { FeaturesProduct, ProductFeature } from "@/types/features";
+import { motion, useScroll, useSpring } from "framer-motion";
 import React, { useRef } from "react";
 import Single from "./Single";
-import { motion, useScroll, useSpring } from "framer-motion";
-import { items } from "@/types/features";
-import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 
 const ProductFeatures: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -34,9 +34,9 @@ const ProductFeatures: React.FC = () => {
         </div>
 
         <div className="flex flex-col gap-10">
-          {items.map((item, index) => (
+          {FeaturesProduct.map((ProductFeature: ProductFeature, index) => (
             <motion.div
-              key={item.id}
+              key={ProductFeature.id}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{
@@ -46,7 +46,7 @@ const ProductFeatures: React.FC = () => {
               }}
               viewport={{ once: true }}
             >
-              <Single item={item} />
+              <Single item={ProductFeature} />
             </motion.div>
           ))}
         </div>

@@ -9,16 +9,17 @@ const Featured = async () => {
 
   return (
     <section>
-      <h2 className="text-5xl font-bold">Featured Posts</h2>
+      <h2 className="text-3xl md:text-5xl font-bold">Featured Posts</h2>
       {/* Process data in groups of three */}
       {[...Array(Math.ceil(data.length / 3))].map((_, i) => (
-        <ul key={i} className="grid grid-cols-2 gap-8 my-6 auto-rows-fr">
+        <ul
+          key={i}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 my-6 auto-rows-fr"
+        >
           {data.slice(i * 3, i * 3 + 3).map((tip, index: number) => (
             <div
               key={tip._id}
-              className={
-                index === 0 ? "row-span-2 h-full" : "row-span-1 h-full"
-              }
+              className={`h-full ${index === 0 ? "md:row-span-2" : "md:row-span-1"}`}
             >
               <TipCard
                 tip={tip}

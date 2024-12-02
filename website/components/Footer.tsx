@@ -1,7 +1,24 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
+import { Sprout } from "lucide-react"; // Import the Sprout icon
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+} from "@/components/ui/alert-dialog";
 import {
   FacebookIconBlack,
   InstagramIconBlack,
@@ -10,120 +27,124 @@ import {
 } from "./Icons";
 import siteMetaData from "@/lib/siteMetaData";
 import { MaxWidthWrapper } from "./maxWidthWrapper";
+import { supabase } from "@/lib/supabaseClient";
+import Confetti from "./Confetti"; // Import the Confetti component
 
-// Define the form data interface
-// interface FormData {
-//   Email: string; // Email address of the user
-// }
-
-// Define the Footer functional component
 const Footer: React.FC = () => {
+  const [email, setEmail] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
+  const [showConfetti, setShowConfetti] = useState(false); // State to control confetti display
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const { error } = await supabase.from("Emails").insert({ email });
+      if (error) throw error;
+      setDialogMessage("🎉 Thank you for subscribing!");
+      setShowConfetti(true); // Show confetti on successful subscription
+    } catch (error: any) {
+      console.error("Subscription Error:", error.message || error);
+      setDialogMessage("⚠️ There was an error subscribing. Please try again.");
+    } finally {
+      setIsDialogOpen(true);
+      setEmail("");
+    }
+  };
+
   return (
     <MaxWidthWrapper>
-      <footer
-        className="my-10 rounded-2xl flex flex-col items-center 
-      text-cream-50 
-      bg-cream-800"
-      >
-        <h3
-          className="px-4 text-center capitalize 
-      text-2xl sm:text-3xl lg:text-4xl
-      mt-8 sm:mt-16 
-      font-medium "
-        >
-          🌱 Gardening Tips | Seasonal Advice | Community Updates 🌱
-        </h3>
-        <p className="mt-5 px-4 text-center w-full sm:w-3/5 font-cream-50 text-sm sm:text-base">
-          Subscribe to explore the world of gardening with tips, tools, and
-          updates. Join over 2000+ green thumbs staying connected!
-        </p>
+      <footer>
+        {showConfetti && <Confetti />} {/* Render Confetti conditionally */}
+        <Card className="my-10 rounded-2xl bg-cream-300/70 text-cream-800 shadow-lg">
+          <CardHeader>
+            <h3 className="px-4 text-center capitalize text-2xl sm:text-3xl lg:text-4xl mt-8 sm:mt-16 font-bold flex items-center justify-center gap-2">
+              <Sprout className="size-9 text-primary" /> Gardening Tips{" "}
+              <span className="text-primary">|</span>
+              Seasonal Advice <span className="text-primary">|</span> Community
+              Updates
+              <Sprout className=" text-primary size-10" />
+            </h3>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center">
+            <p className="mt-5 px-4 text-center w-full sm:w-3/5 text-sm sm:text-base">
+              Subscribe to explore the world of gardening with tips, tools, and
+              updates. Join over 2000+ green thumbs staying connected!
+            </p>
 
-        <form
-          className="mt-6 flex items-stretch bg-cream-50 rounded mx-4
-        p-1 sm:p-2
-        w-fit sm:min-w-[384px]"
-        >
-          <input
-            type="email"
-            placeholder="your@email.com"
-            className="w-full bg-transparent text-cream-800 focus:border-cream-800 focus:ring-0 border-0 focus:border-b mr-2 pb-1
-          pl-2 sm:pl-0"
-            autoComplete="on"
-          />
-          <input
-            type="submit"
-            className="cursor-pointer font-medium rounded py-1
-          px-3 sm:px-5
-          bg-primary text-cream-800"
-          />
-        </form>
+            <form
+              onSubmit={handleSubmit}
+              className="mt-6 flex items-stretch w-full sm:w-[384px] max-w-full"
+            >
+              <Input
+                type="email"
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-cream-50 text-cream-800 focus:border-cream-800 focus:ring-0 mr-2"
+                autoComplete="on"
+                required
+              />
+              <Button type="submit" className="bg-primary text-cream-50">
+                Subscribe
+              </Button>
+            </form>
 
-        {/* Social Media Icons */}
-        <div className="flex flex-center mt-8">
-          {/* Facebook */}
-          <Link
-            href={siteMetaData.facebook}
-            className="inline-block w-6 h-6 mr-4"
-            target="_blank"
+            <div className="flex justify-center mt-8">
+              {[
+                { href: siteMetaData.facebook, Icon: FacebookIconBlack },
+                { href: siteMetaData.instagram, Icon: InstagramIconBlack },
+                { href: siteMetaData.tiktok, Icon: TiktokIconBlack },
+                { href: siteMetaData.youtube, Icon: YoutubeIconBlack },
+              ].map(({ href, Icon }, index) => (
+                <Link
+                  key={index}
+                  href={href}
+                  className="inline-block w-6 h-6 mr-4"
+                  target="_blank"
+                  aria-label={`Visit our ${href.split(".")[1]} page`}
+                >
+                  <Icon className="hover:scale-125 transition-all ease-in fill-brand-700" />
+                </Link>
+              ))}
+            </div>
+          </CardContent>
+          <CardFooter
+            className="flex-col md:flex-row justify-between items-center 
+          border-t-3 border-cream-50 mt-6 py-6"
           >
-            <FacebookIconBlack
-              className="hover:scale-125 transition-all ease-in 
-            fill-primary "
-            />
-          </Link>
-          {/* Instagram */}
-          <Link
-            href={siteMetaData.instagram}
-            className="inline-block w-6 h-6 mr-4"
-            target="_blank"
-          >
-            <InstagramIconBlack
-              className="hover:scale-125 transition-all ease-in
-            fill-primary"
-            />
-          </Link>
-          {/* TikTok */}
-          <Link
-            href={siteMetaData.tiktok}
-            className="inline-block w-6 h-6 mr-4"
-            target="_blank"
-          >
-            <TiktokIconBlack
-              className="hover:scale-125 transition-all ease-in
-            fill-primary "
-            />
-          </Link>
-          {/* YouTube */}
-          <Link
-            href={siteMetaData.youtube}
-            className="inline-block w-6 h-6 mr-4"
-            target="_blank"
-          >
-            <YoutubeIconBlack
-              className="hover:scale-125 transition-all ease-in
-          fill-primary "
-            />
-          </Link>
-        </div>
-
-        {/* Footer Bottom */}
-        <div
-          className="w-full relative font-medium border-t border-solid py-6 px-8 flex items-center justify-around
-      mt-8 md:mt-16
-      border-cream-50 
-      flex-col md:flex-row"
-        >
-          <span className="text-center my-2 md:my-0">
-            &copy;2024 The GreenThumb. All rights reserved.
-          </span>
-          <Link href="/sitemap.xml" className="text-center underline">
-            sitemap.xml
-          </Link>
-        </div>
+            <span className="text-center my-2">
+              &copy;2024 The GreenThumb. All rights reserved.
+            </span>
+            <Link href="/sitemap.xml" className="text-center underline">
+              sitemap.xml
+            </Link>
+          </CardFooter>
+        </Card>
       </footer>
+      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Thank You!</AlertDialogTitle>
+            <AlertDialogDescription aria-live="polite">
+              {dialogMessage}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button
+              onClick={() => {
+                setIsDialogOpen(false);
+                setShowConfetti(false); // Hide confetti when dialog is closed
+              }}
+              className="bg-primary text-cream-50 font-semibold"
+            >
+              Close
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MaxWidthWrapper>
   );
 };
 
-// Export the Footer component as the default export
 export default Footer;

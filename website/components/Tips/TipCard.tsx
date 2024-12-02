@@ -24,42 +24,37 @@ const TipCard = ({ tip, variant = "default" }: TipCardProps) => {
   return (
     <li className="group h-full">
       <Card
-        className={`rounded-xl overflow-hidden shadow-md transition-transform hover:scale-105 text-left h-full ${
-          variant === "horizontal" ? "flex" : "flex flex-col"
+        className={`rounded-xl shadow-md transition-transform hover:scale-105 text-left h-full ${
+          variant === "horizontal"
+            ? "flex flex-col md:flex-row"
+            : "flex flex-col"
         }`}
       >
-        {/* Image Section */}
         <Link href={`/tip/${slug?.current}`}>
           {variant === "horizontal" ? (
-            <div className="flex inset-0 w-full h-full">
-              <Image
-                src={mainImage?.asset.url || "/no-plant-image.png"}
-                alt={mainImage?.alt || "Tip Image"}
-                width={400}
-                height={400}
-                className="object-cover"
-              />
-            </div>
-          ) : (
-            <AspectRatio ratio={16 / 9} className="bg-muted">
+            <AspectRatio ratio={16 / 9} className="relative md:hidden">
               <Image
                 src={mainImage?.asset.url || "/no-plant-image.png"}
                 alt={mainImage?.alt || "Tip Image"}
                 fill
                 className="object-cover"
+                priority
+              />
+            </AspectRatio>
+          ) : (
+            <AspectRatio ratio={16 / 9} className="bg-muted relative">
+              <Image
+                src={mainImage?.asset.url || "/no-plant-image.png"}
+                alt={mainImage?.alt || "Tip Image"}
+                fill
+                className="object-cover rounded-t-lg"
+                priority
               />
             </AspectRatio>
           )}
         </Link>
-
         {/* Content Section */}
-        <div
-          className={`${
-            variant === "horizontal"
-              ? "flex-shrink-0 basis-[55%] h-full"
-              : "flex-1 flex flex-col"
-          }`}
-        >
+        <div className={"flex-1 flex flex-col"}>
           <CardHeader>
             {/* Title */}
             <Link href={`/tip/${slug?.current}`}>

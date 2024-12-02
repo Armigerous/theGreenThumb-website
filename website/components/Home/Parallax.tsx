@@ -32,35 +32,17 @@ const Parallax: React.FC<ParallaxProps> = ({ type }) => {
       </motion.h1>
 
       {/* Background Layers */}
-      <motion.div
-        className="absolute z-30 w-full h-full bg-cover bg-bottom"
-        style={{ y: yBg }}
-      >
-        <div
-          className="w-full h-full"
-          style={{ backgroundImage: `url('/Parallax/grass.svg')` }}
-        />
-      </motion.div>
+      <motion.div className="absolute z-30 w-full h-full bg-cover bg-bottom bg-[url('/Parallax/grass.svg')]" />
 
       <motion.div
-        className="absolute z-30 w-full h-full bg-cover bg-bottom"
+        className="absolute z-30 w-full h-full bg-cover bg-bottom bg-[url('/Parallax/vines.svg')]"
         style={{ y: yBg }}
-      >
-        <div
-          className="w-full h-full"
-          style={{ backgroundImage: `url('/Parallax/vines.svg')` }}
-        />
-      </motion.div>
+      />
 
       <motion.div
-        className="absolute z-30 w-full h-full bg-cover bg-bottom"
-        style={{ y: yBg }}
-      >
-        <div
-          className="w-full h-full"
-          style={{ backgroundImage: `url('/Parallax/butterflies.svg')` }}
-        />
-      </motion.div>
+        className="absolute z-30 w-full h-full bg-cover bg-bottom bg-[url('/Parallax/butterflies.svg')]"
+        style={{ x: yBg }}
+      />
     </div>
   );
 };

@@ -11,6 +11,7 @@ import {
 } from "../ui/card";
 import { AspectRatio } from "../ui/aspect-ratio";
 import { Tip } from "@/types/Tip";
+import { Badge } from "../ui/badge";
 
 type TipCardProps = {
   tip: Tip;
@@ -67,18 +68,23 @@ const TipCard = ({ tip, variant = "default" }: TipCardProps) => {
               </CardTitle>
             </Link>
             <CardDescription>
-              {/* Date and Category */}
+              {/* Date and Categories */}
               <div className="flex justify-between items-center mb-3">
                 <span className="text-sm text-muted-foreground">
                   {formatDate(publishedAt)}
                 </span>
-                {categories?.[0] && (
-                  <Link href={`/tips/category/${categories[0].slug.current}`}>
-                    <span className="px-2 py-1 text-xs font-semibold text-white bg-primary rounded-full">
-                      {categories[0].title}
-                    </span>
-                  </Link>
-                )}
+                <div className="flex space-x-2">
+                  {categories?.map((category) => (
+                    <Link
+                      key={category.slug.current}
+                      href={`/tips/category/${category.slug.current}`}
+                    >
+                      <Badge variant="default" className="text-cream-50">
+                        {category.title}
+                      </Badge>
+                    </Link>
+                  ))}
+                </div>
               </div>
             </CardDescription>
           </CardHeader>

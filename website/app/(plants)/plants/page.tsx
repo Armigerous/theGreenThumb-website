@@ -9,12 +9,16 @@ export default async function page({
 }) {
   const query = (await searchParams).query || "";
   const page = parseInt((await searchParams).page || "1", 10);
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/plants?query=${encodeURIComponent(query)}`
+  );
+  const plants = await response.json();
 
   return (
     <MaxWidthWrapper className="text-center">
       <Header />
       {/* Plant Database image */}
-      <Search query={query} page={page} />
+      <Search query={query} page={page} plants={plants} />
     </MaxWidthWrapper>
   );
 }

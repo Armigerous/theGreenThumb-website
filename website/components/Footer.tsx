@@ -54,7 +54,7 @@ const Footer: React.FC = () => {
             type="submit"
             className="cursor-pointer font-medium rounded py-1
           px-3 sm:px-5
-          bg-accent-200 text-cream-800"
+          bg-primary text-cream-800"
           />
         </form>
 
@@ -68,7 +68,7 @@ const Footer: React.FC = () => {
           >
             <FacebookIconBlack
               className="hover:scale-125 transition-all ease-in 
-            fill-accent-200 "
+            fill-primary "
             />
           </Link>
           {/* Instagram */}
@@ -79,7 +79,7 @@ const Footer: React.FC = () => {
           >
             <InstagramIconBlack
               className="hover:scale-125 transition-all ease-in
-            fill-accent-200"
+            fill-primary"
             />
           </Link>
           {/* TikTok */}
@@ -90,7 +90,7 @@ const Footer: React.FC = () => {
           >
             <TiktokIconBlack
               className="hover:scale-125 transition-all ease-in
-            fill-accent-200 "
+            fill-primary "
             />
           </Link>
           {/* YouTube */}
@@ -101,7 +101,7 @@ const Footer: React.FC = () => {
           >
             <YoutubeIconBlack
               className="hover:scale-125 transition-all ease-in
-          fill-accent-200 "
+          fill-primary "
             />
           </Link>
         </div>

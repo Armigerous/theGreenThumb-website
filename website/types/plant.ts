@@ -1,5 +1,13 @@
 import { PlantImage, Synonym } from "./plantsList";
 
+export type BasicPlantData = {
+  id: number; // Unique identifier for the plant
+  slug: string; // URL-friendly identifier for the plant
+  scientific_name: string; // Scientific name of the plant
+  genus: string; // Genus of the plant
+  species: string | null; // Species of the plant, or null if not specified
+};
+
 export type PlantData = {
   id: number; // Unique identifier for the plant
   slug: string; // Slug for plant identification

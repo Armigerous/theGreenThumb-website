@@ -1,8 +1,8 @@
 // Import the Metadata type from Next.js for typing metadata properties
 import { Metadata } from "next";
 // Import custom components used in the Contact page
-import LottieAnimation from "../../../components/Contact/LottieAnimation";
-import ContactForm from "../../../components/Contact/ContactForm";
+import LottieAnimation from "@/components/Contact/LottieAnimation";
+import ContactForm from "@/components/Contact/ContactForm";
 // Import site metadata utility for accessing global site information
 import siteMetaData from "@/lib/siteMetaData";
 

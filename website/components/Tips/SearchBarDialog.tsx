@@ -13,17 +13,37 @@ import { CoffeeIcon, PenBoxIcon, Search } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation";
 import { Tip } from "@/types/Tip";
 
 type SearchBarDialogProps = {
-  tips: Tip[]; // Use the Tip interface
+  tips: Tip[];
 };
+
+// Utility function to highlight matching texts
+function highlightMatch(text: string, query: string) {
+  if (!query) return text;
+  const regex = new RegExp(`(${query})`, "gi");
+  return text.split(regex).map((part, index) =>
+    regex.test(part) ? (
+      <span key={index} className="font-bold">
+        {part}
+      </span>
+    ) : (
+      part
+    )
+  );
+}
+
+function getRandomItems<T>(array: T[], count: number): T[] {
+  const shuffled = [...array].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+}
 
 export default function SearchBarDialog({ tips }: SearchBarDialogProps) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const router = useRouter(); // Initialize router
+  const router = useRouter();
 
   return (
     <>
@@ -55,18 +75,19 @@ export default function SearchBarDialog({ tips }: SearchBarDialogProps) {
           {searchQuery.trim() === "" ? (
             <>
               <CommandGroup heading="Suggestions">
-                <CommandItem>
-                  <CoffeeIcon className="w-5 h-5 mr-2" />
-                  <span>Suggestion 1</span>
-                </CommandItem>
-                <CommandItem>
-                  <CoffeeIcon className="w-5 h-5 mr-2" />
-                  <span>Suggestion 2</span>
-                </CommandItem>
-                <CommandItem>
-                  <CoffeeIcon className="w-5 h-5 mr-2" />
-                  <span>Suggestion 3</span>
-                </CommandItem>
+                {getRandomItems(tips, 3).map((tip, index) => (
+                  <Link href={`/tip/${tip.slug}`} key={index}>
+                    <CommandItem
+                      key={index}
+                      className="cursor-pointer hover:bg-brand-100"
+                    >
+                      <CoffeeIcon className="w-5 h-5 mr-2" />
+                      <span className="text-cream-800 truncate max-w-sm">
+                        {tip.title}
+                      </span>
+                    </CommandItem>
+                  </Link>
+                ))}
               </CommandGroup>
             </>
           ) : (
@@ -75,9 +96,14 @@ export default function SearchBarDialog({ tips }: SearchBarDialogProps) {
                 <CommandGroup heading="Similar Results">
                   {tips.map((tip, index: number) => (
                     <Link href={`/tip/${tip.slug}`} key={index}>
-                      <CommandItem key={index} className="cursor-pointer">
+                      <CommandItem
+                        key={index}
+                        className="cursor-pointer hover:bg-brand-100"
+                      >
                         <PenBoxIcon className="w-5 h-5 mr-2" />
-                        <span>{tip.title}</span>
+                        <span className="text-cream-800 truncate max-w-sm">
+                          {highlightMatch(tip.title, searchQuery)}
+                        </span>
                       </CommandItem>
                     </Link>
                   ))}

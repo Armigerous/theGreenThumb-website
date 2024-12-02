@@ -19,9 +19,9 @@ const Header = () => {
           <Heading className="text-5xl md:text-6xl font-bold mb-2 text-brand-600">
             Tips & Tricks
           </Heading>
-          <Heading className="text-lg sm:text-xl md:text-2xl  text-cream-900">
+          <p className="text-lg sm:text-xl md:text-2xl  text-cream-900">
             Learn more about gardening!
-          </Heading>
+          </p>
         </div>
       </div>
     </div>

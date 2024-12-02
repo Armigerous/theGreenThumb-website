@@ -1,11 +1,20 @@
-import React from "react";
-import SearchBar from "./SearchBar";
+import { BasicPlantData } from "@/types/plant";
+import { Autocomplete } from "./Autocomplete";
 import SearchResults from "./SearchResults";
 
-const Search = ({ query, page }: { query?: string; page: number }) => {
+const Search = ({
+  query,
+  page,
+  plants,
+}: {
+  query?: string;
+  page: number;
+  plants: BasicPlantData[];
+}) => {
   return (
-    <div>
-      <SearchBar query={query} />
+    <div className="text-left">
+      {/* <SearchBar query={query} /> */}
+      <Autocomplete plants={plants} />
       <SearchResults query={query} page={page} />
     </div>
   );

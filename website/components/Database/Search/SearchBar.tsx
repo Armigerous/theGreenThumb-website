@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
 import Form from "next/form";
-import { Autocomplete } from "./Autocomplete";
 import SearchReset from "./SearchReset";
 // import { SearchIcon, SlidersHorizontalIcon } from "lucide-react";
 // import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -33,7 +32,6 @@ export default function SearchBar({ query }: { query?: string }) {
               placeholder="Search plants..."
               className="bg-cream-300 border-cream-800"
             />
-            <Autocomplete />
 
             <div className="absolute right-2 flex gap-2">
               {query && <SearchReset />}

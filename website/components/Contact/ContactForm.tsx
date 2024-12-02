@@ -2,6 +2,7 @@
 
 import Form from "next/form";
 import React from "react";
+import { Button } from "../ui/button";
 
 // // Define the form data interface
 // interface FormData {
@@ -66,11 +67,9 @@ export default function ContactForm() {
       />
       {/* Submit button */}
       <div className="w-full flex justify-center md:justify-start mt-8">
-        <input
-          type="submit"
-          value="Submit"
-          className="font-medium inline-block capitalize border-2 border-solid rounded-lg cursor-pointer hover:scale-105 transition-all ease duration-300 px-6 sm:px-8 py-2 sm:py-3 text-lg sm:text-xl border-dark dark:border-light"
-        />
+        <Button type="submit" variant={"default"}>
+          Submit
+        </Button>
       </div>
     </Form>
   );

@@ -1,11 +1,10 @@
-import InsightRoll from "@/components/About/InsightRoll";
+import InsightRoll from "@/components/InsightRoll";
 import React from "react";
 
 interface AboutLayoutProps {
   children: React.ReactNode;
 }
 
-// What's on the Insight Roll
 const insights: string[] = [
   "Plants convert sunlight into energy through photosynthesis.",
   "Overwatering is one of the most common mistakes in plant care.",
@@ -22,8 +21,10 @@ const insights: string[] = [
 const AboutLayout: React.FC<AboutLayoutProps> = ({ children }) => {
   return (
     <main>
-      <div className="w-full flex flex-col items-center justify-between">
-        <InsightRoll insights={insights} />
+      {/* InsightRoll is now at a persistent level */}
+      <InsightRoll insights={insights} />
+
+      <div className="flex flex-col items-center justify-between">
         {children}
       </div>
     </main>

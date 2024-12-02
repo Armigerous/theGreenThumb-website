@@ -40,7 +40,7 @@ const Text = () => {
         variants={fadeInUp}
       >
         Your Garden&apos;s{" "}
-        <span className="bg-primary text-cream-50 p-2 rounded-xl relative">
+        <span className="bg-primary text-cream-50 p-2 rounded-xl relative inline-block">
           <motion.span
             className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30"
             animate={{ x: ["-100%", "100%"] }}

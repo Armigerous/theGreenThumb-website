@@ -65,11 +65,12 @@ const Footer: React.FC = () => {
         {showConfetti && <Confetti />} {/* Render Confetti conditionally */}
         <Card className="my-10 rounded-2xl bg-cream-300/70 text-cream-800 shadow-lg">
           <CardHeader>
-            <h3 className="px-4 text-center capitalize text-2xl sm:text-3xl lg:text-4xl mt-8 sm:mt-16 font-bold flex items-center justify-center gap-2">
+            <h3 className="px-4 text-center capitalize text-lg sm:text-3xl lg:text-4xl mt-8 sm:mt-16 font-bold flex items-center justify-center gap-2">
               <Sprout className="size-9 text-primary" /> Gardening Tips{" "}
               <span className="text-primary">|</span>
-              Seasonal Advice <span className="text-primary">|</span> Community
-              Updates
+              Seasonal Advice <span className="text-primary">
+                |
+              </span> Community Updates
               <Sprout className=" text-primary size-10" />
             </h3>
           </CardHeader>
@@ -97,7 +98,7 @@ const Footer: React.FC = () => {
               </Button>
             </form>
 
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-center mt-8 gap-x-4">
               {[
                 { href: siteMetaData.facebook, Icon: FacebookIconBlack },
                 { href: siteMetaData.instagram, Icon: InstagramIconBlack },
@@ -107,23 +108,23 @@ const Footer: React.FC = () => {
                 <Link
                   key={index}
                   href={href}
-                  className="inline-block w-6 h-6 mr-4"
+                  className="inline-block w-6 h-6"
                   target="_blank"
                   aria-label={`Visit our ${href.split(".")[1]} page`}
                 >
-                  <Icon className="hover:scale-125 transition-all ease-in fill-brand-700" />
+                  <Icon className="hover:scale-125 transition-transform fill-brand-700" />
                 </Link>
               ))}
             </div>
           </CardContent>
-          <CardFooter
-            className="flex-col md:flex-row justify-between items-center 
-          border-t-3 border-cream-50 mt-6 py-6"
-          >
-            <span className="text-center my-2">
+          <CardFooter className="flex flex-col items-center sm:flex-row sm:justify-between w-full border-t-2 border-cream-50 mt-6 py-4 space-y-4 sm:space-y-0">
+            <span className="text-center text-sm sm:text-base">
               &copy;2024 The GreenThumb. All rights reserved.
             </span>
-            <Link href="/sitemap.xml" className="text-center underline">
+            <Link
+              href="/sitemap.xml"
+              className="text-center underline text-sm sm:text-base"
+            >
               sitemap.xml
             </Link>
           </CardFooter>

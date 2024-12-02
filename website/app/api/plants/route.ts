@@ -4,6 +4,8 @@ import { fetchAllPlants } from "@/lib/utils";
 import { BasicPlantData } from "@/types/plant";
 
 export async function GET(request: Request) {
+  console.log(`FUck: ${Request}`);
+
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("query")?.toLowerCase() || "";
 

@@ -32,7 +32,7 @@ const variants = {
 
 const AppFeatures: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { margin: "-10px" });
+  const isInView = useInView(ref, { margin: "-50px" });
 
   return (
     <motion.div
@@ -50,7 +50,7 @@ const AppFeatures: React.FC = () => {
           We are helping your garden grow
           <br /> and be more beautiful
         </p>
-        <hr className="hidden sm:block w-80 border-t border-cream-400" />
+        <hr className="sm:block w-80 border-t border-cream-400" />
       </motion.div>
 
       {/* Main Content */}

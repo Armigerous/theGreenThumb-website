@@ -1,10 +1,11 @@
 // Confetti.tsx
 import React, { useCallback } from "react";
 import Particles from "react-tsparticles";
+import { Engine } from "tsparticles-engine";
 import { loadConfettiPreset } from "tsparticles-preset-confetti";
 
 const Confetti: React.FC = () => {
-  const particlesInit = useCallback(async (engine) => {
+  const particlesInit = useCallback(async (engine: Engine) => {
     await loadConfettiPreset(engine);
   }, []);
 

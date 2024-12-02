@@ -43,9 +43,16 @@ const Footer: React.FC = () => {
       if (error) throw error;
       setDialogMessage("🎉 Thank you for subscribing!");
       setShowConfetti(true); // Show confetti on successful subscription
-    } catch (error: any) {
-      console.error("Subscription Error:", error.message || error);
-      setDialogMessage("⚠️ There was an error subscribing. Please try again.");
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Subscription Error:", error.message);
+        setDialogMessage(
+          "⚠️ There was an error subscribing. Please try again."
+        );
+      } else {
+        console.error("Unknown error:", error);
+        setDialogMessage("⚠️ An unexpected error occurred. Please try again.");
+      }
     } finally {
       setIsDialogOpen(true);
       setEmail("");

@@ -13,7 +13,6 @@ const InsightRoll: React.FC<InsightRollProps> = ({ insights }) => {
   const [ref, bounds] = useMeasure();
   const xTranslation = useMotionValue(0);
   const contentRef = useRef<HTMLDivElement>(null);
-  console.log("InsightRoll mounted");
   useEffect(() => {
     const contentWidth = contentRef.current?.offsetWidth || 0; // Get the full width of the content
     const finalPosition = -contentWidth / 2; // Calculate the translation target

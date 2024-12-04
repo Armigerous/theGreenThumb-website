@@ -42,7 +42,7 @@ const Text = () => {
         Your Garden&apos;s{" "}
         <span className="bg-primary text-cream-50 p-2 rounded-xl relative inline-block">
           <motion.span
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30"
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-40"
             animate={{ x: ["-100%", "100%"] }}
             transition={{
               duration: 3,

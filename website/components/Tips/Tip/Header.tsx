@@ -1,6 +1,8 @@
 import { Tip } from "@/types/Tip";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
+import { badgeVariants } from "@/components/ui/badge";
 
 const Header = ({ tip }: { tip: Tip }) => {
   const { title, categories, mainImage } = tip;
@@ -25,15 +27,15 @@ const Header = ({ tip }: { tip: Tip }) => {
         {/* Category Pills */}
         <div className="flex space-x-2 mb-2">
           {categories.map((category, index) => (
-            <span
+            <Link
+              href={`/category/${category.slug.current}`}
               key={index}
-              className="inline-block py-2 sm:py-3 px-6 sm:px-10 bg-cream-800/80 text-cream-50 rounded-full capitalize font-semibold border-2 border-solid border-cream-50 hover:scale-105 transition-all ease duration-200 text-sm sm:text-base"
+              className={badgeVariants({ variant: "default" })}
             >
               {category.title}
-            </span>
+            </Link>
           ))}
         </div>
-
         {/* Title */}
         <h1 className="text-4xl font-bold">{title}</h1>
       </div>

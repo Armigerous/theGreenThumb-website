@@ -58,7 +58,7 @@ const TipCard = ({ tip, variant = "default" }: TipCardProps) => {
           <CardHeader>
             {/* Title */}
             <Link href={`/tip/${slug?.current}`}>
-              <CardTitle className="text-lg font-bold line-clamp-2 hover:underline">
+              <CardTitle className="text-lg font-bold line-clamp-1 hover:underline">
                 {title}
               </CardTitle>
             </Link>
@@ -83,7 +83,7 @@ const TipCard = ({ tip, variant = "default" }: TipCardProps) => {
               </div>
             </CardDescription>
           </CardHeader>
-          <CardContent className="line-clamp-3 flex-1">
+          <CardContent className="line-clamp-2 md:line-clamp-3 flex-1">
             {description ? (
               <p className="text-sm text-muted-foreground line-clamp-3">
                 {description}

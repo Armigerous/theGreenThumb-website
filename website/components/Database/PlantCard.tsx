@@ -27,17 +27,17 @@ const PlantCard = ({ plant }: { plant: PlantSummary }) => {
           height={200}
           className="w-full object-cover h-48"
         />
-        <CardHeader className="p-4">
-          <CardTitle className="text-lg font-semibold">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold line-clamp-1">
             {plant.scientific_name}
           </CardTitle>
-          <CardDescription className="text-sm text-muted-foreground">
+          <CardDescription className="text-sm text-muted-foreground line-clamp-1">
             {plant.commonname_set?.[0]}
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-4">
+        <CardContent>
           <div
-            className="text-sm text-muted-foreground line-clamp-3"
+            className="text-sm text-muted-foreground md:line-clamp-3 line-clamp-2"
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(plant.description || "", {
                 ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
@@ -45,7 +45,7 @@ const PlantCard = ({ plant }: { plant: PlantSummary }) => {
             }}
           />
         </CardContent>
-        <CardFooter className="p-4">
+        <CardFooter>
           <p className="text-sm text-primary group-hover:underline">
             Learn more
           </p>

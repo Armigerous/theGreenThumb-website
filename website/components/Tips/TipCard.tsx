@@ -83,9 +83,9 @@ const TipCard = ({ tip, variant = "default" }: TipCardProps) => {
               </div>
             </CardDescription>
           </CardHeader>
-          <CardContent className="line-clamp-2 md:line-clamp-3 flex-1">
+          <CardContent className="flex-1">
             {description ? (
-              <p className="text-sm text-muted-foreground line-clamp-3">
+              <p className="text-sm text-muted-foreground line-clamp-2 lg:line-clamp-3">
                 {description}
               </p>
             ) : (

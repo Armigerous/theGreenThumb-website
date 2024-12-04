@@ -95,9 +95,9 @@ const AppFeatures: React.FC = () => {
           {FeaturesApp.map((feature: AppFeature, index) => (
             <Card key={index} className="w-full sm:w-[30%] h-full shadow-lg">
               <CardHeader>
-                <CardTitle>{feature.title}</CardTitle>
+                <CardTitle className="line-clamp-1">{feature.title}</CardTitle>
               </CardHeader>
-              <CardContent className="line-clamp-3 my-2">
+              <CardContent className="line-clamp-2 md:line-clamp-3">
                 <p>{feature.content} </p>
               </CardContent>
               <CardFooter>

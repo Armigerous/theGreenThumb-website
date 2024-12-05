@@ -100,27 +100,6 @@ export const FILTERED_POSTS_QUERY = defineQuery(
   `
 );
 
-export const POSTS_BY_CATEGORY_QUERY = defineQuery(
-  `
-    *[_type=="post" && defined(slug.current) && publishedAt < now() && 
-      $category in categories[]->slug.current] | order(publishedAt desc) {
-      _id, 
-      slug,
-      title,
-      description,
-      categories[] -> {title, slug, description},
-      publishedAt,
-      mainImage {
-        asset -> {
-          _id,
-          url
-        },
-        alt
-      }
-    } 
-  `
-);
-
 export const PAGINATED_POSTS_QUERY = defineQuery(
   `
     {
@@ -181,4 +160,57 @@ export const LATEST_SIX_POSTS_QUERY = defineQuery(
       }
     } 
   `
+);
+
+export const ALL_CATEGORIES_QUERY = defineQuery(
+  `
+    *[_type == "category"] | order(title asc) {
+      _id,
+      title,
+      slug,
+      mainImage {
+        asset -> {
+          _id,
+          url
+        }
+      },
+      description
+    }
+  `
+);
+
+export const POSTS_BY_CATEGORY_QUERY = defineQuery(
+  `
+    *[_type=="post" && defined(slug.current) && publishedAt < now() && 
+      $category in categories[]->slug.current] | order(publishedAt desc) {
+      _id, 
+      slug,
+      title,
+      description,
+      categories[] -> {title, slug, description},
+      publishedAt,
+      mainImage {
+        asset -> {
+          _id,
+          url
+        },
+        alt
+      }
+    } 
+  `
+);
+
+export const CATEGORY_BY_SLUG_QUERY = defineQuery(
+  `
+*[_type == "category" && slug.current == $slug][0] {
+  title,
+  slug,
+  mainImage {
+    asset -> {
+      _id,
+      url
+    }
+  },
+  description
+}  `
 );

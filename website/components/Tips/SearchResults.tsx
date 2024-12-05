@@ -14,7 +14,7 @@ const SearchResults = async ({
   query?: string;
   page: number;
 }) => {
-  const normalizedQuery = query || ""; // Ensure query is always a string
+  const normalizedQuery = query.replace("-", " ") || ""; // Trim whitespace
   const limit = 28;
 
   // Calculate pagination parameters

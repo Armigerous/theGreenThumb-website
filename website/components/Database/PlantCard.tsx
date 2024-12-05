@@ -11,11 +11,17 @@ import {
 import Image from "next/image";
 import { PlantSummary } from "@/types/plantsList";
 import DOMPurify from "isomorphic-dompurify";
+import { Badge } from "../ui/badge";
 
 const PlantCard = ({ plant }: { plant: PlantSummary }) => {
+  const firstTag = plant.tags?.[0];
+
   return (
-    <Link href={`/plant/${plant.slug}`} key={plant.slug} className="group">
-      <Card className="overflow-hidden rounded-xl shadow-md transition-transform hover:scale-105 text-left">
+    <Card
+      key={plant.slug}
+      className="group/card overflow-hidden rounded-xl shadow-md transition-transform hover:scale-105 text-left"
+    >
+      <Link href={`/plant/${plant.slug}`}>
         <Image
           src={
             plant.plantimage_set && plant.plantimage_set.length > 0
@@ -27,31 +33,41 @@ const PlantCard = ({ plant }: { plant: PlantSummary }) => {
           height={200}
           className="w-full object-cover h-48"
         />
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold line-clamp-1">
+      </Link>
+
+      <CardHeader>
+        <Link href={`/plant/${plant.slug}`} className="group/header">
+          <CardTitle className="text-lg font-semibold line-clamp-1 group-hover/header:underline">
             {plant.scientific_name}
           </CardTitle>
           <CardDescription className="text-sm text-muted-foreground line-clamp-1">
             {plant.commonname_set?.[0]}
           </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div
-            className="text-sm text-muted-foreground md:line-clamp-3 line-clamp-2"
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(plant.description || "", {
-                ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
-              }),
-            }}
-          />
-        </CardContent>
+        </Link>
+        {firstTag && (
+          <Link href={`/plant/${plant.slug}`}>
+            <Badge className="text-cream-50">{firstTag}</Badge>
+          </Link>
+        )}
+      </CardHeader>
+      <CardContent>
+        <div
+          className="text-sm text-muted-foreground md:line-clamp-3 line-clamp-2"
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(plant.description || "", {
+              ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
+            }),
+          }}
+        />
+      </CardContent>
+      <Link href={`/plant/${plant.slug}`}>
         <CardFooter>
-          <p className="text-sm text-primary group-hover:underline">
+          <p className="text-sm text-primary group-hover/card:underline">
             Learn more
           </p>
         </CardFooter>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 };
 

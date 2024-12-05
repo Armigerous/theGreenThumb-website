@@ -1,9 +1,7 @@
 export interface Tip {
   _id: string;
   title: string;
-  slug: {
-    current: string; // Sanity slug format
-  };
+  slug: TipSlug;
   description: string;
   mainImage: {
     asset: {
@@ -15,13 +13,7 @@ export interface Tip {
   author: {
     name: string;
   };
-  categories: {
-    title: string;
-    slug: {
-      current: string; // Sanity slug format
-    };
-    description: string;
-  }[];
+  categories: TipCategory[];
   publishedAt: string;
   body: {
     _type: string;
@@ -37,5 +29,14 @@ export interface Tip {
 }
 
 export type TipSlug = {
-  slug: string;
+  current: string;
+};
+
+export type TipCategory = {
+  _id: string;
+  title: string;
+  slug: {
+    current: string;
+  };
+  description: string;
 };

@@ -1,17 +1,18 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { client } from "@/sanity/lib/client";
 import {
+  ALL_CATEGORIES_QUERY,
   ALL_POSTS_SLUGS_QUERY,
   ALL_POSTS_TITLES_QUERY,
-  FILTERED_POSTS_QUERY,
+  CATEGORY_BY_SLUG_QUERY,
   LATEST_SIX_POSTS_QUERY,
   PAGINATED_POSTS_QUERY,
   POST_BY_SLUG_QUERY,
   POST_VIEWS_QUERY,
-  POSTS_QUERY,
 } from "@/sanity/lib/queries";
-import { client } from "@/sanity/lib/client";
-import { TipSlug } from "@/types/Tip";
+import { TipCategory, TipSlug } from "@/types/Tip";
+import { clsx, type ClassValue } from "clsx";
+import { cache } from "react";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -25,7 +26,7 @@ export function formatDate(date: string) {
   });
 }
 
-export async function fetchPlantData(slug: string) {
+export const fetchPlantData = cache(async (slug: string) => {
   const response = await fetch(
     `https://plants.ces.ncsu.edu/api/plants/${slug}/?format=json`
   );
@@ -33,7 +34,7 @@ export async function fetchPlantData(slug: string) {
     throw new Error("Failed to fetch plant data");
   }
   return await response.json();
-}
+});
 
 export async function fetchSearchResults(
   query?: string,
@@ -55,7 +56,7 @@ export async function fetchSearchResults(
   return await response.json();
 }
 
-export async function fetchAllPlants() {
+export const fetchAllPlants = cache(async () => {
   const response = await fetch(
     "https://plants.ces.ncsu.edu/api/all_plants/?format=json"
   );
@@ -65,16 +66,9 @@ export async function fetchAllPlants() {
   }
 
   return await response.json();
-}
+});
 
-export async function fetchTips() {
-  // Fetch Tips
-  const tips = await client.fetch(POSTS_QUERY);
-
-  return tips;
-}
-
-export async function fetchAllTipTitles() {
+export const fetchAllTipTitles = cache(async () => {
   try {
     const tips = await client.fetch(ALL_POSTS_TITLES_QUERY);
     return tips; // Extract and return just the titles
@@ -82,16 +76,26 @@ export async function fetchAllTipTitles() {
     console.error("Error fetching titles:", error);
     throw new Error("Failed to fetch titles");
   }
-}
+});
 
-export async function fetchAllTipSlugs(): Promise<TipSlug[]> {
+export const fetchAllTipCategories = cache(async () => {
+  try {
+    const categories = await client.fetch(ALL_CATEGORIES_QUERY);
+    return categories; // Extract and return just the titles
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw new Error("Failed to fetch categories");
+  }
+});
+
+export const fetchAllTipSlugs = cache(async (): Promise<TipSlug[]> => {
   try {
     return await client.fetch(ALL_POSTS_SLUGS_QUERY);
   } catch (error) {
     console.error("Error fetching slugs:", error);
     throw new Error("Failed to fetch slugs");
   }
-}
+});
 
 export async function fetchPostViewsById(id: string) {
   try {
@@ -101,15 +105,6 @@ export async function fetchPostViewsById(id: string) {
   } catch (error) {
     console.error("Error fetching post views:", error);
     throw new Error("Failed to fetch post views");
-  }
-}
-
-export async function fetchFilteredTips(search: string) {
-  try {
-    return await client.fetch(FILTERED_POSTS_QUERY, { search });
-  } catch (error) {
-    console.error("Error fetching filtered tips:", error);
-    throw new Error("Failed to fetch filtered tips");
   }
 }
 
@@ -152,3 +147,20 @@ export async function fetchTipBySlug(slug: string) {
     throw new Error("Failed to fetch tip by slug");
   }
 }
+
+export const fetchCategoryBySlug = cache(
+  async (slug: string): Promise<TipCategory> => {
+    try {
+      const category: TipCategory = await client.fetch(CATEGORY_BY_SLUG_QUERY, {
+        slug,
+      });
+      if (!category) {
+        throw new Error(`Category with slug "${slug}" not found.`);
+      }
+      return category;
+    } catch (error) {
+      console.error("Error fetching category by slug:", error);
+      throw new Error("Failed to fetch category information.");
+    }
+  }
+);

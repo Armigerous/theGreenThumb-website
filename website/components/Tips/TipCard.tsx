@@ -64,7 +64,7 @@ const TipCard = ({ tip, variant = "default" }: TipCardProps) => {
             </Link>
             <CardDescription>
               {/* Date and Categories */}
-              <div className="flex justify-between items-center mb-3">
+              <div className="flex lg:flex-row flex-col justify-between items-center mb-3">
                 <span className="text-sm text-muted-foreground">
                   {formatDate(publishedAt)}
                 </span>
@@ -74,7 +74,10 @@ const TipCard = ({ tip, variant = "default" }: TipCardProps) => {
                       key={category.slug.current}
                       href={`/tips/category/${category.slug.current}`}
                     >
-                      <Badge variant="default" className="text-cream-50">
+                      <Badge
+                        variant="default"
+                        className="text-cream-50 text-center"
+                      >
                         {category.title}
                       </Badge>
                     </Link>

@@ -30,7 +30,11 @@ export async function generateMetadata({
 }
 
 // Define the component for category pages
-const CategoryPage = async ({ params }: { params: { slug: string } }) => {
+const CategoryPage = async ({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) => {
   const { slug } = await params; // Ensure `params` is accessed correctly
 
   // Fetch posts and categories

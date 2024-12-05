@@ -73,7 +73,7 @@ const config: Config = {
         },
         primary: {
           DEFAULT: "#5E994B", // Brand 600
-          foreground: "#2e2c29", // Cream 800
+          foreground: "#fffefa", // Cream 800
         },
         secondary: {
           DEFAULT: "#ffd900", // Cream 300

@@ -8,8 +8,8 @@ const Featured = async () => {
   const data: Tip[] = await fetchLastSixPosts();
 
   return (
-    <section>
-      <h2 className="text-3xl md:text-5xl font-bold">Featured Posts</h2>
+    <section className="py-4">
+      <h2 className="text-2xl md:text-4xl font-bold">Featured Posts</h2>
       {/* Process data in groups of three */}
       {[...Array(Math.ceil(data.length / 3))].map((_, i) => (
         <ul

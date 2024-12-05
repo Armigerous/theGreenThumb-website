@@ -9,7 +9,7 @@ import {
   POST_BY_SLUG_QUERY,
   POST_VIEWS_QUERY,
 } from "@/sanity/lib/queries";
-import { TipCategory, TipSlug } from "@/types/Tip";
+import { TipCategory } from "@/types/Tip";
 import { clsx, type ClassValue } from "clsx";
 import { cache } from "react";
 import { twMerge } from "tailwind-merge";
@@ -88,7 +88,8 @@ export const fetchAllTipCategories = cache(async () => {
   }
 });
 
-export const fetchAllTipSlugs = cache(async (): Promise<TipSlug[]> => {
+type SlugArray = { slug: string }[];
+export const fetchAllTipSlugs = cache(async (): Promise<SlugArray> => {
   try {
     return await client.fetch(ALL_POSTS_SLUGS_QUERY);
   } catch (error) {

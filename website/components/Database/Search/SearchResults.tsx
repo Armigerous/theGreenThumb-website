@@ -22,9 +22,9 @@ const SearchResults = async ({
     const totalPages = Math.ceil(data.count / limit);
 
     return (
-      <div className="container mx-auto py-8">
-        <div className="text-left mb-8">
-          <h2 className="text-2xl sm:text-3xl font-heading font-semibold tracking-tight text-zinc-800">
+      <div className="container mx-auto py-4">
+        <div className="text-left mb-4">
+          <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-cream-800">
             {query ? `Search results for "${query}"` : "All Plants"}
           </h2>
           <p className="text-sm text-muted-foreground">

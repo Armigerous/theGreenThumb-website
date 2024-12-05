@@ -75,7 +75,6 @@ export const ALL_POSTS_SLUGS_QUERY = defineQuery(
   *[_type == "post" && defined(slug.current) && publishedAt < now()] {
     "slug": slug.current
   }
-
   `
 );
 

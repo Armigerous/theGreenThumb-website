@@ -16,25 +16,11 @@ const imageAnimation = {
   },
 };
 
-const containerAnimation = {
-  hover: {
-    scale: 1.05,
-    transition: {
-      duration: 0.3,
-    },
-  },
-};
-
 const Model = () => {
   return (
-    <motion.div
-      className="w-full md:w-1/2 flex items-center justify-center mb-6 md:mb-0"
-      variants={containerAnimation}
-      whileHover="hover"
-    >
+    <div className="w-full md:w-1/2 flex items-center justify-center mb-6 md:mb-0">
       <motion.div
-        className="bg-white border-4 border-black rounded-lg shadow-xl 
-        w-[300px] h-[400px] md:w-[400px] md:h-[550px] flex items-center justify-center"
+        className="w-[300px] h-[400px] md:w-[400px] md:h-[550px] flex items-center justify-center"
         initial="hidden"
         animate="visible"
         variants={imageAnimation}
@@ -48,7 +34,7 @@ const Model = () => {
           className="object-contain"
         />
       </motion.div>
-    </motion.div>
+    </div>
   );
 };
 

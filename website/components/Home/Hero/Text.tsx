@@ -24,7 +24,7 @@ const staggerContainer = {
 const Text = () => {
   return (
     <motion.div
-      className="text-left md:w-1/2 mb-6 md:mb-0 pt-20 lg:pt-0 px-4"
+      className="text-left md:w-1/2 mb-6 md:mb-0 pt-20 lg:pt-0 px-4 space-y-6"
       initial="hidden"
       animate="visible"
       variants={staggerContainer}
@@ -39,21 +39,8 @@ const Text = () => {
         className="text-3xl md:text-5xl font-bold mb-4 leading-normal md:leading-relaxed lg:leading-normal"
         variants={fadeInUp}
       >
-        Your Garden&apos;s{" "}
-        <span className="bg-primary text-cream-50 p-2 rounded-xl relative inline-block">
-          <motion.span
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-40"
-            animate={{ x: ["-100%", "100%"] }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              repeatType: "loop",
-              delay: 1,
-            }}
-          />
-          Smartest
-        </span>{" "}
-        Tool is Here!
+        Your Garden&apos;s <span className="text-primary">Smartest</span> Tool
+        is Here!
       </motion.h1>
       <motion.p
         className="mb-4 text-sm md:text-xl max-w-full"

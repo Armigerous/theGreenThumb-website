@@ -20,7 +20,7 @@ const Model = () => {
   return (
     <div className="w-full md:w-1/2 flex items-center justify-center mb-6 md:mb-0">
       <motion.div
-        className="w-[300px] h-[400px] md:w-[400px] md:h-[550px] flex items-center justify-center"
+        className="w-full flex items-center justify-center"
         initial="hidden"
         animate="visible"
         variants={imageAnimation}

@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { CheckIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -21,26 +21,69 @@ const staggerContainer = {
   },
 };
 
+const words = [
+  "Smartest",
+  "Simplest",
+  "Easiest",
+  "Ultimate",
+  "Perfect",
+  "Lifelong",
+  "Trusted",
+];
+
 const Text = () => {
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentWordIndex((prevIndex) =>
+        prevIndex === words.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 5000); // Change word every 2 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <motion.div
       className="text-left md:w-1/2 mb-6 md:mb-0 pt-20 lg:pt-0 px-4 space-y-6"
       initial="hidden"
       animate="visible"
-      variants={staggerContainer}
+      variants={{
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
+      }}
     >
       <motion.p
         className="text-medium sm:text-base lg:text-lg mb-4 italic"
-        variants={fadeInUp}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
       >
         For North Carolina Gardeners
       </motion.p>
       <motion.h1
-        className="text-3xl md:text-5xl font-bold mb-4 leading-normal md:leading-relaxed lg:leading-normal"
-        variants={fadeInUp}
+        className="text-4xl md:text-6xl mb-4 font-thin leading-normal md:leading-relaxed lg:leading-normal"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
       >
-        Your Garden&apos;s <span className="text-primary">Smartest</span> Tool
-        is Here!
+        Your Garden&apos;s{" "}
+        <span className="hover:text-primary font-bold inline-block relative w-[6ch]">
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={words[currentWordIndex]}
+              initial={{ y: "100%", opacity: 0 }}
+              animate={{ y: "0%", opacity: 1 }}
+              exit={{ y: "-100%", opacity: 0 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+              style={{ display: "inline-block" }}
+            >
+              {words[currentWordIndex]}
+            </motion.span>
+          </AnimatePresence>
+        </span>{" "}
+        Tool is Here!
       </motion.h1>
       <motion.p
         className="mb-4 text-sm md:text-xl max-w-full"
@@ -87,9 +130,7 @@ const Text = () => {
         <Link href="/tips" passHref>
           <Button
             variant={"default"}
-            className="flex justify-center items-center mt-6 w-full text-cream-50 text-lg md:text-xl 
-          lg:text-2xl py-6 bg-primary transition-all transform hover:scale-105 
-          focus:ring focus:ring-brand-600 shadow-lg"
+            className="flex justify-center items-center mt-6 w-full text-cream-50 text-lg md:text-xl lg:text-2xl py-6 bg-primary transition-all transform hover:scale-105 focus:ring focus:ring-brand-600 shadow-lg"
             aria-label="Start Growing Smarter - Navigate to gardening tips"
           >
             <span className="mr-2">Start Growing Smarter</span>

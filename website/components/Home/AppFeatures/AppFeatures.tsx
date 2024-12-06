@@ -43,7 +43,8 @@ const AppFeatures: React.FC = () => {
       animate={isInView && "animate"}
     >
       <motion.div
-        className="mt-[8vh] flex flex-col sm:flex-row sm:self-end items-center pr-1 sm:pr-0 text-center sm:text-right text-cream-600 text-md sm:text-2xl font-light"
+        className="mt-[8vh] flex flex-col sm:flex-row sm:self-end items-center pr-1 
+        sm:pr-0 text-center sm:text-right text-cream-600 text-md sm:text-2xl font-light"
         variants={variants}
       >
         <p>

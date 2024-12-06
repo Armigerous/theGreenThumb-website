@@ -19,7 +19,7 @@ const PlantCard = ({ plant }: { plant: PlantSummary }) => {
   return (
     <Card
       key={plant.slug}
-      className="group/card overflow-hidden rounded-xl shadow-md transition-transform hover:scale-105 text-left"
+      className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left"
     >
       <Link href={`/plant/${plant.slug}`}>
         <Image

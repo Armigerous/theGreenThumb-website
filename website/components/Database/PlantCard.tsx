@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,8 +14,26 @@ import Image from "next/image";
 import { PlantSummary } from "@/types/plantsList";
 import DOMPurify from "isomorphic-dompurify";
 import { Badge } from "../ui/badge";
+import { dynamicBlurDataUrl } from "@/lib/dynamicBlurDataUrl";
 
 const PlantCard = ({ plant }: { plant: PlantSummary }) => {
+  const [blurDataUrl, setBlurDataUrl] = useState<string | undefined>(undefined);
+
+  const imageUrl =
+    plant.plantimage_set && plant.plantimage_set.length > 0
+      ? plant.plantimage_set[0].img
+      : "/no-plant-image.png";
+
+  useEffect(() => {
+    const fetchBlurDataUrl = async () => {
+      if (imageUrl) {
+        const blurUrl = await dynamicBlurDataUrl(imageUrl);
+        setBlurDataUrl(blurUrl);
+      }
+    };
+    fetchBlurDataUrl();
+  }, [imageUrl]);
+
   const firstTag = plant.tags?.[0];
 
   return (
@@ -23,15 +43,13 @@ const PlantCard = ({ plant }: { plant: PlantSummary }) => {
     >
       <Link href={`/plant/${plant.slug}`}>
         <Image
-          src={
-            plant.plantimage_set && plant.plantimage_set.length > 0
-              ? plant.plantimage_set[0].img
-              : "/no-plant-image.png"
-          }
+          src={imageUrl}
           alt={plant.scientific_name || "Plant image"}
           width={300}
           height={200}
           className="w-full object-cover h-48"
+          placeholder="blur"
+          blurDataURL={blurDataUrl || "https://placehold.co/600x400"} // Dynamically set blurDataURL
         />
       </Link>
 

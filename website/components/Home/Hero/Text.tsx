@@ -69,7 +69,7 @@ const Text = () => {
         transition={{ duration: 0.6 }}
       >
         Your Garden&apos;s{" "}
-        <span className="hover:text-primary font-bold inline-block relative w-[6ch]">
+        <span className="hover:text-primary font-bold inline-block relative w-[7ch]">
           <AnimatePresence mode="wait">
             <motion.span
               key={words[currentWordIndex]}

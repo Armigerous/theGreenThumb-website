@@ -16,7 +16,7 @@ import { AppFeature, FeaturesApp } from "@/types/features";
 
 const variants = {
   initial: {
-    x: -500,
+    x: -300,
     opacity: 0,
   },
   animate: {
@@ -51,7 +51,7 @@ const AppFeatures: React.FC = () => {
           We are helping your garden grow
           <br /> and be more beautiful
         </p>
-        <hr className="sm:block w-80 border-t border-cream-400" />
+        <hr className="hidden sm:block w-80 border-t border-cream-400" />
       </motion.div>
 
       {/* Main Content */}
@@ -63,7 +63,7 @@ const AppFeatures: React.FC = () => {
               height={24}
               src="/planting.png"
               alt="Planting"
-              className="w-48 sm:w-72 h-14 sm:h-24 rounded-full object-cover"
+              className="w-48 sm:w-72 h-14 sm:h-24 rounded-xl object-cover pointer-events-none"
             />
             <h1 className="text-4xl sm:text-8xl font-thin text-cream-800">
               <motion.b className="hover:text-primary font-black">
@@ -79,7 +79,7 @@ const AppFeatures: React.FC = () => {
               </motion.b>{" "}
               Garden.
             </h1>
-            <Button className="w-48 sm:w-72 h-16 sm:h-20 rounded-full text-lg sm:text-2xl font-bold text-cream-50 bg-primary">
+            <Button className="w-48 sm:w-72 h-16 sm:h-20 rounded-xl text-lg sm:text-2xl font-bold text-cream-50 bg-primary">
               <Link href="/contact">ASK US DIRECTLY</Link>
             </Button>
           </div>
@@ -103,8 +103,8 @@ const AppFeatures: React.FC = () => {
               </CardContent>
               <CardFooter>
                 <Button
-                  variant={"ghost"}
-                  className="w-full bg-primary text-cream-50 text-base sm:text-xl hover:scale-105 transition-all ease-in"
+                  className="w-full bg-primary text-cream-50 text-base sm:text-xl 
+                   transition-all ease-in"
                 >
                   <Link href={feature.url}>Read More</Link>
                 </Button>

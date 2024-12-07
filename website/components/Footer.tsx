@@ -112,7 +112,7 @@ const Footer: React.FC = () => {
                   target="_blank"
                   aria-label={`Visit our ${href.split(".")[1]} page`}
                 >
-                  <Icon className="hover:scale-125 transition-transform fill-brand-700" />
+                  <Icon className="hover:scale-125 transition-transform fill-cream-800" />
                 </Link>
               ))}
             </div>

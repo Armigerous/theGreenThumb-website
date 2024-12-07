@@ -20,7 +20,6 @@ export const metadata: Metadata = {
   title: "The GreenThumb",
   description: "Merging the worlds of technology and agriculture",
 };
-export const experimental_ppr = true;
 
 export default function RootLayout({
   children,

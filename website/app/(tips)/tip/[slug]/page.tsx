@@ -5,8 +5,6 @@ import TipDetails from "@/components/Tips/Tip/TipDetails";
 import { fetchAllTipSlugs, fetchTipBySlug } from "@/lib/utils";
 import { notFound } from "next/navigation";
 
-export const experimental_ppr = true;
-
 export async function generateStaticParams() {
   const slugs = await fetchAllTipSlugs();
   return slugs.map(({ slug }) => ({

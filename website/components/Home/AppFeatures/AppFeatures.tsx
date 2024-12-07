@@ -101,7 +101,7 @@ const AppFeatures: React.FC = () => {
               <CardContent className="line-clamp-2 md:line-clamp-3">
                 <p>{feature.content} </p>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="mt-1">
                 <Button
                   className="w-full bg-primary text-cream-50 text-base sm:text-xl 
                    transition-all ease-in"

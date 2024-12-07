@@ -14,7 +14,7 @@ const Single: React.FC<{ item: ProductFeature }> = ({ item }) => {
   const y = useTransform(scrollYProgress, [0, 1], [-50, 50]);
   const opacity = useTransform(
     scrollYProgress,
-    [0.2, 0.425, 0.6, 0.75],
+    [0.2, 0.35, 0.6, 0.7],
     [0, 1, 1, 0]
   );
 

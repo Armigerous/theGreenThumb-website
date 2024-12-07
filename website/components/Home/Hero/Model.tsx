@@ -18,7 +18,7 @@ const imageAnimation = {
 
 const Model = () => {
   return (
-    <div className="w-full md:w-1/2 flex items-center justify-center mb-6 md:mb-0">
+    <div className="pointer-events-none w-full md:w-1/2 flex items-center justify-center mb-6 md:mb-0">
       <motion.div
         className="w-full flex items-center justify-center"
         initial="hidden"

@@ -66,7 +66,7 @@ const AppFeatures: React.FC = () => {
               className="w-48 sm:w-72 h-14 sm:h-24 rounded-full object-cover"
             />
             <h1 className="text-4xl sm:text-8xl font-thin text-cream-800">
-              <motion.b className="hover:text-green-700 font-black">
+              <motion.b className="hover:text-primary font-black">
                 A New
               </motion.b>{" "}
               Assistant
@@ -74,7 +74,7 @@ const AppFeatures: React.FC = () => {
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-5 mt-5 text-cream-800">
             <h1 className="text-4xl sm:text-8xl font-thin">
-              <motion.b className="hover:text-green-700 font-black">
+              <motion.b className="hover:text-primary font-black">
                 For Your
               </motion.b>{" "}
               Garden.

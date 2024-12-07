@@ -64,7 +64,7 @@ const TipCard = ({ tip, variant = "default" }: TipCardProps) => {
             </Link>
             <CardDescription>
               {/* Date and Categories */}
-              <div className="flex lg:flex-row flex-col justify-between items-center mb-3">
+              <div className="flex flex-row justify-between items-center mb-3">
                 <span className="text-sm text-muted-foreground">
                   {formatDate(publishedAt)}
                 </span>

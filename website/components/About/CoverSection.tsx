@@ -6,20 +6,15 @@ const CoverSection: React.FC = () => {
   return (
     <section className="pt-16 pb-16 flex flex-col md:flex-row justify-center items-center">
       {/* Logo Section */}
-      <div
-        className="bg-white border-4 border-black rounded-lg 
-   w-[300px] h-[400px] md:w-[400px] md:h-[550px] flex items-center justify-center
-   md:mr-8 mb-6 md:mb-0 shadow-lg"
-      >
-        <Image
-          src={"/logo.png"}
-          alt="The GreenThumb logo"
-          priority
-          height={500}
-          width={500}
-          className="object-contain "
-        />
-      </div>
+
+      <Image
+        src={"/logo.png"}
+        alt="The GreenThumb logo"
+        priority
+        height={500}
+        width={500}
+        className="object-contain "
+      />
 
       {/* Text Section */}
       <div className="relative text-center md:text-left px-4 sm:px-6 py-6 sm:py-8 shadow-xl rounded-lg bg-cream-300/70 w-full md:w-7/12">

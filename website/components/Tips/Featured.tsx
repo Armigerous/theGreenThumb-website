@@ -13,11 +13,18 @@ const Featured = async () => {
 
   return (
     <section className="py-4">
-      <div className="flex items-end gap-4">
-        <h2 className="text-2xl md:text-4xl font-bold">Featured Posts</h2>
-        <Link href="/tips/search">
+      <div className="flex items-end justify-between">
+        <div className="flex items-end gap-4">
+          <h2 className="text-2xl md:text-4xl font-bold">Featured Posts</h2>
+          <Link href="/tips/search">
+            <p className="hover:underline text-primary text-right cursor-pointer">
+              See More
+            </p>
+          </Link>
+        </div>
+        <Link href="/tips/categories">
           <p className="hover:underline text-primary text-right cursor-pointer">
-            See More
+            Explore Categories
           </p>
         </Link>
       </div>

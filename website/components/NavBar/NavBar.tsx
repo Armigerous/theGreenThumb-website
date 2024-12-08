@@ -136,7 +136,7 @@ const NavBar = () => {
         <NavbarMenuToggle />
       </NavbarContent>
 
-      <NavbarMenu className="items-center gap-12 h-full justify-center">
+      <NavbarMenu className="items-center gap-6 h-full justify-center">
         {navMenuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link

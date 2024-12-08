@@ -33,8 +33,8 @@ const Single: React.FC<{ item: ProductFeature }> = ({ item }) => {
         style={{ y, opacity }}
       >
         {/* Animation Block */}
-        <div className="flex-1 flex justify-center">
-          <div className="bg-cream-800 border-black rounded-3xl w-[80%] lg:w-full max-w-[400px] shadow-xl">
+        <div className="flex-1 flex justify-center w-full">
+          <div className="bg-cream-800 border-black rounded-3xl w-full max-w-[400px] shadow-xl">
             {lottie.View}
           </div>
         </div>

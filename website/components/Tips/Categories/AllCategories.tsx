@@ -26,11 +26,11 @@ const AllCategories = async () => {
         {categories.map((category: TipCategory) => (
           <Card
             key={category._id}
-            className="rounded-xl shadow-md transition-transform hover:scale-105 text-left group"
+            className="rounded-xl shadow-md transition-transform text-left group"
           >
             <Link href={category.slug.current}>
               <CardHeader className="flex justify-between pb-0">
-                <CardTitle className="line-clamp-1 overflow-visible hover:underline">
+                <CardTitle className="line-clamp-1 hover:underline">
                   {category.title}
                 </CardTitle>
               </CardHeader>

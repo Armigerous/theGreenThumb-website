@@ -10,7 +10,7 @@ const MeetTeam: React.FC = () => {
       name: "Eligh Williams",
       role: "Mechanical Engineer – Hardware & Product Design",
       avatar: {
-        img: "/eligh.png",
+        img: "/eligh.jpeg",
         fallback: "EW",
       },
     },

@@ -24,7 +24,7 @@ const TipCard = ({ tip, variant = "default" }: TipCardProps) => {
   return (
     <li className="group h-full">
       <Card
-        className={`rounded-xl shadow-md transition-transform text-left h-full ${
+        className={`rounded-xl shadow-md transition-transform text-left h-full overflow-hidden ${
           variant === "horizontal"
             ? "flex flex-col md:flex-row"
             : "flex flex-col"

@@ -1,7 +1,5 @@
 "use client";
 
-import { fetchSearchResults } from "@/lib/utils";
-import { ApiResponse } from "@/types/plantsList";
 import Image from "next/image";
 import Link from "next/link";
 import PaginationComponent from "../Pagination";
@@ -10,6 +8,25 @@ import { Skeleton } from "@/components/ui/skeleton"; // Import the Skeleton comp
 import { useState, useEffect } from "react";
 
 export const revalidate = 86400; // Revalidate every 24 hours
+
+interface Plant {
+  slug: string;
+  description: string;
+  scientificName: string;
+  commonName: string;
+  tag: string;
+  image: {
+    img: string;
+    altText: string;
+    caption: string;
+    attribution: string;
+  };
+}
+
+interface ApiResponse {
+  results: Plant[];
+  count: number;
+}
 
 const SearchResults = ({ query, page }: { query?: string; page: number }) => {
   const [data, setData] = useState<ApiResponse | null>(null);
@@ -22,11 +39,13 @@ const SearchResults = ({ query, page }: { query?: string; page: number }) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const fetchedData: ApiResponse = await fetchSearchResults(
-          query,
-          limit,
-          offset
+        const res = await fetch(
+          `/api/plants?query=${query || ""}&limit=${limit}&offset=${offset}`
         );
+
+        if (!res.ok) throw new Error("Failed to fetch plant data");
+
+        const fetchedData: ApiResponse = await res.json();
         setData(fetchedData);
       } catch (error) {
         console.error("Error fetching search results:", error);
@@ -37,7 +56,7 @@ const SearchResults = ({ query, page }: { query?: string; page: number }) => {
     };
 
     fetchData();
-  }, [query, page, offset]);
+  }, [query, page, limit, offset]);
 
   if (loading) {
     return (
@@ -81,7 +100,7 @@ const SearchResults = ({ query, page }: { query?: string; page: number }) => {
     );
   }
 
-  if (!data) {
+  if (!data || data.results.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
         <Image

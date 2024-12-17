@@ -31,6 +31,9 @@ const PaginationComponent = ({
 
   if (totalPages <= 1) return null; // Hide pagination for single-page results
 
+  const isFirstPage = currentPage === 1;
+  const isLastPage = currentPage === totalPages;
+
   return (
     <Pagination className="py-10">
       <PaginationContent className="flex items-center space-x-2">
@@ -39,7 +42,11 @@ const PaginationComponent = ({
           <PaginationPrevious
             href={generateLink(Math.max(1, currentPage - 1))}
             aria-label="Previous page"
-            className="hover:bg-brand-200"
+            aria-disabled={isFirstPage}
+            className={` ${isFirstPage ? "opacity-50 cursor-not-allowed" : "hover:bg-brand-200"}`}
+            onClick={(e) => {
+              if (isFirstPage) e.preventDefault();
+            }}
           />
         </PaginationItem>
 
@@ -97,7 +104,11 @@ const PaginationComponent = ({
           <PaginationNext
             href={generateLink(Math.min(totalPages, currentPage + 1))}
             aria-label="Next page"
-            className="hover:bg-brand-200"
+            aria-disabled={isLastPage}
+            className={` ${isLastPage ? "opacity-50 cursor-not-allowed" : "hover:bg-brand-200"}`}
+            onClick={(e) => {
+              if (isLastPage) e.preventDefault();
+            }}
           />
         </PaginationItem>
       </PaginationContent>

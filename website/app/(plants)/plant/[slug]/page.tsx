@@ -3,7 +3,6 @@
 import PlantDetails from "@/components/Database/Plant/PlantDetails";
 import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import { supabase } from "@/lib/supabaseClient";
-import { Metadata } from "next";
 
 // Revalidate every 24 hours
 export const revalidate = 86400;
@@ -36,9 +35,9 @@ export async function generateStaticParams() {
 export default async function PlantPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug?: string }>;
 }) {
-  const { slug } = await params;
+  const slug = (await params).slug;
 
   try {
     const response = await fetch(
@@ -71,50 +70,4 @@ export default async function PlantPage({
   }
 }
 
-// Optional metadata for SEO
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
-  const { slug } = await params;
-
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/plant?slug=${slug}`,
-      { cache: "no-store" }
-    );
-
-    if (!response.ok) {
-      console.error("Failed to fetch plant metadata");
-      return {
-        title: "Plant Details",
-        description: "Explore detailed information about plants.",
-      };
-    }
-
-    const plant = await response.json();
-
-    if (!plant) {
-      return {
-        title: "Plant Details",
-        description: "Explore detailed information about plants.",
-      };
-    }
-
-    return {
-      title: `${plant.commonname_set?.[0] || "Unknown Plant"} (${
-        plant.scientific_name || "Unknown"
-      }) - Plant Details`,
-      description:
-        plant.description?.substring(0, 150) ||
-        "Explore detailed information about plants.",
-    };
-  } catch (error) {
-    console.error("Error fetching plant metadata:", error);
-    return {
-      title: "Plant Details",
-      description: "Explore detailed information about plants.",
-    };
-  }
-}
+// generate metadata for SEO fuck me fuck me fuck me afsl;sdhaflkjasdhlkfjdhaslkjfdhlkasjhfdlkjsaghlkdjshhkjd

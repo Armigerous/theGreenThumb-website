@@ -1,6 +1,5 @@
 "use client";
 
-import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -15,14 +14,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { ScientificNameData } from "@/types/plant";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function Autocomplete() {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [plants, setPlants] = useState([]);
+  const [plants, setPlants] = useState<ScientificNameData[]>([]); // Use ScientificNameData
   const triggerRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
 
@@ -54,7 +54,8 @@ export function Autocomplete() {
     }
   };
 
-  const highlightMatch = (text: string, query: string) => {
+  const highlightMatch = (text: string | undefined, query: string) => {
+    if (!text) return null; // Handle undefined text gracefully
     if (!query) return text;
     const regex = new RegExp(`(${query})`, "gi");
     return text.split(regex).map((part, index) =>
@@ -111,10 +112,10 @@ export function Autocomplete() {
                       setOpen(false);
                     }}
                     className="cursor-pointer hover:bg-brand-100"
-                    value={plant.scientific_name}
+                    value={plant.scientificName}
                   >
                     <span>
-                      {highlightMatch(plant.scientific_name, searchQuery)}
+                      {highlightMatch(plant.scientificName, searchQuery)}
                     </span>
                   </CommandItem>
                 ))}

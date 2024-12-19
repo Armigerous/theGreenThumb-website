@@ -1,26 +1,28 @@
-import { PlantData } from "@/types/plant";
-import DOMPurify from "isomorphic-dompurify";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { formatInchesToFeetAndInches } from "@/lib/utils";
+import { PlantData } from "@/types/plant";
+import DOMPurify from "isomorphic-dompurify";
 import {
-  Info,
-  Leaf,
+  AlertTriangle,
   Flower,
   BananaIcon as Fruit,
+  Info,
+  Leaf,
   MapPin,
-  AlertTriangle,
   SproutIcon as SeedlingIcon,
-  TreesIcon as TreeIcon,
-  SunIcon,
   SproutIcon,
+  SunIcon,
+  TreesIcon as TreeIcon,
 } from "lucide-react";
+import AudioPlayerButton from "./AudioButton";
 import ImageGallery from "./ImageGallery";
 
 interface PlantDetailsProps {
@@ -125,6 +127,40 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
     ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
   });
 
+  const PlantArrayFact = ({
+    label,
+    data,
+  }: {
+    label: string;
+    data: string[] | undefined;
+  }) => (
+    <>
+      <span className="font-semibold text-cream-800">{label}:</span>
+      {data && data.length > 0 ? (
+        <ul className="list-disc ml-6">
+          {data.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      ) : (
+        <span className="ml-1">Not specified</span>
+      )}
+    </>
+  );
+
+  const PlantFact = ({
+    label,
+    data,
+  }: {
+    label: string;
+    data: string | undefined;
+  }) => (
+    <p>
+      <span className="font-semibold text-cream-800">{label}:</span>
+      <span className="ml-1">{data || "Not specified"}</span>
+    </p>
+  );
+
   return (
     <section className="my-12">
       <div className="flex flex-col md:flex-row gap-6 mb-8">
@@ -142,10 +178,14 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
           )}
         </div>
         <div className="md:w-1/2">
-          <h1 className="text-3xl font-bold mb-2">{scientificName}</h1>
+          <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
+            {scientificName}
+            {soundFile && <AudioPlayerButton soundFile={soundFile} />}
+          </h1>
           <p className="text-xl text-muted-foreground mb-2">
-            {species && `${species} - `} {genus && `${genus} - `}
-            {family && family}
+            {genus && `Genus: ${genus} - `}
+            {species && `Species: ${species} - `}
+            {family && `Family: ${family}`}
           </p>
           <p className="text-sm text-muted-foreground mb-4">
             Phonetic Spelling: {phoneticSpelling}
@@ -164,7 +204,7 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6">
+        <TabsList className="grid w-full h-full grid-cols-2 grid-rows-3 lg:grid-cols-6 lg:grid-rows-1">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="physical">Physical</TabsTrigger>
           <TabsTrigger value="care">Care</TabsTrigger>
@@ -181,12 +221,14 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
                   <h3 className="text-lg font-semibold mb-2">Quick Facts</h3>
                   <ul className="space-y-2">
                     <li>
-                      <span className="font-medium">Height:</span> {heightMin} -{" "}
-                      {heightMax}
+                      <span className="font-medium">Height:</span>{" "}
+                      {formatInchesToFeetAndInches(heightMin)} -{" "}
+                      {formatInchesToFeetAndInches(heightMax)}
                     </li>
                     <li>
-                      <span className="font-medium">Width:</span> {widthMin} -{" "}
-                      {widthMax}
+                      <span className="font-medium">Width:</span>{" "}
+                      {formatInchesToFeetAndInches(widthMin)} -{" "}
+                      {formatInchesToFeetAndInches(widthMax)}
                     </li>
                     <li>
                       <span className="font-medium">USDA Zones:</span>{" "}
@@ -202,29 +244,27 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
                     </li>
 
                     <li>
-                      <span className="font-medium">NC Region:</span> {ncRegion}
+                      <PlantArrayFact label="NC Region" data={ncRegion} />
                     </li>
                     <li>
-                      <span className="font-medium">Origin:</span> {origin}
+                      <PlantFact label="Origin" data={origin} />
                     </li>
                     <li>
-                      <span className="font-medium">Life Cycle:</span>{" "}
-                      {lifeCycle}
+                      <PlantArrayFact label="Life Cycle" data={lifeCycle} />
                     </li>
                     <li>
-                      <span className="font-medium">Plant Types:</span>{" "}
-                      {plantTypes}
+                      <PlantArrayFact label="Plant Types" data={plantTypes} />
                     </li>
                     <li>
-                      <span className="font-medium">Habit:</span> {habit}
+                      <PlantArrayFact label="Habit" data={habit} />
                     </li>
                   </ul>
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Distribution</h3>
-                  <p>{distribution}</p>
+                  <p>{distribution || "N/A"}</p>
                   <h3 className="text-lg font-semibold mt-4 mb-2">Uses</h3>
-                  <p>{uses}</p>
+                  <p>{uses || "N/A"}</p>
                 </div>
               </div>
             </CardContent>
@@ -240,223 +280,143 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
           >
             <AccordionItem value="flower">
               <AccordionTrigger>
-                <Flower className="w-5 h-5 mr-2" />
+                <Flower className="w-5 h-5 mr-2 no-rotate" />
                 Flower Characteristics
               </AccordionTrigger>
               <AccordionContent>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <p>
-                      <span className="font-medium">Description:</span>{" "}
-                      {flowerDescription}
-                    </p>
-                    <p>
-                      <span className="font-medium">Bloom Time:</span>{" "}
-                      {flowerBloomTime}
-                    </p>
-                    <p>
-                      <span className="font-medium">Color:</span> {flowerColor}
-                    </p>
-                    <p>
-                      <span className="font-medium">Inflorescence:</span>{" "}
-                      {flowerInflorescence}
-                    </p>
+                    <PlantFact label="Description" data={flowerDescription} />
+                    <PlantArrayFact label="Bloom Time" data={flowerBloomTime} />
+                    <PlantArrayFact label="Color" data={flowerColor} />
+                    <PlantArrayFact
+                      label="Inflorescence"
+                      data={flowerInflorescence}
+                    />
                   </div>
                   <div>
-                    <p>
-                      <span className="font-medium">Petals:</span>{" "}
-                      {flowerPetals}
-                    </p>
-                    <p>
-                      <span className="font-medium">Shape:</span> {flowerShape}
-                    </p>
-                    <p>
-                      <span className="font-medium">Size:</span> {flowerSize}
-                    </p>
-                    <p>
-                      <span className="font-medium">Value to Gardener:</span>{" "}
-                      {flowerValueToGardener}
-                    </p>
+                    <PlantArrayFact label="Petals" data={flowerPetals} />
+                    <PlantArrayFact label="Shape" data={flowerShape} />
+                    <PlantArrayFact label="Size" data={flowerSize} />
+                    <PlantArrayFact
+                      label="Value to Gardener"
+                      data={flowerValueToGardener}
+                    />
                   </div>
                 </div>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="leaf">
               <AccordionTrigger>
-                <Leaf className="w-5 h-5 mr-2" />
+                <Leaf className="w-5 h-5 mr-2 no-rotate" />
                 Leaf Characteristics
               </AccordionTrigger>
               <AccordionContent>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <p>
-                      <span className="font-medium">Description:</span>{" "}
-                      {leafDescription}
-                    </p>
-                    <p>
-                      <span className="font-medium">Arrangement:</span>{" "}
-                      {leafArrangement}
-                    </p>
-                    <p>
-                      <span className="font-medium">Characteristics:</span>{" "}
-                      {leafCharacteristics}
-                    </p>
-                    <p>
-                      <span className="font-medium">Color:</span> {leafColor}
-                    </p>
-                    <p>
-                      <span className="font-medium">Fall Color:</span>{" "}
-                      {leafFallColor}
-                    </p>
+                    <PlantFact label="Description" data={leafDescription} />
+                    <PlantArrayFact
+                      label="Arrangement"
+                      data={leafArrangement}
+                    />
+                    <PlantArrayFact
+                      label="Characteristics"
+                      data={leafCharacteristics}
+                    />
+                    <PlantArrayFact label="Color" data={leafColor} />
+                    <PlantArrayFact label="Fall Color" data={leafFallColor} />
                   </div>
                   <div>
-                    <p>
-                      <span className="font-medium">Feel:</span> {leafFeel}
-                    </p>
-                    <p>
-                      <span className="font-medium">Hairs Present:</span>{" "}
-                      {leafHairsPresent}
-                    </p>
-                    <p>
-                      <span className="font-medium">Length:</span> {leafLength}
-                    </p>
-                    <p>
-                      <span className="font-medium">Margin:</span> {leafMargin}
-                    </p>
-                    <p>
-                      <span className="font-medium">Shape:</span> {leafShape}
-                    </p>
-                    <p>
-                      <span className="font-medium">Type:</span> {leafType}
-                    </p>
-                    <p>
-                      <span className="font-medium">Value to Gardener:</span>{" "}
-                      {leafValueToGardener}
-                    </p>
-                    <p>
-                      <span className="font-medium">Width:</span> {leafWidth}
-                    </p>
+                    <PlantArrayFact label="Feel" data={leafFeel} />
+                    <PlantArrayFact
+                      label="Hairs Present"
+                      data={leafHairsPresent}
+                    />
+                    <PlantArrayFact label="Length" data={leafLength} />
+                    <PlantArrayFact label="Width" data={leafWidth} />
+                    <PlantArrayFact label="Margin" data={leafMargin} />
+                    <PlantArrayFact label="Shape" data={leafShape} />
+                    <PlantArrayFact label="Type" data={leafType} />
+                    <PlantArrayFact
+                      label="Value to Gardener"
+                      data={leafValueToGardener}
+                    />
                   </div>
                 </div>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="fruit">
               <AccordionTrigger>
-                <Fruit className="w-5 h-5 mr-2" />
+                <Fruit className="w-5 h-5 mr-2 no-rotate" />
                 Fruit Characteristics
               </AccordionTrigger>
               <AccordionContent>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <p>
-                      <span className="font-medium">Description:</span>{" "}
-                      {fruitDescription}
-                    </p>
-                    <p>
-                      <span className="font-medium">Color:</span> {fruitColor}
-                    </p>
-                    <p>
-                      <span className="font-medium">Display/Harvest Time:</span>{" "}
-                      {fruitDisplayHarvestTime}
-                    </p>
+                    <PlantFact label="Description" data={fruitDescription} />
+                    <PlantArrayFact label="Color" data={fruitColor} />
+                    <PlantArrayFact
+                      label="Display/Harvest Time"
+                      data={fruitDisplayHarvestTime}
+                    />
                   </div>
                   <div>
-                    <p>
-                      <span className="font-medium">Length:</span> {fruitLength}
-                    </p>
-                    <p>
-                      <span className="font-medium">Type:</span> {fruitType}
-                    </p>
-                    <p>
-                      <span className="font-medium">Value to Gardener:</span>{" "}
-                      {fruitValueToGardener}
-                    </p>
-                    <p>
-                      <span className="font-medium">Width:</span> {fruitWidth}
-                    </p>
+                    <PlantArrayFact label="Length" data={fruitLength} />
+                    <PlantArrayFact label="Type" data={fruitType} />
+                    <PlantArrayFact
+                      label="Value to Gardener"
+                      data={fruitValueToGardener}
+                    />
+                    <PlantArrayFact label="Width" data={fruitWidth} />
                   </div>
                 </div>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="stem">
               <AccordionTrigger>
-                <SeedlingIcon className="w-5 h-5 mr-2" />
+                <SeedlingIcon className="w-5 h-5 mr-2 no-rotate" />
                 Stem Characteristics
               </AccordionTrigger>
               <AccordionContent>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <p>
-                      <span className="font-medium">Description:</span>{" "}
-                      {stemDescription}
-                    </p>
-                    <p>
-                      <span className="font-medium">Aromatic:</span>{" "}
-                      {stemAromatic}
-                    </p>
-                    <p>
-                      <span className="font-medium">Bud Scales:</span>{" "}
-                      {stemBudScales}
-                    </p>
-                    <p>
-                      <span className="font-medium">Bud Terminal:</span>{" "}
-                      {stemBudTerminal}
-                    </p>
-                    <p>
-                      <span className="font-medium">Buds:</span> {stemBuds}
-                    </p>
-                    <p>
-                      <span className="font-medium">Color:</span> {stemColor}
-                    </p>
+                    <PlantFact label="Description" data={stemDescription} />
+                    <PlantArrayFact label="Aromatic" data={stemAromatic} />
+                    <PlantArrayFact label="Bud Scales" data={stemBudScales} />
+                    <PlantArrayFact
+                      label="Bud Terminal"
+                      data={stemBudTerminal}
+                    />
+                    <PlantArrayFact label="Buds" data={stemBuds} />
+                    <PlantArrayFact label="Color" data={stemColor} />
                   </div>
                   <div>
-                    <p>
-                      <span className="font-medium">Cross Section:</span>{" "}
-                      {stemCrossSection}
-                    </p>
-                    <p>
-                      <span className="font-medium">Form:</span> {stemForm}
-                    </p>
-                    <p>
-                      <span className="font-medium">Leaf Scar Shape:</span>{" "}
-                      {stemLeafScarShape}
-                    </p>
-                    <p>
-                      <span className="font-medium">Lenticels:</span>{" "}
-                      {stemLenticels}
-                    </p>
-                    <p>
-                      <span className="font-medium">Pith:</span> {stemPith}
-                    </p>
-                    <p>
-                      <span className="font-medium">Surface:</span>{" "}
-                      {stemSurface}
-                    </p>
+                    <PlantArrayFact
+                      label="Cross Section"
+                      data={stemCrossSection}
+                    />
+                    <PlantArrayFact label="Form" data={stemForm} />
+                    <PlantArrayFact
+                      label="Leaf Scar Shape"
+                      data={stemLeafScarShape}
+                    />
+                    <PlantArrayFact label="Lenticels" data={stemLenticels} />
+                    <PlantArrayFact label="Pith" data={stemPith} />
+                    <PlantArrayFact label="Surface" data={stemSurface} />
                   </div>
                 </div>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="bark">
               <AccordionTrigger>
-                <TreeIcon className="w-5 h-5 mr-2" />
+                <TreeIcon className="w-5 h-5 mr-2 no-rotate" />
                 Bark Characteristics
               </AccordionTrigger>
               <AccordionContent>
-                <p>
-                  <span className="font-medium">Description:</span>{" "}
-                  {barkDescription}
-                </p>
-                <p>
-                  <span className="font-medium">Attachment:</span>{" "}
-                  {barkAttachment}
-                </p>
-                <p>
-                  <span className="font-medium">Color:</span> {barkColor}
-                </p>
-                <p>
-                  <span className="font-medium">Plate Shape:</span>{" "}
-                  {barkPlateShape}
-                </p>
+                <PlantFact label="Description" data={barkDescription} />
+                <PlantArrayFact label="Attachment" data={barkAttachment} />
+                <PlantArrayFact label="Color" data={barkColor} />
+                <PlantArrayFact label="Plate Shape" data={barkPlateShape} />
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -471,53 +431,31 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
                     <SunIcon className="w-5 h-5 mr-2" />
                     Growing Conditions
                   </h3>
-                  <p>
-                    <span className="font-medium">Light:</span> {light}
-                  </p>
-                  <p>
-                    <span className="font-medium">Soil Drainage:</span>{" "}
-                    {soilDrainage}
-                  </p>
-                  <p>
-                    <span className="font-medium">Soil pH:</span> {soilPh}
-                  </p>
-                  <p>
-                    <span className="font-medium">Soil Texture:</span>{" "}
-                    {soilTexture}
-                  </p>
-                  <p>
-                    <span className="font-medium">
-                      Available Space to Plant:
-                    </span>{" "}
-                    {availableSpaceToPlant}
-                  </p>
+                  <PlantArrayFact label="Light" data={light} />
+                  <PlantArrayFact label="Soil Drainage" data={soilDrainage} />
+                  <PlantArrayFact label="Soil pH" data={soilPh} />
+                  <PlantArrayFact label="Soil Texture" data={soilTexture} />
+                  <PlantArrayFact
+                    label="Available Space to Plant"
+                    data={availableSpaceToPlant}
+                  />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold mb-2 flex items-center">
                     <SproutIcon className="w-5 h-5 mr-2" />
                     Maintenance
                   </h3>
-                  <p>
-                    <span className="font-medium">Maintenance Level:</span>{" "}
-                    {maintenance}
-                  </p>
-                  <p>
-                    <span className="font-medium">Growth Rate:</span>{" "}
-                    {growthRate}
-                  </p>
-                  <p>
-                    <span className="font-medium">Propagation:</span>{" "}
-                    {propagation}
-                  </p>
-                  <p>
-                    <span className="font-medium">Problems:</span> {problems}
-                  </p>
-                  <p>
-                    <span className="font-medium">
-                      Resistance to Challenges:
-                    </span>{" "}
-                    {resistanceToChallenges}
-                  </p>
+                  <PlantArrayFact
+                    label="Maintenance Level"
+                    data={maintenance}
+                  />
+                  <PlantArrayFact label="Growth Rate" data={growthRate} />
+                  <PlantArrayFact label="Propagation" data={propagation} />
+                  <PlantArrayFact label="Problems" data={problems} />
+                  <PlantArrayFact
+                    label="Resistance to Challenges"
+                    data={resistanceToChallenges}
+                  />
                 </div>
               </div>
             </CardContent>
@@ -526,39 +464,33 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
 
         <TabsContent value="landscape">
           <Card>
-            <CardContent className="pt-6">
-              <h3 className="text-lg font-semibold mb-2">Landscape Use</h3>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <p>
-                    <span className="font-medium">Garden Spaces:</span>{" "}
-                    {gardenSpaces}
-                  </p>
-                  <p>
-                    <span className="font-medium">Landscape Location:</span>{" "}
-                    {landscapeLocation}
-                  </p>
+            <CardContent className="grid pt-6 md:grid-cols-2">
+              <section>
+                <h3 className="text-lg font-semibold mb-2">Landscape Use</h3>
+                <div className="grid gap-4">
+                  <PlantArrayFact label="Garden Spaces" data={gardenSpaces} />
+                  <PlantArrayFact
+                    label="Landscape Location"
+                    data={landscapeLocation}
+                  />
+
+                  <PlantArrayFact
+                    label="Landscape Theme"
+                    data={landscapeTheme}
+                  />
+                  <PlantArrayFact
+                    label="Design Features"
+                    data={designFeatures}
+                  />
                 </div>
-                <div>
-                  <p>
-                    <span className="font-medium">Landscape Theme:</span>{" "}
-                    {landscapeTheme}
-                  </p>
-                  <p>
-                    <span className="font-medium">Design Features:</span>{" "}
-                    {designFeatures}
-                  </p>
-                </div>
-              </div>
-              <h3 className="text-lg font-semibold mt-4 mb-2">
-                Environmental Factors
-              </h3>
-              <p>
-                <span className="font-medium">Fire Risk:</span> {fireRisk}
-              </p>
-              <p>
-                <span className="font-medium">Texture:</span> {texture}
-              </p>
+              </section>
+              <section>
+                <h3 className="text-lg font-semibold mt-4 mb-2">
+                  Environmental Factors
+                </h3>
+                <PlantArrayFact label="Fire Risk" data={fireRisk} />
+                <PlantArrayFact label="Texture" data={texture} />
+              </section>
             </CardContent>
           </Card>
         </TabsContent>
@@ -601,52 +533,39 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
               >
                 <AccordionItem value="edibility">
                   <AccordionTrigger>
-                    <Info className="w-5 h-5 mr-2" />
+                    <Info className="w-5 h-5 mr-2 no-rotate" />
                     Edibility and Uses
                   </AccordionTrigger>
                   <AccordionContent>
-                    <p>
-                      <span className="font-medium">Edibility:</span>{" "}
-                      {edibility}
-                    </p>
-                    <p>
-                      <span className="font-medium">Uses:</span> {uses}
-                    </p>
+                    <PlantFact label="Edibility" data={edibility} />
+                    <PlantFact label="Uses" data={uses} />
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="toxicity">
                   <AccordionTrigger>
-                    <AlertTriangle className="w-5 h-5 mr-2 text-yellow-500" />
+                    <AlertTriangle className="w-5 h-5 mr-2 text-yellow-500 no-rotate" />
                     Toxicity Information
                   </AccordionTrigger>
                   <AccordionContent>
-                    <p>
-                      <span className="font-medium">Poison Symptoms:</span>{" "}
-                      {poisonSymptoms}
-                    </p>
-                    <p>
-                      <span className="font-medium">
-                        Poison Toxic Principle:
-                      </span>{" "}
-                      {poisonToxicPrinciple}
-                    </p>
-                    <p>
-                      <span className="font-medium">Poison Dermatitis:</span>{" "}
-                      {poisonDermatitis}
-                    </p>
-                    <p>
-                      <span className="font-medium">Poison Part:</span>{" "}
-                      {poisonPart}
-                    </p>
-                    <p>
-                      <span className="font-medium">Poison Severity:</span>{" "}
-                      {poisonSeverity}
-                    </p>
+                    <PlantFact label="Poison Symptoms" data={poisonSymptoms} />
+                    <PlantFact
+                      label="Poison Toxic Principle"
+                      data={poisonToxicPrinciple}
+                    />
+                    <PlantArrayFact
+                      label="Poison Dermatitis"
+                      data={poisonDermatitis}
+                    />
+                    <PlantArrayFact label="Poison Part" data={poisonPart} />
+                    <PlantArrayFact
+                      label="Poison Severity"
+                      data={poisonSeverity}
+                    />
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="media">
                   <AccordionTrigger>
-                    <MapPin className="w-5 h-5 mr-2" />
+                    <MapPin className="w-5 h-5 mr-2 no-rotate" />
                     Media
                   </AccordionTrigger>
                   <AccordionContent>

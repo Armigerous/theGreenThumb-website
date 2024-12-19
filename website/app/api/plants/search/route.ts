@@ -23,7 +23,7 @@ export async function GET(request: Request) {
 
     // Transform the result to match the expected structure
     const plants = data.map((row) => ({
-      scientific_name: row.scientificName,
+      scientificName: row.scientificName,
       slug: row.mainPlantData.slug,
     }));
 

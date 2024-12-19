@@ -18,6 +18,17 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function formatInchesToFeetAndInches(
+  inches: number | undefined
+): string {
+  if (inches === undefined) {
+    return "N/A"; // Or any default value you'd like to display
+  }
+  const feet = Math.floor(inches / 12);
+  const remainingInches = inches % 12;
+  return `${feet} ft. ${remainingInches} in.`;
+}
+
 export function formatDate(date: string) {
   return new Date(date).toLocaleDateString("en-US", {
     month: "long",

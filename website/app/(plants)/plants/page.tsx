@@ -5,7 +5,7 @@ import Search from "@/components/Database/Search/Search";
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { query?: string; page?: string };
+  searchParams: Promise<{ query?: string; page?: string }>;
 }) {
   const query = (await searchParams).query || "";
   const page = parseInt((await searchParams).page || "1", 10);

@@ -26,48 +26,6 @@ export function formatDate(date: string) {
   });
 }
 
-export const fetchPlantData = cache(async (slug: string) => {
-  const response = await fetch(
-    `https://plants.ces.ncsu.edu/api/plants/${slug}/?format=json`
-  );
-  if (!response.ok) {
-    throw new Error("Failed to fetch plant data");
-  }
-  return await response.json();
-});
-
-export async function fetchSearchResults(
-  query?: string,
-  limit = 28,
-  offset = 0
-) {
-  const API_URL = query
-    ? `https://plants.ces.ncsu.edu/api/plants/?format=json&limit=${limit}&offset=${offset}&q=${encodeURIComponent(
-        query
-      )}`
-    : `https://plants.ces.ncsu.edu/api/plants/?format=json&limit=${limit}&offset=${offset}`;
-
-  const response = await fetch(API_URL);
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch search results: ${response.status}`);
-  }
-
-  return await response.json();
-}
-
-export const fetchAllPlants = cache(async () => {
-  const response = await fetch(
-    "https://plants.ces.ncsu.edu/api/all_plants/?format=json"
-  );
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch plants: ${response.status}`);
-  }
-
-  return await response.json();
-});
-
 export const fetchAllTipTitles = cache(async () => {
   try {
     const tips = await client.fetch(ALL_POSTS_TITLES_QUERY);

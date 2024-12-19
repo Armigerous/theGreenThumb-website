@@ -14,7 +14,7 @@ type PlantImageGalleryProps = {
   images: {
     img: string;
     thumbnail_med?: string;
-    alt_text?: string;
+    altText?: string;
     caption?: string;
     attribution?: string;
   }[];
@@ -38,7 +38,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
           <div className="relative w-full max-w-3xl h-[500px] bg-cream-100 rounded-lg overflow-hidden cursor-pointer">
             <Image
               src={selectedImage}
-              alt={currentImage?.alt_text || "Plant image"}
+              alt={currentImage?.altText || "Plant image"}
               className="object-cover rounded-lg"
               fill
             />
@@ -46,12 +46,12 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
         </DialogTrigger>
         <DialogContent className="sm:max-w-5xl">
           <DialogHeader>
-            <DialogTitle>{currentImage?.alt_text || "Image View"}</DialogTitle>
+            <DialogTitle>{currentImage?.altText || "Image View"}</DialogTitle>
           </DialogHeader>
           <div className="relative w-full h-[80vh]">
             <Image
               src={selectedImage}
-              alt={currentImage?.alt_text || "Plant image"}
+              alt={currentImage?.altText || "Plant image"}
               className="object-contain rounded-lg"
               fill
             />
@@ -83,7 +83,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
           >
             <Image
               src={image.thumbnail_med || image.img}
-              alt={image.alt_text || `Thumbnail ${index + 1}`}
+              alt={image.altText || `Thumbnail ${index + 1}`}
               className="object-cover w-full h-full"
               fill
             />
@@ -105,7 +105,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
                 <div className="flex-1 relative bg-cream-100 rounded-lg">
                   <Image
                     src={selectedImage}
-                    alt={currentImage?.alt_text || "Main image"}
+                    alt={currentImage?.altText || "Main image"}
                     className="object-contain rounded-lg"
                     fill
                   />
@@ -124,7 +124,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
                     >
                       <Image
                         src={image.thumbnail_med || image.img}
-                        alt={image.alt_text || `Thumbnail ${index + 1}`}
+                        alt={image.altText || `Thumbnail ${index + 1}`}
                         className="object-cover w-full h-full"
                         fill
                       />

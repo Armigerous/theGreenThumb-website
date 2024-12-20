@@ -1,17 +1,24 @@
+// route.ts
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
+import { PlantScientificName, PlantScientificNameRow } from "@/types/plant";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("query")?.toLowerCase() || "";
 
   try {
-    // Query the scientificNames table and join with mainPlantData to get the slug
-    const { data, error } = await supabase
+    // Execute the query with proper typing
+    const { data, error } = (await supabase
       .from("scientificNames")
-      .select("scientificName, mainPlantData(slug)")
+      .select(
+        `
+        scientificName,
+        mainPlantData ( slug )
+      `
+      )
       .ilike("scientificName", `%${query}%`)
-      .limit(7);
+      .limit(7)) as { data: PlantScientificNameRow[] | null; error: Error };
 
     if (error) {
       console.error("Supabase error:", error.message);
@@ -21,8 +28,15 @@ export async function GET(request: Request) {
       );
     }
 
-    // Transform the result to match the expected structure
-    const plants = data.map((row) => ({
+    if (!data) {
+      return NextResponse.json(
+        { error: "No plant data found" },
+        { status: 404 }
+      );
+    }
+
+    // Transform the data to match the PlantScientificName type
+    const plants: PlantScientificName[] = data.map((row) => ({
       scientificName: row.scientificName,
       slug: row.mainPlantData.slug,
     }));

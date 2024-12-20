@@ -29,6 +29,46 @@ interface PlantDetailsProps {
   plant: PlantData;
 }
 
+const PlantArrayFact = ({
+  label,
+  data,
+}: {
+  label: string;
+  data?: Array<string | null>;
+}) => {
+  const filteredData =
+    data?.filter((item): item is string => item !== null) || [];
+
+  return (
+    <>
+      <span className="font-semibold text-cream-800">{label}:</span>
+      {filteredData.length > 0 ? (
+        <ul className="list-disc ml-6">
+          {filteredData.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      ) : (
+        <span className="ml-1">Not specified</span>
+      )}
+    </>
+  );
+};
+
+// Update PlantFact to handle string | null | undefined
+const PlantFact = ({
+  label,
+  data,
+}: {
+  label: string;
+  data?: string | null;
+}) => (
+  <p>
+    <span className="font-semibold text-cream-800">{label}:</span>
+    <span className="ml-1">{data || "Not specified"}</span>
+  </p>
+);
+
 const PlantDetails = ({ plant }: PlantDetailsProps) => {
   const {
     genus,
@@ -127,51 +167,20 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
     ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
   });
 
-  const PlantArrayFact = ({
-    label,
-    data,
-  }: {
-    label: string;
-    data: string[] | undefined;
-  }) => (
-    <>
-      <span className="font-semibold text-cream-800">{label}:</span>
-      {data && data.length > 0 ? (
-        <ul className="list-disc ml-6">
-          {data.map((item, index) => (
-            <li key={index}>{item}</li>
-          ))}
-        </ul>
-      ) : (
-        <span className="ml-1">Not specified</span>
-      )}
-    </>
-  );
-
-  const PlantFact = ({
-    label,
-    data,
-  }: {
-    label: string;
-    data: string | undefined;
-  }) => (
-    <p>
-      <span className="font-semibold text-cream-800">{label}:</span>
-      <span className="ml-1">{data || "Not specified"}</span>
-    </p>
-  );
-
   return (
     <section className="my-12">
       <div className="flex flex-col md:flex-row gap-6 mb-8">
         <div className="md:w-1/2">
           {plantImages && plantImages.length > 0 ? (
             <ImageGallery
-              images={plantImages.map(({ img, altText, ...rest }) => ({
-                img,
-                altText,
-                ...rest,
-              }))}
+              images={plantImages
+                .filter((image) => image.img !== null)
+                .map(({ img, altText, caption, attribution }) => ({
+                  img: img as string, // Type assertion since we've filtered out nulls
+                  altText: altText || "No description available",
+                  caption: caption || "",
+                  attribution: attribution || "",
+                }))}
             />
           ) : (
             <p className="text-muted-foreground">No images available.</p>
@@ -187,9 +196,11 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
             {species && `Species: ${species} - `}
             {family && `Family: ${family}`}
           </p>
-          <p className="text-sm text-muted-foreground mb-4">
-            Phonetic Spelling: {phoneticSpelling}
-          </p>
+          {phoneticSpelling && (
+            <p className="text-sm text-muted-foreground mb-4">
+              Phonetic Spelling: {phoneticSpelling}
+            </p>
+          )}
           <div
             className="prose prose-sm mb-4"
             dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
@@ -199,7 +210,13 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
       <div className="my-8">
         <h2 className="text-lg font-semibold mb-2">Tags</h2>
         <div className="flex flex-wrap gap-2">
-          {tags && tags.map((tag, index) => <Badge key={index}>{tag}</Badge>)}
+          {tags && tags.length > 0 ? (
+            tags
+              .filter((tag): tag is string => tag !== null)
+              .map((tag, index) => <Badge key={index}>{tag}</Badge>)
+          ) : (
+            <span className="text-muted-foreground">No tags available.</span>
+          )}
         </div>
       </div>
 
@@ -222,21 +239,25 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
                   <ul className="space-y-2">
                     <li>
                       <span className="font-medium">Height:</span>{" "}
-                      {formatInchesToFeetAndInches(heightMin)} -{" "}
-                      {formatInchesToFeetAndInches(heightMax)}
+                      {heightMin && heightMax
+                        ? `${formatInchesToFeetAndInches(heightMin)} - ${formatInchesToFeetAndInches(heightMax)}`
+                        : "Not specified"}
                     </li>
                     <li>
                       <span className="font-medium">Width:</span>{" "}
-                      {formatInchesToFeetAndInches(widthMin)} -{" "}
-                      {formatInchesToFeetAndInches(widthMax)}
+                      {widthMin && widthMax
+                        ? `${formatInchesToFeetAndInches(widthMin)} - ${formatInchesToFeetAndInches(widthMax)}`
+                        : "Not specified"}
                     </li>
                     <li>
                       <span className="font-medium">USDA Zones:</span>{" "}
                       {usdaZones && usdaZones.length > 0 ? (
                         <ul className="list-disc ml-6">
-                          {usdaZones.map((zone, index) => (
-                            <li key={index}>{zone}</li>
-                          ))}
+                          {usdaZones
+                            .filter((zone): zone is string => zone !== null)
+                            .map((zone, index) => (
+                              <li key={index}>{zone}</li>
+                            ))}
                         </ul>
                       ) : (
                         "Not specified"
@@ -501,16 +522,20 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Wildlife Value</h3>
-                  <p>{wildlifeValue}</p>
+                  <p>{wildlifeValue || "Not specified"}</p>
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Attracts</h3>
                   <div>
                     {attracts && attracts.length > 0 ? (
                       <ul className="list-disc ml-6">
-                        {attracts.map((attract, index) => (
-                          <li key={index}>{attract}</li>
-                        ))}
+                        {attracts
+                          .filter(
+                            (attract): attract is string => attract !== null
+                          )
+                          .map((attract, index) => (
+                            <li key={index}>{attract}</li>
+                          ))}
                       </ul>
                     ) : (
                       "Not specified"

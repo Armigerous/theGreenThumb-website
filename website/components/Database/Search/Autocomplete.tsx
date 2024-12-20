@@ -14,7 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ScientificNameData } from "@/types/plant";
+import { PlantScientificName } from "@/types/plant";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -22,7 +22,7 @@ import { useEffect, useRef, useState } from "react";
 export function Autocomplete() {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [plants, setPlants] = useState<ScientificNameData[]>([]); // Use ScientificNameData
+  const [plants, setPlants] = useState<PlantScientificName[]>([]); // Use ScientificNameData
   const triggerRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
 

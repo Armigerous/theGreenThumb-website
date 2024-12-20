@@ -1,7 +1,11 @@
 "use client";
 
+import { dynamicBlurDataUrl } from "@/lib/dynamicBlurDataUrl";
+import DOMPurify from "isomorphic-dompurify";
+import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Badge } from "../ui/badge";
 import {
   Card,
   CardContent,
@@ -10,19 +14,25 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import Image from "next/image";
-import { PlantSummary } from "@/types/plantsList";
-import DOMPurify from "isomorphic-dompurify";
-import { Badge } from "../ui/badge";
-import { dynamicBlurDataUrl } from "@/lib/dynamicBlurDataUrl";
 
-const PlantCard = ({ plant }: { plant: PlantSummary }) => {
+interface Plant {
+  slug: string;
+  description: string;
+  scientificName: string;
+  commonName: string;
+  tag: string;
+  image: {
+    img: string;
+    altText: string;
+    caption: string;
+    attribution: string;
+  };
+}
+
+const PlantCard = ({ plant }: { plant: Plant }) => {
   const [blurDataUrl, setBlurDataUrl] = useState<string | undefined>(undefined);
 
-  const imageUrl =
-    plant.plantimage_set && plant.plantimage_set.length > 0
-      ? plant.plantimage_set[0].img
-      : "/no-plant-image.png";
+  const imageUrl = plant.image ? plant.image.img : "/no-plant-image.png";
 
   useEffect(() => {
     const fetchBlurDataUrl = async () => {
@@ -34,8 +44,6 @@ const PlantCard = ({ plant }: { plant: PlantSummary }) => {
     fetchBlurDataUrl();
   }, [imageUrl]);
 
-  const firstTag = plant.tags?.[0];
-
   return (
     <Card
       key={plant.slug}
@@ -44,7 +52,7 @@ const PlantCard = ({ plant }: { plant: PlantSummary }) => {
       <Link href={`/plant/${plant.slug}`}>
         <Image
           src={imageUrl}
-          alt={plant.scientific_name || "Plant image"}
+          alt={plant.image?.altText || "Plant Image"}
           width={300}
           height={200}
           className="w-full object-cover h-48"
@@ -56,15 +64,15 @@ const PlantCard = ({ plant }: { plant: PlantSummary }) => {
       <CardHeader>
         <Link href={`/plant/${plant.slug}`} className="group/header">
           <CardTitle className="text-lg font-semibold line-clamp-1 group-hover/header:underline">
-            {plant.scientific_name}
+            {plant.scientificName}
           </CardTitle>
           <CardDescription className="text-sm text-muted-foreground line-clamp-1">
-            {plant.commonname_set?.[0]}
+            {plant.commonName}
           </CardDescription>
         </Link>
-        {firstTag && (
+        {plant.tag && (
           <Link href={`/plant/${plant.slug}`}>
-            <Badge className="text-cream-50">{firstTag}</Badge>
+            <Badge className="text-cream-50">{plant.tag}</Badge>
           </Link>
         )}
       </CardHeader>

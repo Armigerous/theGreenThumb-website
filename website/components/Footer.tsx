@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Sprout } from "lucide-react"; // Import the Sprout icon
+import { Sprout } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -39,7 +39,7 @@ const Footer: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const { error } = await supabase.from("Emails").insert({ email });
+      const { error } = await supabase.from("emails").insert({ email });
       if (error) throw error;
       setDialogMessage("🎉 Thank you for subscribing!");
       setShowConfetti(true); // Show confetti on successful subscription

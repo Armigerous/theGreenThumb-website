@@ -1,5 +1,5 @@
-// import { FilterPanel } from "@/components/Database/Filter/FilterPanel";
-// import { SidebarProvider } from "@/components/ui/sidebar";
+import { FilterPanel } from "@/components/Database/Filter/FilterPanel";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function PlantsLayout({
   children,
@@ -8,11 +8,11 @@ export default function PlantsLayout({
 }) {
   return (
     <main>
-      {/* <SidebarProvider> */}
-      {/* <FilterPanel /> */}
+      <SidebarProvider>
+        <FilterPanel />
 
-      {children}
-      {/* </SidebarProvider> */}
+        {children}
+      </SidebarProvider>
     </main>
   );
 }

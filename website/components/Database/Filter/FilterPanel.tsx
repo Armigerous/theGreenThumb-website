@@ -34,6 +34,7 @@ import {
   FilterSection,
 } from "@/types/filterData";
 import { FilterSearch } from "./FilterSearch";
+import { useRouter } from "next/navigation";
 
 // Helper function to merge basic and advanced filters (unchanged)
 function mergeFilters(
@@ -92,6 +93,7 @@ export function FilterPanel({}: React.ComponentProps<typeof Sidebar>) {
     [key: string]: boolean;
   }>({});
   const [searchTerm, setSearchTerm] = React.useState("");
+  const router = useRouter();
 
   const toggleOption = (key: string, checked: boolean) => {
     setSelectedOptions((prev) => ({
@@ -117,6 +119,24 @@ export function FilterPanel({}: React.ComponentProps<typeof Sidebar>) {
         .filter((category) => category.options.length > 0),
     }))
     .filter((section) => section.categories.length > 0);
+
+  const applyFilters = () => {
+    const activeFilters = Object.entries(selectedOptions)
+      .filter(([, value]) => value)
+      .map(([key]) => key);
+
+    // Update the URL with active filters
+    const params = new URLSearchParams();
+    activeFilters.forEach((filter) => params.set(filter, "true"));
+    router.replace(`?${params.toString()}`);
+
+    console.log("Filters applied:", activeFilters);
+
+    // Additional logic: fetch filtered data or update state
+    // fetch(`/api/plants?${params.toString()}`)
+    //   .then((res) => res.json())
+    //   .then((data) => console.log("Filtered data:", data));
+  };
 
   return (
     <Sidebar side="left">
@@ -229,7 +249,10 @@ export function FilterPanel({}: React.ComponentProps<typeof Sidebar>) {
             <Button
               variant="destructive"
               className="w-full"
-              onClick={() => setSelectedOptions({})}
+              onClick={() => {
+                setSelectedOptions({});
+                router.replace("?"); // Clear URL
+              }}
             >
               Clear All
             </Button>
@@ -246,7 +269,7 @@ export function FilterPanel({}: React.ComponentProps<typeof Sidebar>) {
             </Button>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Button variant="default" className="w-full">
+            <Button variant="default" className="w-full" onClick={applyFilters}>
               Apply Filters
             </Button>
           </SidebarMenuItem>

@@ -17,6 +17,9 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: process.env.NEXT_PUBLIC_BASE_URL
+    ? new URL(process.env.NEXT_PUBLIC_BASE_URL)
+    : undefined, // Handle undefined safely
   title: "The GreenThumb",
   description: "Merging the worlds of technology and agriculture",
   keywords: ["technology", "agriculture", "GreenThumb", "sustainable farming"],
@@ -24,10 +27,10 @@ export const metadata: Metadata = {
     title: "The GreenThumb",
     description:
       "Discover how technology meets agriculture with The GreenThumb.",
-    url: "https://yourwebsite.com",
+    url: process.env.NEXT_PUBLIC_BASE_URL,
     images: [
       {
-        url: "https://yourwebsite.com/images/og-image.jpg",
+        url: "/logo.png",
         width: 1200,
         height: 630,
         alt: "GreenThumb banner",

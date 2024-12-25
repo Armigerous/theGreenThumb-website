@@ -21,6 +21,22 @@ const insights: string[] = [
 const AboutLayout: React.FC<AboutLayoutProps> = ({ children }) => {
   return (
     <main>
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: "About",
+          description: "Insights about plants and gardening.",
+          mainEntity: {
+            "@type": "ItemList",
+            itemListElement: insights.map((insight, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              name: insight,
+            })),
+          },
+        })}
+      </script>
       {/* InsightRoll is now at a persistent level */}
       <InsightRoll insights={insights} />
 

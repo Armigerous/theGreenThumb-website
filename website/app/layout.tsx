@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { NextUIProvider } from "@nextui-org/react";
 import NavBar from "@/components/NavBar/NavBar";
 import Footer from "@/components/Footer";
 
@@ -10,6 +9,7 @@ const geistSans = localFont({
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -19,6 +19,21 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "The GreenThumb",
   description: "Merging the worlds of technology and agriculture",
+  keywords: ["technology", "agriculture", "GreenThumb", "sustainable farming"],
+  openGraph: {
+    title: "The GreenThumb",
+    description:
+      "Discover how technology meets agriculture with The GreenThumb.",
+    url: "https://yourwebsite.com",
+    images: [
+      {
+        url: "https://yourwebsite.com/images/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "GreenThumb banner",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -31,11 +46,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-cream-50`}
       >
-        <NextUIProvider>
-          <NavBar />
-          {children}
-          <Footer />
-        </NextUIProvider>
+        <NavBar />
+        {children}
+        <Footer />
       </body>
     </html>
   );

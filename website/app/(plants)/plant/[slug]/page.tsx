@@ -5,9 +5,70 @@ import PlantDetails from "@/components/Database/Plant/PlantDetails";
 import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import { supabase } from "@/lib/supabaseClient";
 import { PlantData } from "@/types/plant";
+import Head from "next/head";
+import Script from "next/script";
 
 // Revalidate every 24 hours (86400 seconds) for Incremental Static Regeneration
 export const revalidate = 86400;
+
+// Dynamic Metadata
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const slug = params.slug;
+
+  // Fetch plant data to populate metadata
+  const { data: plantData, error } = await supabase
+    .from("mainPlantData")
+    .select(
+      "scientificNames (scientificName), genus, description, plantImages (img, altText)"
+    )
+    .eq("slug", slug)
+    .single();
+
+  if (error || !plantData) {
+    console.error(
+      "Error fetching metadata:",
+      error?.message || "Plant not found"
+    );
+    return {
+      title: "Plant not found",
+      description: "The requested plant could not be found.",
+    };
+  }
+
+  const scientificName = plantData.scientificNames?.[0]?.scientificName || slug;
+  const description = plantData.description || `Learn about ${scientificName}.`;
+  const image = plantData.plantImages?.[0]?.img || "/default-plant-image.jpg";
+  const altText = plantData.plantImages?.[0]?.altText || "Plant image";
+
+  return {
+    title: `${scientificName} - Plant Details`,
+    description,
+    openGraph: {
+      title: `${scientificName} - Plant Details`,
+      description,
+      url: `https://yourwebsite.com/plant/${slug}`,
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: altText,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${scientificName} - Plant Details`,
+      description,
+      image,
+    },
+    keywords: [scientificName, plantData.genus, "plant care", "plant details"],
+  };
+}
 
 // Define the type for the response including all relationships
 type MainPlantDataWithRelations = {
@@ -481,6 +542,23 @@ export default async function PlantPage({
     console.log(`Serving from cache: ${slug}`);
     return (
       <MaxWidthWrapper>
+        {/* JSON-LD Schema for cached plant data */}
+        <Script
+          id="plant-json-ld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Plant",
+              name: plantCache[slug].scientificName || slug,
+              genus: plantCache[slug].genus,
+              description: plantCache[slug].description,
+              image:
+                plantCache[slug].plantImages?.[0]?.img || "/no-plant-image.png",
+              family: plantCache[slug].family,
+            }),
+          }}
+        />
         <PlantDetails plant={plantCache[slug]} />
       </MaxWidthWrapper>
     );
@@ -602,6 +680,22 @@ export default async function PlantPage({
 
     return (
       <MaxWidthWrapper>
+        {/* JSON-LD Schema */}
+        <Script
+          id="plant-json-ld" // Add a unique ID for inline script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Plant",
+              name: plant.scientificName || slug,
+              genus: plant.genus,
+              description: plant.description,
+              image: plant.plantImages?.[0]?.img || "/no-plant-image.png",
+              family: plant.family,
+            }),
+          }}
+        />
         <PlantDetails plant={plant} />
       </MaxWidthWrapper>
     );

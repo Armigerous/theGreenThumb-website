@@ -1,142 +1,95 @@
 "use client";
 
-import { ChevronRight, SlidersHorizontal } from "lucide-react";
-import * as React from "react";
+import React from "react";
+import { useRouter } from "next/navigation";
+import { SlidersHorizontal } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Label } from "@/components/ui/label";
 import {
   Sidebar,
+  SidebarHeader,
   SidebarContent,
   SidebarFooter,
+} from "@/components/ui/sidebar";
+import {
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+} from "@/components/ui/sidebar";
+import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  SidebarRail,
 } from "@/components/ui/sidebar";
-import {
-  advancedFilters,
-  basicFilters,
-  FilterCategory,
-  FilterSection,
-} from "@/types/filterData";
+import { Button } from "@/components/ui/button";
+
 import { FilterSearch } from "./FilterSearch";
-import { useRouter } from "next/navigation";
+import { FilterSectionAccordion } from "./FilterSectionAccordion";
+import { allFilters, FilterSection } from "@/types/filterData";
 
-// Helper function to merge basic and advanced filters (unchanged)
-function mergeFilters(
-  basic: FilterSection[],
-  advanced: FilterSection[]
-): FilterSection[] {
-  const sectionMap: { [key: string]: FilterSection } = {};
-
-  basic.forEach((basicSection) => {
-    sectionMap[basicSection.name] = {
-      ...basicSection,
-      categories: [...basicSection.categories],
-    };
-  });
-
-  advanced.forEach((advSection) => {
-    if (sectionMap[advSection.name]) {
-      const existingSection = sectionMap[advSection.name];
-      const categoryMap: { [key: string]: FilterCategory } = {};
-
-      existingSection.categories.forEach((cat) => {
-        categoryMap[cat.name] = { ...cat };
-      });
-
-      advSection.categories.forEach((advCategory) => {
-        if (categoryMap[advCategory.name]) {
-          categoryMap[advCategory.name].options = Array.from(
-            new Set([
-              ...categoryMap[advCategory.name].options,
-              ...advCategory.options,
-            ])
-          );
-        } else {
-          categoryMap[advCategory.name] = {
-            ...advCategory,
-            id: `${advSection.id}-${advCategory.name}`,
-          };
-        }
-      });
-
-      existingSection.categories = Object.values(categoryMap);
-    } else {
-      sectionMap[advSection.name] = {
-        ...advSection,
-        id: `${advSection.id}-unique`,
-      };
-    }
-  });
-
-  return Object.values(sectionMap);
-}
-
-export function FilterPanel({}: React.ComponentProps<typeof Sidebar>) {
+/**
+ * The main FilterPanel component.
+ */
+export function FilterPanel() {
   const [showAdvancedFilters, setShowAdvancedFilters] = React.useState(false);
+  const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedOptions, setSelectedOptions] = React.useState<{
     [key: string]: boolean;
   }>({});
-  const [searchTerm, setSearchTerm] = React.useState("");
+
   const router = useRouter();
 
-  const toggleOption = (key: string, checked: boolean) => {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [key]: checked,
-    }));
-  };
+  // Toggle checkbox selection
+  const toggleOption = React.useCallback((key: string, checked: boolean) => {
+    setSelectedOptions((prev) => ({ ...prev, [key]: checked }));
+  }, []);
 
-  const allFilters = showAdvancedFilters
-    ? mergeFilters(basicFilters, advancedFilters)
-    : basicFilters;
-
-  const filtersToDisplay = allFilters
-    .map((section) => ({
-      ...section,
-      categories: section.categories
-        .map((category) => ({
-          ...category,
-          options: category.options.filter((option) =>
-            option.toLowerCase().includes(searchTerm.toLowerCase())
+  // Determine which sections to display
+  const visibleSections = React.useMemo<FilterSection[]>(() => {
+    return (
+      allFilters
+        // Show advanced sections only if showAdvancedFilters = true
+        .filter((section) => (showAdvancedFilters ? true : !section.isAdvanced))
+        // Within each section, filter categories’ options based on searchTerm
+        .map((section) => ({
+          ...section,
+          categories: section.categories.map((cat) => ({
+            ...cat,
+            options: cat.options.filter((option) =>
+              option.toLowerCase().includes(searchTerm.toLowerCase())
+            ),
+          })),
+        }))
+        // Filter out categories with no remaining options
+        .map((section) => ({
+          ...section,
+          categories: section.categories.filter(
+            (cat) => cat.options.length > 0
           ),
         }))
-        .filter((category) => category.options.length > 0),
-    }))
-    .filter((section) => section.categories.length > 0);
+        // Finally, filter out sections with zero categories
+        .filter((section) => section.categories.length > 0)
+    );
+  }, [searchTerm, showAdvancedFilters]);
 
-  const applyFilters = () => {
+  // Apply filters
+  const applyFilters = React.useCallback(() => {
     const activeFilters = Object.entries(selectedOptions)
       .filter(([, value]) => value)
       .map(([key]) => key);
 
-    // Update the URL with active filters
+    // For simplicity, set each active filter in the query string with “=true”
     const params = new URLSearchParams();
     activeFilters.forEach((filter) => params.set(filter, "true"));
+
+    // Update the URL without a full refresh
     router.replace(`?${params.toString()}`);
+  }, [selectedOptions, router]);
 
-    console.log("Filters applied:", activeFilters);
-
-    // Additional logic: fetch filtered data or update state
-    // fetch(`/api/plants?${params.toString()}`)
-    //   .then((res) => res.json())
-    //   .then((data) => console.log("Filtered data:", data));
-  };
+  // Clear filters
+  const clearAllFilters = React.useCallback(() => {
+    setSelectedOptions({});
+    router.replace("?");
+  }, [router]);
 
   return (
     <Sidebar side="left">
@@ -153,6 +106,8 @@ export function FilterPanel({}: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+
+        {/* Filter search box */}
         <FilterSearch
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -164,79 +119,13 @@ export function FilterPanel({}: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupLabel>Filters</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {filtersToDisplay.map((section) => (
-                <Collapsible
+              {visibleSections.map((section) => (
+                <FilterSectionAccordion
                   key={section.id}
-                  asChild
-                  className="group/collapsible cursor-pointer"
-                >
-                  <SidebarMenuItem>
-                    <CollapsibleTrigger asChild>
-                      <SidebarMenuButton>
-                        {section.icon && (
-                          <section.icon className="mr-2 size-4" />
-                        )}
-                        <span>{section.name}</span>
-                        <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                      </SidebarMenuButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {section.categories.map((category) => (
-                          <Collapsible
-                            key={`${section.id}-${category.id}`}
-                            asChild
-                            className="group/categoryCollapsible"
-                          >
-                            <SidebarMenuSubItem>
-                              <CollapsibleTrigger asChild>
-                                <SidebarMenuSubButton>
-                                  {category.icon && (
-                                    <category.icon className="mr-2 size-4" />
-                                  )}
-                                  <span>{category.name}</span>
-                                  <ChevronRight className="ml-auto transition-transform group-data-[state=open]/categoryCollapsible:rotate-90" />
-                                </SidebarMenuSubButton>
-                              </CollapsibleTrigger>
-                              <CollapsibleContent>
-                                <div className="space-y-2 pl-6">
-                                  {category.options.map((option) => {
-                                    const optionKey = `${section.id}-${category.id}-${option}`;
-                                    return (
-                                      <div
-                                        key={optionKey}
-                                        className="flex items-center space-x-2"
-                                      >
-                                        <Checkbox
-                                          id={optionKey}
-                                          checked={Boolean(
-                                            selectedOptions[optionKey]
-                                          )}
-                                          onCheckedChange={(checked) =>
-                                            toggleOption(
-                                              optionKey,
-                                              Boolean(checked)
-                                            )
-                                          }
-                                        />
-                                        <Label
-                                          htmlFor={optionKey}
-                                          className="text-sm font-normal cursor-pointer"
-                                        >
-                                          {option}
-                                        </Label>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </CollapsibleContent>
-                            </SidebarMenuSubItem>
-                          </Collapsible>
-                        ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
-                  </SidebarMenuItem>
-                </Collapsible>
+                  section={section}
+                  selectedOptions={selectedOptions}
+                  onToggleOption={toggleOption}
+                />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -249,10 +138,7 @@ export function FilterPanel({}: React.ComponentProps<typeof Sidebar>) {
             <Button
               variant="destructive"
               className="w-full"
-              onClick={() => {
-                setSelectedOptions({});
-                router.replace("?"); // Clear URL
-              }}
+              onClick={clearAllFilters}
             >
               Clear All
             </Button>
@@ -261,7 +147,7 @@ export function FilterPanel({}: React.ComponentProps<typeof Sidebar>) {
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              onClick={() => setShowAdvancedFilters((prev) => !prev)}
             >
               {showAdvancedFilters
                 ? "Hide Advanced Filters"
@@ -275,8 +161,6 @@ export function FilterPanel({}: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
-
-      <SidebarRail />
     </Sidebar>
   );
 }

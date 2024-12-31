@@ -488,7 +488,6 @@ export default async function PlantPage({
 
   try {
     // Fetch plant data directly from Supabase
-    // @ts-expect-error: Type instantiation is excessively deep due to complex Supabase response types
     const { data: plantData, error } = await supabase
       .from("mainPlantData")
       .select(

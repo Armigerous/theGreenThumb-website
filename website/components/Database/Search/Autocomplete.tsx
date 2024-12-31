@@ -44,7 +44,7 @@ export function Autocomplete() {
       } catch (error) {
         console.error("Error fetching plants:", error);
       }
-    }, 500); // 500ms debounce
+    }, 300); // 300ms debounce
 
     return () => clearTimeout(delayDebounce);
   }, [searchQuery]);

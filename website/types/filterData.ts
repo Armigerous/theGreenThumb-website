@@ -25,38 +25,52 @@ import {
   Hand,
 } from "lucide-react";
 
+/**
+ * The shape of each category.
+ */
 export type FilterCategory = {
   id: string;
   name: string;
   options: string[];
-  icon: React.ElementType; // Use a function that returns a JSX element
+  icon: React.ElementType; // any SVG icon component
 };
 
+/**
+ * The shape of each filter section.
+ */
 export type FilterSection = {
   id: string;
   name: string;
+  isAdvanced?: boolean; // <-- indicates if section is advanced
   categories: FilterCategory[];
-  icon: React.ElementType; // Use a function that returns a JSX element
+  icon: React.ElementType; // any SVG icon component
 };
 
-export const basicFilters: FilterSection[] = [
+/**
+ * A single array that includes both “basic” and “advanced” filters.
+ * Use `isAdvanced?: boolean` to mark advanced sections.
+ */
+export const allFilters: FilterSection[] = [
+  /* ------------------ BASIC SECTIONS ------------------ */
   {
-    id: "basic-cultural-conditions",
+    id: "cultural-conditions",
     name: "Cultural Conditions",
+    isAdvanced: false,
+    icon: Map,
     categories: [
       {
-        id: "basic-light",
+        id: "light",
         name: "Light",
         options: [
-          "Dappled Sunlight (Shade through upper canopy all day) ",
-          "Deep shade (Less than 2 hours to no direct sunlight) ",
+          "Dappled Sunlight (Shade through upper canopy all day)",
+          "Deep shade (Less than 2 hours to no direct sunlight)",
           "Full Sun (6 or more hours of direct sunlight a day)",
-          "Partial Shade (Direct sunlight only part of the day, 2-6 hours)",
+          "Partial Shade (2-6 hours of direct sunlight)",
         ],
         icon: Sun,
       },
       {
-        id: "basic-soil-texture",
+        id: "soil-texture",
         name: "Soil Texture",
         options: [
           "Clay",
@@ -68,13 +82,13 @@ export const basicFilters: FilterSection[] = [
         icon: Leaf,
       },
       {
-        id: "basic-soil-ph",
+        id: "soil-ph",
         name: "Soil pH",
         options: ["Acid (<6.0)", "Neutral (6.0-8.0)", "Alkaline (>8.0)"],
         icon: Droplet,
       },
       {
-        id: "basic-soil-drainage",
+        id: "soil-drainage",
         name: "Soil Drainage",
         options: [
           "Frequent Standing Water",
@@ -88,7 +102,7 @@ export const basicFilters: FilterSection[] = [
         icon: Pipette,
       },
       {
-        id: "basic-available-space-to-plant",
+        id: "available-space-to-plant",
         name: "Available Space To Plant",
         options: [
           "Less than 12 inches",
@@ -102,13 +116,13 @@ export const basicFilters: FilterSection[] = [
         icon: Ruler,
       },
       {
-        id: "basic-nc-region",
+        id: "nc-region",
         name: "NC Region",
         options: ["Coastal", "Mountains", "Piedmont"],
         icon: Mountain,
       },
       {
-        id: "basic-usda-zone",
+        id: "usda-zone",
         name: "USDA Zone",
         options: [
           "1a",
@@ -141,11 +155,12 @@ export const basicFilters: FilterSection[] = [
         icon: MapPin,
       },
     ],
-    icon: Map,
   },
   {
-    id: "basic-landscape",
+    id: "landscape",
     name: "Landscape",
+    isAdvanced: false,
+    icon: TreePine,
     categories: [
       {
         id: "location",
@@ -174,17 +189,17 @@ export const basicFilters: FilterSection[] = [
         icon: MapPinHouse,
       },
     ],
-    icon: TreePine,
   },
-];
 
-export const advancedFilters: FilterSection[] = [
+  /* ------------------ ADVANCED SECTIONS ------------------ */
   {
-    id: "advanced-landscape",
+    id: "landscape-advanced",
     name: "Landscape",
+    isAdvanced: true, // <--- marks section as advanced
+    icon: TreeDeciduous,
     categories: [
       {
-        id: "advanced-landscape-theme",
+        id: "landscape-theme",
         name: "Landscape Theme",
         options: [
           "Asian Garden",
@@ -209,7 +224,7 @@ export const advancedFilters: FilterSection[] = [
         icon: Flower,
       },
       {
-        id: "advanced-landscape-design-feature",
+        id: "design-feature",
         name: "Design Feature",
         options: [
           "Accent",
@@ -231,14 +246,15 @@ export const advancedFilters: FilterSection[] = [
         icon: Eye,
       },
     ],
-    icon: TreeDeciduous,
   },
   {
-    id: "advanced-wildlife-resistance",
+    id: "wildlife-and-resistance",
     name: "Wildlife and Resistance",
+    isAdvanced: true,
+    icon: Shield,
     categories: [
       {
-        id: "advanced-attracts",
+        id: "attracts",
         name: "Attracts",
         options: [
           "Bats",
@@ -257,7 +273,7 @@ export const advancedFilters: FilterSection[] = [
         icon: Heart,
       },
       {
-        id: "advanced-resistance-to-challenges",
+        id: "resistance-to-challenges",
         name: "Resistance To Challenges",
         options: [
           "Black Walnut",
@@ -288,7 +304,7 @@ export const advancedFilters: FilterSection[] = [
         icon: ShieldCheck,
       },
       {
-        id: "advanced-problems-to-exclude",
+        id: "problems-to-exclude",
         name: "Problems to Exclude",
         options: [
           "Allelopathic",
@@ -311,14 +327,15 @@ export const advancedFilters: FilterSection[] = [
         icon: AlertTriangle,
       },
     ],
-    icon: Shield,
   },
   {
-    id: "advanced-whole-plant-traits",
+    id: "whole-plant-traits",
     name: "Whole Plant Traits",
+    isAdvanced: true,
+    icon: Leaf,
     categories: [
       {
-        id: "advanced-plant-type",
+        id: "plant-type",
         name: "Plant Type",
         options: [
           "Annual",
@@ -352,7 +369,7 @@ export const advancedFilters: FilterSection[] = [
         icon: TreePine,
       },
       {
-        id: "advanced-woody-plat-leaf-characteristics",
+        id: "woody-plant-leaf-characteristics",
         name: "Woody Plant Leaf Characteristics",
         options: [
           "Broadleaf Evergreen",
@@ -363,7 +380,7 @@ export const advancedFilters: FilterSection[] = [
         icon: Leaf,
       },
       {
-        id: "advanced-habit-form",
+        id: "habit-form",
         name: "Habit/Form",
         options: [
           "Arching",
@@ -394,32 +411,33 @@ export const advancedFilters: FilterSection[] = [
         icon: Star,
       },
       {
-        id: "advanced-growth-rate",
+        id: "growth-rate",
         name: "Growth Rate",
         options: ["Slow", "Medium", "Rapid"],
         icon: Clock,
       },
       {
-        id: "advanced-maintenance",
+        id: "maintenance",
         name: "Maintenance",
         options: ["High", "Low", "Medium"],
         icon: Activity,
       },
       {
-        id: "advanced-texture",
+        id: "texture",
         name: "Texture",
         options: ["Fine", "Medium", "Coarse"],
         icon: Hand,
       },
     ],
-    icon: Leaf,
   },
   {
-    id: "advanced-flowers",
+    id: "flowers",
     name: "Flowers",
+    isAdvanced: true,
+    icon: Flower,
     categories: [
       {
-        id: "advanced-flower-color",
+        id: "flower-color",
         name: "Flower Color",
         options: [
           "Black",
@@ -440,7 +458,7 @@ export const advancedFilters: FilterSection[] = [
         icon: Paintbrush,
       },
       {
-        id: "advanced-flower-value-to-gardener",
+        id: "flower-value-to-gardener",
         name: "Flower Value To Gardener",
         options: [
           "Edible",
@@ -454,20 +472,21 @@ export const advancedFilters: FilterSection[] = [
         icon: Heart,
       },
       {
-        id: "advanced-flower-bloom-time",
+        id: "flower-bloom-time",
         name: "Flower Bloom Time",
         options: ["Fall", "Spring", "Summer", "Winter"],
         icon: Sprout,
       },
     ],
-    icon: Flower,
   },
   {
-    id: "advanced-leaves",
+    id: "leaves",
     name: "Leaves",
+    isAdvanced: true,
+    icon: Leaf,
     categories: [
       {
-        id: "advanced-leaf-color",
+        id: "leaf-color",
         name: "Leaf Color",
         options: [
           "Black",
@@ -488,7 +507,7 @@ export const advancedFilters: FilterSection[] = [
         icon: Paintbrush,
       },
       {
-        id: "advanced-leaf-texture",
+        id: "leaf-texture",
         name: "Leaf Texture",
         options: [
           "Fleshy",
@@ -507,7 +526,7 @@ export const advancedFilters: FilterSection[] = [
         icon: Hand,
       },
       {
-        id: "advanced-leaf-value-to-gardener",
+        id: "leaf-value-to-gardener",
         name: "Leaf Value To Gardener",
         options: [
           "Edible",
@@ -520,7 +539,7 @@ export const advancedFilters: FilterSection[] = [
         icon: Heart,
       },
       {
-        id: "advanced-deciduous-leaf-fall-color",
+        id: "deciduous-leaf-fall-color",
         name: "Deciduous Leaf Fall Color",
         options: [
           "Brown/Copper",
@@ -536,7 +555,6 @@ export const advancedFilters: FilterSection[] = [
         icon: Palette,
       },
     ],
-    icon: Leaf,
   },
 ];
 

@@ -51,7 +51,17 @@ export function Autocomplete() {
 
   const navigateToSearch = () => {
     if (searchQuery.trim()) {
-      router.push(`/plants?query=${encodeURIComponent(searchQuery.trim())}`);
+      // Read *current* URLSearchParams from the browser
+      const params = new URLSearchParams(window.location.search);
+
+      // Update the "query" param
+      params.set("query", searchQuery.trim());
+
+      // (Optional) Reset page to 1 if you have pagination
+      // params.delete("page");
+
+      // Push the merged params back to the URL
+      router.push(`/plants?${params.toString()}`);
       setOpen(false);
     }
   };

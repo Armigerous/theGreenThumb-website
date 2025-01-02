@@ -26,9 +26,6 @@ import { FilterSearch } from "./FilterSearch";
 import { FilterSectionAccordion } from "./FilterSectionAccordion";
 import { allFilters, FilterSection } from "@/types/filterData";
 
-/**
- * The main FilterPanel component.
- */
 export function FilterPanel() {
   const [showAdvancedFilters, setShowAdvancedFilters] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -49,7 +46,7 @@ export function FilterPanel() {
       allFilters
         // Show advanced sections only if showAdvancedFilters = true
         .filter((section) => (showAdvancedFilters ? true : !section.isAdvanced))
-        // Within each section, filter categories’ options based on searchTerm
+        // Filter category options by searchTerm
         .map((section) => ({
           ...section,
           categories: section.categories.map((cat) => ({
@@ -66,20 +63,30 @@ export function FilterPanel() {
             (cat) => cat.options.length > 0
           ),
         }))
-        // Finally, filter out sections with zero categories
+        // Filter out sections with zero categories
         .filter((section) => section.categories.length > 0)
     );
   }, [searchTerm, showAdvancedFilters]);
 
   // Apply filters
   const applyFilters = React.useCallback(() => {
+    // Collect only the active filters
     const activeFilters = Object.entries(selectedOptions)
       .filter(([, value]) => value)
       .map(([key]) => key);
 
-    // For simplicity, set each active filter in the query string with “=true”
-    const params = new URLSearchParams();
-    activeFilters.forEach((filter) => params.set(filter, "true"));
+    // Get current query params
+    const params = new URLSearchParams(window.location.search);
+
+    // Store active filters as a comma-separated list in the `filters` param
+    if (activeFilters.length > 0) {
+      params.set("filters", activeFilters.join(","));
+    } else {
+      params.delete("filters");
+    }
+
+    // Reset page to 1 if you want to go back to the first page after applying
+    params.delete("page");
 
     // Update the URL without a full refresh
     router.replace(`?${params.toString()}`);
@@ -88,7 +95,16 @@ export function FilterPanel() {
   // Clear filters
   const clearAllFilters = React.useCallback(() => {
     setSelectedOptions({});
-    router.replace("?");
+
+    // Get current query params
+    const params = new URLSearchParams(window.location.search);
+
+    // Remove `filters` param
+    params.delete("filters");
+    // Possibly also remove `page` if you want to reset pagination
+    params.delete("page");
+
+    router.replace(`?${params.toString()}`);
   }, [router]);
 
   return (

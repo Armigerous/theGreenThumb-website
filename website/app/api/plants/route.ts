@@ -187,6 +187,7 @@ export async function GET(request: Request) {
 
   try {
     // Base query:
+    // @ts-expect-error: Type instantiation is excessively deep due to complex Supabase response types
     let supabaseQuery = supabase
       .from("mainPlantData")
       .select(

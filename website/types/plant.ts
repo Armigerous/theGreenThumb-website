@@ -1,4 +1,5 @@
 import { Tables } from "@/supabase/supabase.schema";
+import { Image } from "sanity";
 
 export type PlantScientificNameRow = Tables<"scientificNames"> & {
   mainPlantData: {
@@ -11,6 +12,29 @@ export interface PlantScientificName {
   slug: string;
 }
 
+export interface PlantCardResult {
+  slug: string;
+  description: string;
+  scientificName: string;
+  commonName: string;
+  tag: string;
+  image: ImageData;
+}
+
+export interface SupabasePlantData {
+  slug: string;
+  description: string;
+  scientificNames: { scientificName: string }[];
+  commonNames: { commonName: string }[];
+  plantImages: {
+    img: string;
+    altText: string;
+    caption: string;
+    attribution: string;
+  }[];
+  tagsMapping: { tagId: number; tagsLookup: { name: string } }[];
+}
+
 export type ImageData = {
   img: string;
   altText?: string;
@@ -18,7 +42,7 @@ export type ImageData = {
   attribution?: string;
 };
 
-type MainPlantData = Tables<"mainPlantData">;
+export type MainPlantData = Tables<"mainPlantData">;
 
 export interface PlantData {
   id: MainPlantData["id"];

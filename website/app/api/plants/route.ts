@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
+import { PlantCardResult, SupabasePlantData } from "@/types/plant";
 
 /**
  * This map tells us how each "filter key" (e.g. "light") maps to
@@ -280,26 +281,28 @@ export async function GET(request: Request) {
     }
 
     // 4) Transform the data for the front end
-    const plants = data.map((plant) => ({
-      slug: plant.slug,
-      description: plant.description,
-      scientificName: plant.scientificNames?.[0]?.scientificName || "Unknown",
-      commonName: plant.commonNames?.[0]?.commonName || "N/A",
-      tag: plant.tagsMapping?.[0]?.tagsLookup?.name || "N/A",
-      image: plant.plantImages?.[0]
-        ? {
-            img: plant.plantImages[0].img,
-            altText: plant.plantImages[0].altText,
-            caption: plant.plantImages[0].caption,
-            attribution: plant.plantImages[0].attribution,
-          }
-        : {
-            img: "/no-plant-image.png",
-            altText: "No plant image available",
-            caption: "",
-            attribution: "",
-          },
-    }));
+    const plants: PlantCardResult[] = (data as SupabasePlantData[]).map(
+      (plant) => ({
+        slug: plant.slug,
+        description: plant.description,
+        scientificName: plant.scientificNames?.[0]?.scientificName || "Unknown",
+        commonName: plant.commonNames?.[0]?.commonName || "N/A",
+        tag: plant.tagsMapping?.[0]?.tagsLookup?.name || "N/A",
+        image: plant.plantImages?.[0]
+          ? {
+              img: plant.plantImages[0].img,
+              altText: plant.plantImages[0].altText,
+              caption: plant.plantImages[0].caption,
+              attribution: plant.plantImages[0].attribution,
+            }
+          : {
+              img: "/no-plant-image.png",
+              altText: "No plant image available",
+              caption: "",
+              attribution: "",
+            },
+      })
+    );
 
     return NextResponse.json({ results: plants, count });
   } catch (error) {

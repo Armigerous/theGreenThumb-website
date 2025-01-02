@@ -20,12 +20,20 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params; // Await the params before destructuring
+  const slug = (await params).slug;
   const category = await fetchCategoryBySlug(slug);
   const title = category?.title || "Category";
+  const description =
+    category?.description || `Explore tips in the category: ${title}`;
+
   return {
-    title: `${title} - Tips & Tricks`,
-    description: `Explore gardening tips and tricks in the category: ${title}`,
+    title: `${title} - Gardening Tips & Tricks`,
+    description,
+    openGraph: {
+      title: `${title} - Gardening Tips & Tricks`,
+      description,
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/tips/category/${slug}`,
+    },
   };
 }
 
@@ -42,8 +50,21 @@ const CategoryPage = async ({
   const categoryDetails =
     slug === "all" ? null : await fetchCategoryBySlug(slug); // Fetch specific category details
 
+  const jsonLdData = {
+    "@context": "https://schema.org",
+    "@type": "Thing",
+    name: categoryDetails?.title || "Category",
+    description: categoryDetails?.description || "Explore this category.",
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}/tips/category/${slug}`,
+  };
+
   return (
     <main>
+      <script
+        id="category-json-ld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }}
+      />
       <div className="container mx-auto py-8">
         <header className="mb-6">
           <h1 className="text-3xl font-bold text-cream-800">

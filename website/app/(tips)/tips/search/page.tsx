@@ -1,13 +1,18 @@
+import { Metadata } from "next";
 import SearchResults from "@/components/Tips/SearchResults";
 
+export const metadata: Metadata = {
+  title: "Search Tips - Gardening Insights",
+  description: "Search for gardening tips and tricks tailored to your needs.",
+};
+
 export default async function page({
-  searchParams,
+  params,
 }: {
-  searchParams: Promise<{ query?: string; page?: string }>;
+  params: Promise<{ query?: string; page?: string }>;
 }) {
-  // Search Query
-  const input = (await searchParams).query || "";
-  const page = parseInt((await searchParams).page || "1", 10);
+  const input = (await params).query || "";
+  const page = parseInt((await params).page || "1", 10);
 
   return (
     <>

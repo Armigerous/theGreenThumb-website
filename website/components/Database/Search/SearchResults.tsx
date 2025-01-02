@@ -28,7 +28,15 @@ interface ApiResponse {
   count: number;
 }
 
-const SearchResults = ({ query, page }: { query?: string; page: number }) => {
+const SearchResults = ({
+  query,
+  page,
+  filters,
+}: {
+  query?: string;
+  page: number;
+  filters?: string;
+}) => {
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -39,10 +47,20 @@ const SearchResults = ({ query, page }: { query?: string; page: number }) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(
-          `/api/plants?query=${query || ""}&limit=${limit}&offset=${offset}`
-        );
+        // Build the query string
+        let url = `/api/plants?limit=${limit}&offset=${offset}`;
 
+        // Only add the 'query' param if present
+        if (query) {
+          url += `&query=${encodeURIComponent(query)}`;
+        }
+
+        // Only add the 'filters' param if present
+        if (filters) {
+          url += `&filters=${encodeURIComponent(filters)}`;
+        }
+
+        const res = await fetch(url);
         if (!res.ok) throw new Error("Failed to fetch plant data");
 
         const fetchedData: ApiResponse = await res.json();
@@ -56,7 +74,7 @@ const SearchResults = ({ query, page }: { query?: string; page: number }) => {
     };
 
     fetchData();
-  }, [query, page, limit, offset]);
+  }, [query, page, filters, limit, offset]);
 
   if (loading) {
     return (
@@ -109,7 +127,6 @@ const SearchResults = ({ query, page }: { query?: string; page: number }) => {
           width={300}
           height={300}
           className="mx-auto rounded-md"
-          placeholder="blur"
         />
         <h2 className="text-2xl sm:text-3xl font-heading font-semibold tracking-tight text-red-600">
           Oops! Something went wrong 🌱

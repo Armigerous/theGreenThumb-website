@@ -153,7 +153,7 @@ export function FilterPanel() {
           <SidebarMenuItem>
             <Button
               variant="destructive"
-              className="w-full"
+              className="w-full text-cream-50"
               onClick={clearAllFilters}
             >
               Clear All

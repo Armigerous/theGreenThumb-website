@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/popover";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { PlantScientificName } from "@/types/plant";
-import { SortIcon } from "@sanity/icons";
 import { Search, SlidersHorizontalIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -149,10 +148,6 @@ export function Autocomplete() {
         <SlidersHorizontalIcon className="h-4 w-4" />
         <span>Filters</span>
       </SidebarTrigger>
-      <Button variant={"secondary"} className="text-cream-800 text-lg">
-        <SortIcon className="h-4 w-4" />
-        <span>Sort</span>
-      </Button>
     </div>
   );
 }

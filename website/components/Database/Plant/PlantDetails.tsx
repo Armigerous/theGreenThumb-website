@@ -604,12 +604,6 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
                         />
                       </div>
                     )}
-                    {soundFile && (
-                      <div>
-                        <h4 className="font-medium mb-2">Sound</h4>
-                        <audio src={soundFile} controls className="w-full" />
-                      </div>
-                    )}
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

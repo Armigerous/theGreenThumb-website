@@ -28,7 +28,7 @@ const AllCategories = async () => {
             key={category._id}
             className="rounded-xl shadow-md transition-transform text-left group"
           >
-            <Link href={category.slug.current}>
+            <Link href={`category/${category.slug.current}`}>
               <CardHeader className="flex justify-between pb-0">
                 <CardTitle className="line-clamp-1 hover:underline">
                   {category.title}
@@ -38,7 +38,7 @@ const AllCategories = async () => {
             <CardContent className="line-clamp-2 pt-0">
               {category.description}
             </CardContent>
-            <Link href={category.slug.current}>
+            <Link href={`category/${category.slug.current}`}>
               <CardFooter>
                 <span className="text-sm text-primary font-medium group-hover:underline flex items-center">
                   Read more <span className="ml-1">→</span>

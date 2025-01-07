@@ -3,7 +3,6 @@ import { fetchAllTipCategories, fetchCategoryBySlug } from "@/lib/utils";
 import SearchResults from "@/components/Tips/SearchResults";
 import { TipCategory } from "@/types/Tip";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 // Generate static paths for categories

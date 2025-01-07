@@ -22,7 +22,10 @@ const TipDetails = ({ tip }: { tip: Tip }) => {
       {/* Reading time */}
       <div className="m-3">4 min read </div>
       {/* Link to the first tag category */}
-      <Link href={`/categories/}`} className="m-3 hover:underline">
+      <Link
+        href={`/tips/category/${tip.categories[0].slug.current}`}
+        className="m-3 hover:underline"
+      >
         #{tip.categories[0].title}
       </Link>
     </div>

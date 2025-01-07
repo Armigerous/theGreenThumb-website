@@ -3,7 +3,7 @@ import { fetchAllTipCategories, fetchCategoryBySlug } from "@/lib/utils";
 import SearchResults from "@/components/Tips/SearchResults";
 import { TipCategory } from "@/types/Tip";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 // Generate static paths for categories
 export async function generateStaticParams() {
@@ -43,7 +43,7 @@ const CategoryPage = async ({
 }: {
   params: Promise<{ slug: string }>;
 }) => {
-  const { slug } = await params; // Ensure `params` is accessed correctly
+  const { slug } = await params;
 
   // Fetch posts and categories
   const categories = await fetchAllTipCategories();
@@ -90,9 +90,7 @@ const CategoryPage = async ({
                 key={category.slug.current}
                 href={`/tips/category/${category.slug.current}`}
               >
-                <Button variant={"default"} className="text-cream-50">
-                  {category.title}
-                </Button>
+                <Badge className="text-cream-50">{category.title}</Badge>
               </Link>
             ))}
           </div>

@@ -24,12 +24,12 @@ const Parallax: React.FC<ParallaxProps> = ({ type }) => {
       ref={ref}
     >
       {/* Responsive Text */}
-      <motion.h1
+      <motion.h2
         style={{ y: yText }}
         className="text-[10vw] sm:text-[8vh] md:text-[12vh] lg:text-[15vh] text-center font-black text-brand-500 z-10"
       >
         {type === "product" ? "Product Features" : "App Features"}
-      </motion.h1>
+      </motion.h2>
 
       {/* Background Layers */}
       <motion.div className="absolute z-30 w-full h-full bg-cover bg-bottom bg-[url('/Parallax/grass.svg')]" />

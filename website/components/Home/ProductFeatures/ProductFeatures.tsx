@@ -10,9 +10,9 @@ const ProductFeatures: React.FC = () => {
     <div className="relative m-5">
       <MaxWidthWrapper className="max-w-screen-xl">
         <div className="sticky top-[2vh] pt-14 lg:pt-16 text-cream-800 mb-36">
-          <h1 className="font-black text-3xl md:text-5xl lg:text-6xl text-center">
+          <h2 className="font-black text-3xl md:text-5xl lg:text-6xl text-center">
             Product Features
-          </h1>
+          </h2>
         </div>
 
         <div className="flex flex-col gap-10">

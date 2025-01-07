@@ -1,5 +1,4 @@
 import { Tables } from "@/supabase/supabase.schema";
-import { Image } from "sanity";
 
 export type PlantScientificNameRow = Tables<"scientificNames"> & {
   mainPlantData: {
@@ -48,6 +47,9 @@ export interface PlantData {
   id: MainPlantData["id"];
   slug: MainPlantData["slug"];
   scientificName: string;
+  commonNames: Array<{
+    commonName: string | null;
+  }>;
   genus: MainPlantData["genus"];
   species: MainPlantData["species"];
   family: MainPlantData["family"];

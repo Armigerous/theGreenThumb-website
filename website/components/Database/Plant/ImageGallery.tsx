@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import { useState } from "react";
 import {
@@ -21,11 +22,11 @@ type PlantImageGalleryProps = {
 };
 
 const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
-  const validImages = images?.filter((img) => img?.img) || []; // Filter out invalid images
+  const validImages = images?.filter((img) => img?.img) || [];
   const [selectedImage, setSelectedImage] = useState(validImages[0]?.img);
 
   if (validImages.length === 0) {
-    return <p className="text-cream-500">No images available.</p>; // Error handling
+    return <p className="text-cream-500">No images available.</p>;
   }
 
   const currentImage = validImages.find((img) => img.img === selectedImage);
@@ -41,6 +42,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
               alt={currentImage?.altText || "Plant image"}
               className="object-cover rounded-lg"
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         </DialogTrigger>
@@ -54,6 +56,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
               alt={currentImage?.altText || "Plant image"}
               className="object-contain rounded-lg"
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
           {currentImage?.caption && (
@@ -86,6 +89,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
               alt={image.altText || `Thumbnail ${index + 1}`}
               className="object-cover w-full h-full"
               fill
+              sizes="100px"
             />
           </Button>
         ))}
@@ -108,6 +112,8 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
                     alt={currentImage?.altText || "Main image"}
                     className="object-contain rounded-lg"
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority
                   />
                 </div>
                 {/* Thumbnail Column */}
@@ -127,6 +133,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
                         alt={image.altText || `Thumbnail ${index + 1}`}
                         className="object-cover w-full h-full"
                         fill
+                        sizes="100px"
                       />
                     </Button>
                   ))}
@@ -136,16 +143,6 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
           </Dialog>
         )}
       </div>
-
-      {/* Captions and Attribution */}
-      {currentImage?.caption && (
-        <div className="text-sm text-cream-600">
-          <p>{currentImage.caption}</p>
-          {currentImage.attribution && (
-            <p className="italic">Attribution: {currentImage.attribution}</p>
-          )}
-        </div>
-      )}
     </div>
   );
 };

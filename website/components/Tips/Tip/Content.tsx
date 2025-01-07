@@ -1,5 +1,6 @@
 import { Tip } from "@/types/Tip";
 import { PortableText, PortableTextReactComponents } from "@portabletext/react";
+import { TableValue } from "@sanity/table";
 import Image from "next/image";
 import slugify from "slugify";
 
@@ -40,6 +41,36 @@ const Content = ({ tip }: { tip: Tip }) => {
             style={{ maxWidth: "100%", height: "auto" }}
             className="rounded-lg"
           />
+        );
+      },
+      table: ({ value }: { value: TableValue }) => {
+        if (!value?.rows || value.rows.length === 0) {
+          return <p>No table data available</p>; // Gracefully handle empty tables
+        }
+
+        return (
+          <table className="table-auto border-collapse border w-full text-sm">
+            <tbody>
+              {value.rows.map((row, rowIndex) => (
+                <tr key={row._key} className="border-b border-cream-300">
+                  {row.cells.map((cell, cellIndex) => (
+                    <td
+                      key={cellIndex}
+                      className={`p-2 text-center border border-cream-300 ${
+                        rowIndex === 0
+                          ? "bg-brand-100 text-brand-800 font-bold" // Style for the first row
+                          : cellIndex === 0
+                            ? "bg-brand-50 text-brand-700 font-semibold" // Style for the first column
+                            : "bg-white text-foreground"
+                      }`}
+                    >
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         );
       },
     },

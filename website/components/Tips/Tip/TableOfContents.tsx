@@ -10,7 +10,8 @@ const TableOfContents = ({ tip }: { tip: Tip }) => {
     .filter(
       (block) =>
         block._type === "block" &&
-        (block.style === "h2" || block.style === "h3")
+        block.style !== undefined &&
+        ["h1", "h2", "h3", "h4"].includes(block.style)
     )
     .map((block) => {
       const text =
@@ -22,7 +23,7 @@ const TableOfContents = ({ tip }: { tip: Tip }) => {
       return {
         text,
         slug,
-        level: block.style === "h2" ? "two" : "three",
+        level: block.style as "h1" | "h2" | "h3" | "h4",
       };
     });
 
@@ -32,29 +33,37 @@ const TableOfContents = ({ tip }: { tip: Tip }) => {
 
   return (
     <details
-      className="border-2 border-solid border-cream-800 text-cream-800 rounded-lg p-4 sticky top-6 w-full overflow-hidden overflow-y-auto"
+      className="border-2 border-solid border-cream-800 text-cream-800 rounded-lg sticky 
+      top-6 w-full overflow-y-auto max-h-[calc(100vh-4rem)]"
       open
     >
-      <summary className="text-lg font-semibold capitalize cursor-pointer">
+      <summary
+        className="text-lg font-semibold capitalize cursor-pointer sticky top-0 
+       bg-cream-200 p-2"
+      >
         Table Of Contents
       </summary>
-      <ul className="mt-4 font-in text-base">
+      <ul className="mt-4 font-in text-base p-4 pt-0 bg-cream-50">
         {toc.map((heading) => (
-          <li key={`#${heading.slug}`} className="py-1">
+          <li
+            key={`#${heading.slug}`}
+            className={`py-1 ${
+              heading.level === "h1"
+                ? "pl-0 font-bold text-lg"
+                : heading.level === "h2"
+                  ? "pl-4 sm:pl-6 text-base"
+                  : heading.level === "h3"
+                    ? "pl-8 sm:pl-10 text-sm"
+                    : heading.level === "h4"
+                      ? "pl-12 sm:pl-14 text-xs"
+                      : ""
+            }`}
+          >
             <Link
               href={`#${heading.slug}`}
-              data-level={heading.level}
-              className="data-[level=two]:pl-0 data-[level=two]:pt-2
-                         data-[level=two]:border-t border-solid border-cream-800/40
-                         data-[level=three]:pl-4 sm:data-[level=three]:pl-6
-                         flex items-center justify-start"
+              className="flex items-center justify-start hover:underline"
             >
-              {heading.level === "three" && (
-                <span className="flex w-1 h-1 rounded-full bg-cream-800 mr-2">
-                  &nbsp;
-                </span>
-              )}
-              <span className="hover:underline">{heading.text}</span>
+              <span>{heading.text}</span>
             </Link>
           </li>
         ))}

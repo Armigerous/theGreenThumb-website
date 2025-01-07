@@ -5,6 +5,8 @@ import PlantDetails from "@/components/Database/Plant/PlantDetails";
 import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import { supabase } from "@/lib/supabaseClient";
 import { PlantData } from "@/types/plant";
+import { Metadata } from "next";
+import Head from "next/head";
 
 // Revalidate every 24 hours (86400 seconds) for Incremental Static Regeneration
 export const revalidate = 86400;
@@ -14,6 +16,7 @@ type MainPlantDataWithRelations = {
   id: number;
   slug: string;
   scientificNames: { scientificName: string }[];
+  commonNames: { commonName: string }[];
   genus: string;
   species: string;
   family: string;
@@ -144,6 +147,7 @@ const transformPlantData = (
     id: plantData.id,
     slug: plantData.slug,
     scientificName: plantData.scientificNames?.[0]?.scientificName || "",
+    commonNames: plantData.commonNames || [],
     genus: plantData.genus,
     species: plantData.species,
     family: plantData.family,
@@ -468,6 +472,119 @@ export async function generateStaticParams() {
 
 const plantCache: Record<string, PlantData> = {};
 
+// Generate Metadata for SEO
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  // Check cache first
+  if (plantCache[slug]) {
+    const plant = plantCache[slug];
+    return createMetadata(plant);
+  }
+
+  try {
+    const { data: plantData, error } = await supabase
+      .from("mainPlantData")
+      .select(
+        `
+        id,
+        slug,
+        scientificNames ( scientificName ),
+        commonNames ( commonName ),
+        genus,
+        species,
+        family,
+        description,
+        plantImages ( altText ),
+        tagsMapping ( tagsLookup ( name ) )
+        `
+      )
+      .eq("slug", slug)
+      .single<MainPlantDataWithRelations>();
+
+    if (error || !plantData) {
+      console.error(
+        "Error fetching plant data for metadata from Supabase:",
+        error?.message || "Plant not found"
+      );
+      return {
+        title: "Plant Not Found",
+        description: "The plant you are looking for does not exist.",
+      };
+    }
+
+    const plant: PlantData = transformPlantData(plantData);
+    // Cache the plant data for reuse in the page component
+    plantCache[slug] = plant;
+
+    return createMetadata(plant);
+  } catch (error) {
+    console.error(
+      "Unexpected error while fetching plant data for metadata:",
+      error
+    );
+    return {
+      title: "Error",
+      description: "An unexpected error occurred.",
+    };
+  }
+}
+
+// Helper function to create metadata
+const createMetadata = (plant: PlantData): Metadata => {
+  const title = `${plant.genus} ${plant.species} | ${plant.commonNames
+    .map((item) => item.commonName)
+    .join(
+      ", "
+    )} | ${plant.family} | ${plant.tags.map((tag) => tag).join(", ")}`.slice(
+    0,
+    65
+  ); // Page title
+
+  const description =
+    plant.description?.slice(0, 155) || "No description available"; // Ensure description is within 160 chars
+  const image = plant.plantImages[0]?.img || "/no-plant-image.jpg"; // Fallback image
+
+  return {
+    title,
+    description,
+    keywords: [
+      plant.genus,
+      plant.species,
+      plant.family,
+      ...plant.tags,
+      ...plant.attracts,
+      // Add more relevant keywords
+    ].join(", "),
+    openGraph: {
+      title,
+      description,
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/plant/${plant.slug}`,
+      images: [
+        {
+          url: image,
+          alt: plant.plantImages[0]?.altText || `${plant.scientificName} image`,
+        },
+      ],
+      siteName: "The GreenThumb",
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+    },
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_BASE_URL}/plant/${plant.slug}`,
+    },
+  };
+};
+
 // The main PlantPage component
 export default async function PlantPage({
   params,
@@ -482,6 +599,7 @@ export default async function PlantPage({
     return (
       <MaxWidthWrapper>
         <PlantDetails plant={plantCache[slug]} />
+        <StructuredData plant={plantCache[slug]} />
       </MaxWidthWrapper>
     );
   }
@@ -496,6 +614,7 @@ export default async function PlantPage({
         id,
         slug,
         scientificNames ( scientificName ),
+        commonNames ( commonName ),
         genus,
         species,
         family,
@@ -600,10 +719,13 @@ export default async function PlantPage({
 
     // Transform the Supabase data to match the PlantData type
     const plant: PlantData = transformPlantData(plantData);
+    // Cache the plant data for metadata generation
+    plantCache[slug] = plant;
 
     return (
       <MaxWidthWrapper>
         <PlantDetails plant={plant} />
+        <StructuredData plant={plant} />
       </MaxWidthWrapper>
     );
   } catch (error) {
@@ -615,3 +737,27 @@ export default async function PlantPage({
     );
   }
 }
+
+// Component to inject structured data (JSON-LD)
+const StructuredData = ({ plant }: { plant: PlantData }) => {
+  const jsonLd = {
+    "@context": "https://schema.org/",
+    "@type": "Plant",
+    name: `${plant.genus} ${plant.species}`,
+    description: plant.description,
+    scientificName: plant.scientificName,
+    family: plant.family,
+    image: plant.plantImages.map((img) => img.img),
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/plant/${plant.slug}`,
+    // Add more relevant schema properties as needed
+  };
+
+  return (
+    <Head>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+    </Head>
+  );
+};

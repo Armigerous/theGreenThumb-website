@@ -108,7 +108,7 @@ export function FilterPanel() {
   }, [router]);
 
   return (
-    <Sidebar side="left">
+    <Sidebar side="left" aria-label="Filter Panel">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

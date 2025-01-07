@@ -72,6 +72,7 @@ const PlantFact = ({
 const PlantDetails = ({ plant }: PlantDetailsProps) => {
   const {
     genus,
+    commonNames,
     species,
     scientificName,
     family,
@@ -201,8 +202,22 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
               Phonetic Spelling: {phoneticSpelling}
             </p>
           )}
+          {/** Added commonNames display here */}
+          {commonNames && commonNames.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold">Common Names:</h3>
+              <ul className="list-disc ml-6">
+                {commonNames.map((item, index) => (
+                  <li className="text-medium" key={index}>
+                    {item.commonName}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <div
-            className="prose prose-sm mb-4"
+            className="prose prose-sm mb-4 text-lg"
             dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
           />
         </div>

@@ -22,17 +22,55 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const slug = (await params).slug;
   const category = await fetchCategoryBySlug(slug);
+
   const title = category?.title || "Category";
   const description =
-    category?.description || `Explore tips in the category: ${title}`;
+    category?.description ||
+    `Explore a wide range of tips in the ${title} category.`;
 
   return {
-    title: `${title} - Gardening Tips & Tricks`,
+    title: `${title} - Gardening Tips & Tricks | The GreenThumb`,
     description,
+    keywords: [
+      title,
+      "gardening tips",
+      "horticulture tips",
+      `${title} tricks`,
+      "GreenThumb gardening",
+    ],
     openGraph: {
-      title: `${title} - Gardening Tips & Tricks`,
+      title: `${title} - Gardening Tips & Tricks | GreenThumb`,
       description,
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/tips/category/${slug}`,
+      // images: [
+      //   {
+      //     url: `${process.env.NEXT_PUBLIC_BASE_URL}/images/categories/${slug}-og.jpg`,
+      //     width: 1200,
+      //     height: 630,
+      //     alt: `${title} category overview image`,
+      //   },
+      // ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} - Gardening Tips & Tricks`,
+      description,
+      // images: [
+      //   {
+      //     url: `${process.env.NEXT_PUBLIC_BASE_URL}/images/categories/${slug}-twitter.jpg`,
+      //     width: 1200,
+      //     height: 630,
+      //     alt: `${title} category overview`,
+      //   },
+      // ],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      noarchive: false,
+      nosnippet: false,
+      notranslate: false,
+      noimageindex: false,
     },
   };
 }
@@ -50,12 +88,20 @@ const CategoryPage = async ({
   const categoryDetails =
     slug === "all" ? null : await fetchCategoryBySlug(slug); // Fetch specific category details
 
+  // JSON-LD data for structured markup
   const jsonLdData = {
     "@context": "https://schema.org",
-    "@type": "Thing",
+    "@type": "CollectionPage",
     name: categoryDetails?.title || "Category",
-    description: categoryDetails?.description || "Explore this category.",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL}/tips/category/${slug}`,
+    description:
+      categoryDetails?.description ||
+      "Explore a curated collection of tips and tricks.",
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/tips/category/${slug}`,
+    hasPart: categories.map((cat: TipCategory) => ({
+      "@type": "WebPage",
+      name: cat.title,
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/tips/category/${cat.slug.current}`,
+    })),
   };
 
   return (

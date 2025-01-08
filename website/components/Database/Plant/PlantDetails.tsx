@@ -308,154 +308,176 @@ const PlantDetails = ({ plant }: PlantDetailsProps) => {
         </TabsContent>
 
         <TabsContent value="physical">
-          <Accordion
-            type="single"
-            collapsible
-            className="w-full"
-            defaultValue="flower"
-          >
-            <AccordionItem value="flower">
-              <AccordionTrigger>
-                <Flower className="w-5 h-5 mr-2 no-rotate" />
-                Flower Characteristics
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <PlantFact label="Description" data={flowerDescription} />
-                    <PlantArrayFact label="Bloom Time" data={flowerBloomTime} />
-                    <PlantArrayFact label="Color" data={flowerColor} />
-                    <PlantArrayFact
-                      label="Inflorescence"
-                      data={flowerInflorescence}
-                    />
-                  </div>
-                  <div>
-                    <PlantArrayFact label="Petals" data={flowerPetals} />
-                    <PlantArrayFact label="Shape" data={flowerShape} />
-                    <PlantArrayFact label="Size" data={flowerSize} />
-                    <PlantArrayFact
-                      label="Value to Gardener"
-                      data={flowerValueToGardener}
-                    />
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="leaf">
-              <AccordionTrigger>
-                <Leaf className="w-5 h-5 mr-2 no-rotate" />
-                Leaf Characteristics
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <PlantFact label="Description" data={leafDescription} />
-                    <PlantArrayFact
-                      label="Arrangement"
-                      data={leafArrangement}
-                    />
-                    <PlantArrayFact
-                      label="Characteristics"
-                      data={leafCharacteristics}
-                    />
-                    <PlantArrayFact label="Color" data={leafColor} />
-                    <PlantArrayFact label="Fall Color" data={leafFallColor} />
-                  </div>
-                  <div>
-                    <PlantArrayFact label="Feel" data={leafFeel} />
-                    <PlantArrayFact
-                      label="Hairs Present"
-                      data={leafHairsPresent}
-                    />
-                    <PlantArrayFact label="Length" data={leafLength} />
-                    <PlantArrayFact label="Width" data={leafWidth} />
-                    <PlantArrayFact label="Margin" data={leafMargin} />
-                    <PlantArrayFact label="Shape" data={leafShape} />
-                    <PlantArrayFact label="Type" data={leafType} />
-                    <PlantArrayFact
-                      label="Value to Gardener"
-                      data={leafValueToGardener}
-                    />
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="fruit">
-              <AccordionTrigger>
-                <Fruit className="w-5 h-5 mr-2 no-rotate" />
-                Fruit Characteristics
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <PlantFact label="Description" data={fruitDescription} />
-                    <PlantArrayFact label="Color" data={fruitColor} />
-                    <PlantArrayFact
-                      label="Display/Harvest Time"
-                      data={fruitDisplayHarvestTime}
-                    />
-                  </div>
-                  <div>
-                    <PlantArrayFact label="Length" data={fruitLength} />
-                    <PlantArrayFact label="Type" data={fruitType} />
-                    <PlantArrayFact
-                      label="Value to Gardener"
-                      data={fruitValueToGardener}
-                    />
-                    <PlantArrayFact label="Width" data={fruitWidth} />
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="stem">
-              <AccordionTrigger>
-                <SeedlingIcon className="w-5 h-5 mr-2 no-rotate" />
-                Stem Characteristics
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <PlantFact label="Description" data={stemDescription} />
-                    <PlantArrayFact label="Aromatic" data={stemAromatic} />
-                    <PlantArrayFact label="Bud Scales" data={stemBudScales} />
-                    <PlantArrayFact
-                      label="Bud Terminal"
-                      data={stemBudTerminal}
-                    />
-                    <PlantArrayFact label="Buds" data={stemBuds} />
-                    <PlantArrayFact label="Color" data={stemColor} />
-                  </div>
-                  <div>
-                    <PlantArrayFact
-                      label="Cross Section"
-                      data={stemCrossSection}
-                    />
-                    <PlantArrayFact label="Form" data={stemForm} />
-                    <PlantArrayFact
-                      label="Leaf Scar Shape"
-                      data={stemLeafScarShape}
-                    />
-                    <PlantArrayFact label="Lenticels" data={stemLenticels} />
-                    <PlantArrayFact label="Pith" data={stemPith} />
-                    <PlantArrayFact label="Surface" data={stemSurface} />
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="bark">
-              <AccordionTrigger>
-                <TreeIcon className="w-5 h-5 mr-2 no-rotate" />
-                Bark Characteristics
-              </AccordionTrigger>
-              <AccordionContent>
-                <PlantFact label="Description" data={barkDescription} />
-                <PlantArrayFact label="Attachment" data={barkAttachment} />
-                <PlantArrayFact label="Color" data={barkColor} />
-                <PlantArrayFact label="Plate Shape" data={barkPlateShape} />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <Card>
+            <CardContent>
+              <Accordion
+                type="single"
+                collapsible
+                className="w-full"
+                defaultValue="flower"
+              >
+                <AccordionItem value="flower">
+                  <AccordionTrigger>
+                    <Flower className="w-5 h-5 mr-2 no-rotate" />
+                    Flower Characteristics
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <PlantFact
+                          label="Description"
+                          data={flowerDescription}
+                        />
+                        <PlantArrayFact
+                          label="Bloom Time"
+                          data={flowerBloomTime}
+                        />
+                        <PlantArrayFact label="Color" data={flowerColor} />
+                        <PlantArrayFact
+                          label="Inflorescence"
+                          data={flowerInflorescence}
+                        />
+                      </div>
+                      <div>
+                        <PlantArrayFact label="Petals" data={flowerPetals} />
+                        <PlantArrayFact label="Shape" data={flowerShape} />
+                        <PlantArrayFact label="Size" data={flowerSize} />
+                        <PlantArrayFact
+                          label="Value to Gardener"
+                          data={flowerValueToGardener}
+                        />
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="leaf">
+                  <AccordionTrigger>
+                    <Leaf className="w-5 h-5 mr-2 no-rotate" />
+                    Leaf Characteristics
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <PlantFact label="Description" data={leafDescription} />
+                        <PlantArrayFact
+                          label="Arrangement"
+                          data={leafArrangement}
+                        />
+                        <PlantArrayFact
+                          label="Characteristics"
+                          data={leafCharacteristics}
+                        />
+                        <PlantArrayFact label="Color" data={leafColor} />
+                        <PlantArrayFact
+                          label="Fall Color"
+                          data={leafFallColor}
+                        />
+                      </div>
+                      <div>
+                        <PlantArrayFact label="Feel" data={leafFeel} />
+                        <PlantArrayFact
+                          label="Hairs Present"
+                          data={leafHairsPresent}
+                        />
+                        <PlantArrayFact label="Length" data={leafLength} />
+                        <PlantArrayFact label="Width" data={leafWidth} />
+                        <PlantArrayFact label="Margin" data={leafMargin} />
+                        <PlantArrayFact label="Shape" data={leafShape} />
+                        <PlantArrayFact label="Type" data={leafType} />
+                        <PlantArrayFact
+                          label="Value to Gardener"
+                          data={leafValueToGardener}
+                        />
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="fruit">
+                  <AccordionTrigger>
+                    <Fruit className="w-5 h-5 mr-2 no-rotate" />
+                    Fruit Characteristics
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <PlantFact
+                          label="Description"
+                          data={fruitDescription}
+                        />
+                        <PlantArrayFact label="Color" data={fruitColor} />
+                        <PlantArrayFact
+                          label="Display/Harvest Time"
+                          data={fruitDisplayHarvestTime}
+                        />
+                      </div>
+                      <div>
+                        <PlantArrayFact label="Length" data={fruitLength} />
+                        <PlantArrayFact label="Type" data={fruitType} />
+                        <PlantArrayFact
+                          label="Value to Gardener"
+                          data={fruitValueToGardener}
+                        />
+                        <PlantArrayFact label="Width" data={fruitWidth} />
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="stem">
+                  <AccordionTrigger>
+                    <SeedlingIcon className="w-5 h-5 mr-2 no-rotate" />
+                    Stem Characteristics
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <PlantFact label="Description" data={stemDescription} />
+                        <PlantArrayFact label="Aromatic" data={stemAromatic} />
+                        <PlantArrayFact
+                          label="Bud Scales"
+                          data={stemBudScales}
+                        />
+                        <PlantArrayFact
+                          label="Bud Terminal"
+                          data={stemBudTerminal}
+                        />
+                        <PlantArrayFact label="Buds" data={stemBuds} />
+                        <PlantArrayFact label="Color" data={stemColor} />
+                      </div>
+                      <div>
+                        <PlantArrayFact
+                          label="Cross Section"
+                          data={stemCrossSection}
+                        />
+                        <PlantArrayFact label="Form" data={stemForm} />
+                        <PlantArrayFact
+                          label="Leaf Scar Shape"
+                          data={stemLeafScarShape}
+                        />
+                        <PlantArrayFact
+                          label="Lenticels"
+                          data={stemLenticels}
+                        />
+                        <PlantArrayFact label="Pith" data={stemPith} />
+                        <PlantArrayFact label="Surface" data={stemSurface} />
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="bark">
+                  <AccordionTrigger>
+                    <TreeIcon className="w-5 h-5 mr-2 no-rotate" />
+                    Bark Characteristics
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <PlantFact label="Description" data={barkDescription} />
+                    <PlantArrayFact label="Attachment" data={barkAttachment} />
+                    <PlantArrayFact label="Color" data={barkColor} />
+                    <PlantArrayFact label="Plate Shape" data={barkPlateShape} />
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="care">

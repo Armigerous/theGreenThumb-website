@@ -34,7 +34,7 @@ const TableOfContents = ({ tip }: { tip: Tip }) => {
   return (
     <details
       className="border-2 border-solid border-cream-800 text-cream-800 rounded-lg sticky 
-      top-6 w-full overflow-y-auto max-h-[calc(100vh-4rem)]"
+      top-6 w-full overflow-y-auto max-h-[calc(100vh-4rem)] no-scrollbar"
       open
     >
       <summary

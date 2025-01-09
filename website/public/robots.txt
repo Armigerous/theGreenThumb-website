@@ -11,5 +11,3 @@ Host: http://localhost:3000
 
 # Sitemaps
 Sitemap: http://localhost:3000/sitemap.xml
-Sitemap: https://www.theofficialgreenthumb.com/blog-sitemap.xml
-Sitemap: https://www.theofficialgreenthumb.com/category-sitemap.xml

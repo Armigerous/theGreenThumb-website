@@ -448,7 +448,7 @@ export async function generateStaticParams() {
     const { data, error } = await supabase
       .from("mainPlantData")
       .select("slug")
-      .limit(100);
+      .limit(150);
 
     if (error) {
       console.error("Error fetching slugs from Supabase:", error.message);

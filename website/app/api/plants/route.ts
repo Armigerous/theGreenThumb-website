@@ -77,17 +77,9 @@ const FILTER_MAP: Record<
     mappingTable: "habitMapping",
     lookupTable: "habitLookup",
   },
-  "growth-rate": {
-    mappingTable: "growthRateMapping",
-    lookupTable: "growthRateLookup",
-  },
   maintenance: {
     mappingTable: "maintenanceMapping",
     lookupTable: "maintenanceLookup",
-  },
-  texture: {
-    mappingTable: "textureMapping",
-    lookupTable: "textureLookup",
   },
   "flower-color": {
     mappingTable: "flowerColorMapping",
@@ -218,9 +210,7 @@ export async function GET(request: Request) {
           plantTypesMapping!inner ( plantTypesLookup!inner ( name ) ),
           leafCharacteristicsMapping!inner ( leafCharacteristicsLookup!inner ( name ) ),
           habitMapping!inner ( habitLookup!inner ( name ) ),
-          growthRateMapping!inner ( growthRateLookup!inner ( name ) ),
           maintenanceMapping!inner ( maintenanceLookup!inner ( name ) ),
-          textureMapping!inner ( textureLookup!inner ( name ) ),
           flowerColorMapping!inner ( flowerColorLookup!inner ( name ) ),
           flowerValueToGardenerMapping!inner ( flowerValueToGardenerLookup!inner ( name ) ),
           flowerBloomTimeMapping!inner ( flowerBloomTimeLookup!inner ( name ) ),

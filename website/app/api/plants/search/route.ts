@@ -1,24 +1,19 @@
 // route.ts
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
-import { PlantScientificName, PlantScientificNameRow } from "@/types/plant";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("query")?.toLowerCase() || "";
 
   try {
-    // Execute the query with proper typing
-    const { data, error } = (await supabase
-      .from("scientificNames")
-      .select(
-        `
-        scientificName,
-        mainPlantData ( slug )
-      `
-      )
-      .ilike("scientificName", `%${query}%`)
-      .limit(7)) as { data: PlantScientificNameRow[] | null; error: Error };
+    // Query the plant_autocomplete view for matching scientific names
+    const { data, error } = await supabase
+      .from("plant_autocomplete")
+      .select("slug, scientific_name")
+      .ilike("scientific_name", `%${query}%`)
+      .order("scientific_name", { ascending: true }) // Sort in ascending order
+      .limit(7);
 
     if (error) {
       console.error("Supabase error:", error.message);
@@ -35,13 +30,7 @@ export async function GET(request: Request) {
       );
     }
 
-    // Transform the data to match the PlantScientificName type
-    const plants: PlantScientificName[] = data.map((row) => ({
-      scientificName: row.scientificName,
-      slug: row.mainPlantData.slug,
-    }));
-
-    return NextResponse.json(plants);
+    return NextResponse.json({ results: data });
   } catch (error) {
     console.error("Unexpected error:", error);
     return NextResponse.json(

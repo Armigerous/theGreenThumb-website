@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import PaginationComponent from "../Pagination";
 import PlantCard from "@/components/Database/PlantCard";
-import { Skeleton } from "@/components/ui/skeleton"; // Import the Skeleton component
+import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect } from "react";
 
 export const revalidate = 86400; // Revalidate every 24 hours
@@ -47,15 +47,15 @@ const SearchResults = ({
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Build the query string
-        let url = `/api/plants?limit=${limit}&offset=${offset}`;
+        // Use the API endpoint for plant card data.
+        let url = `/api/plants/plant_card?limit=${limit}&offset=${offset}`;
 
-        // Only add the 'query' param if present
+        // Only add the 'query' param if present.
         if (query) {
           url += `&query=${encodeURIComponent(query)}`;
         }
 
-        // Only add the 'filters' param if present
+        // Only add the 'filters' param if present.
         if (filters) {
           url += `&filters=${encodeURIComponent(filters)}`;
         }
@@ -122,7 +122,7 @@ const SearchResults = ({
     return (
       <div className="container mx-auto px-4 py-8 text-center">
         <Image
-          src="/sad-plant.png" // Replace with the path to your error image
+          src="/sad-plant.png"
           alt="Error"
           width={300}
           height={300}

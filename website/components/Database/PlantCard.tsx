@@ -51,7 +51,7 @@ const PlantCard = ({ plant }: { plant: Plant }) => {
     >
       <Link href={`/plant/${plant.slug}`}>
         <Image
-          src={imageUrl}
+          src={imageUrl || "/no-plant-image.png"}
           alt={plant.image?.altText || "Plant Image"}
           width={300}
           height={200}

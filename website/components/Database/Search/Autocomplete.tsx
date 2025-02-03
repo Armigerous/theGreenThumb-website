@@ -15,7 +15,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { PlantScientificName } from "@/types/plant";
 import { Search, SlidersHorizontalIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -23,7 +22,7 @@ import { useEffect, useRef, useState } from "react";
 export function Autocomplete() {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [plants, setPlants] = useState<PlantScientificName[]>([]); // Use ScientificNameData
+  const [plants, setPlants] = useState([]); // Use ScientificNameData
   const triggerRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
 
@@ -38,8 +37,8 @@ export function Autocomplete() {
             : `/api/plants/search?query=${encodeURIComponent(searchQuery.trim())}`;
 
         const response = await fetch(url);
-        const data = await response.json();
-        setPlants(data);
+        const result = await response.json();
+        setPlants(result.results);
       } catch (error) {
         console.error("Error fetching plants:", error);
       }
@@ -124,10 +123,10 @@ export function Autocomplete() {
                         setOpen(false);
                       }}
                       className="cursor-pointer hover:bg-brand-100"
-                      value={plant.scientificName}
+                      value={plant.scientific_name}
                     >
                       <span>
-                        {highlightMatch(plant.scientificName, searchQuery)}
+                        {highlightMatch(plant.scientific_name, searchQuery)}
                       </span>
                     </CommandItem>
                   ))}

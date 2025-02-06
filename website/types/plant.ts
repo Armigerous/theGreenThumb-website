@@ -9,8 +9,19 @@ export interface PlantImage {
   attribution?: string | null;
 }
 
+export interface PlantCardData {
+  slug?: string | null;
+  scientific_name?: string | null;
+  description?: string | null;
+  first_common_name?: string | null;
+  first_tag?: string | null;
+  first_image?: string | null;
+  first_image_alt_text?: string | null;
+}
+
 /** Full type for plant data (update or split out as needed) */
 export interface PlantData {
+  slug?: string | null;
   genus?: string | null;
   common_names?: (string | null)[];
   species?: string | null;

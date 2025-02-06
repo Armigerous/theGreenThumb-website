@@ -14,25 +14,14 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { PlantCardData } from "@/types/plant";
 
-interface Plant {
-  slug: string;
-  description: string;
-  scientificName: string;
-  commonName: string;
-  tag: string;
-  image: {
-    img: string;
-    altText: string;
-    caption: string;
-    attribution: string;
-  };
-}
-
-const PlantCard = ({ plant }: { plant: Plant }) => {
+const PlantCard = ({ plant }: { plant: PlantCardData }) => {
   const [blurDataUrl, setBlurDataUrl] = useState<string | undefined>(undefined);
 
-  const imageUrl = plant.image ? plant.image.img : "/no-plant-image.png";
+  const imageUrl = plant.first_image
+    ? plant.first_image
+    : "/no-plant-image.png";
 
   useEffect(() => {
     const fetchBlurDataUrl = async () => {
@@ -52,7 +41,7 @@ const PlantCard = ({ plant }: { plant: Plant }) => {
       <Link href={`/plant/${plant.slug}`}>
         <Image
           src={imageUrl || "/no-plant-image.png"}
-          alt={plant.image?.altText || "Plant Image"}
+          alt={plant.first_image_alt_text || "Plant Image"}
           width={300}
           height={200}
           className="w-full object-cover h-48"
@@ -64,15 +53,15 @@ const PlantCard = ({ plant }: { plant: Plant }) => {
       <CardHeader>
         <Link href={`/plant/${plant.slug}`} className="group/header">
           <CardTitle className="text-lg font-semibold line-clamp-1 group-hover/header:underline">
-            {plant.scientificName}
+            {plant.scientific_name}
           </CardTitle>
           <CardDescription className="text-sm text-muted-foreground line-clamp-1">
-            {plant.commonName}
+            {plant.first_common_name}
           </CardDescription>
         </Link>
-        {plant.tag && (
+        {plant.first_tag && (
           <Link href={`/plant/${plant.slug}`}>
-            <Badge className="text-cream-50">{plant.tag}</Badge>
+            <Badge className="text-cream-50">{plant.first_tag}</Badge>
           </Link>
         )}
       </CardHeader>

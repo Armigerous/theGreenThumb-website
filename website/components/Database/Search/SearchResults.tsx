@@ -6,25 +6,11 @@ import PaginationComponent from "../Pagination";
 import PlantCard from "@/components/Database/PlantCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect } from "react";
-
+import { PlantData } from "@/types/plant";
 export const revalidate = 86400; // Revalidate every 24 hours
 
-interface Plant {
-  slug: string;
-  description: string;
-  scientificName: string;
-  commonName: string;
-  tag: string;
-  image: {
-    img: string;
-    altText: string;
-    caption: string;
-    attribution: string;
-  };
-}
-
 interface ApiResponse {
-  results: Plant[];
+  results: PlantData[];
   count: number;
 }
 

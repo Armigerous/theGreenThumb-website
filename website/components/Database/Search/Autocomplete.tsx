@@ -19,10 +19,16 @@ import { Search, SlidersHorizontalIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+// First, define the type for a plant result
+interface PlantSearchResult {
+  slug: string;
+  scientific_name: string;
+}
+
 export function Autocomplete() {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [plants, setPlants] = useState([]); // Use ScientificNameData
+  const [plants, setPlants] = useState<PlantSearchResult[]>([]);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
 

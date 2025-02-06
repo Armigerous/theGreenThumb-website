@@ -10,20 +10,34 @@ import { PlantData } from "@/types/plant";
 // Revalidate every 24 hours (86400 seconds) for ISR
 export const revalidate = 86400;
 
+export async function generateStaticParams() {
+  const { data: plants, error } = await supabase
+    .from("plant_autocomplete")
+    .select("slug");
+
+  if (error) {
+    console.error("Error fetching slugs:", error.message);
+    return [];
+  }
+
+  return plants.map((plant) => ({
+    slug: plant.slug,
+  }));
+}
+
 /**
+
  * A simple in-memory cache to avoid duplicate fetches.
  */
 const plantCache: Record<string, PlantData> = {};
 
-/**
- * The main PlantPage component.
- */
 export default async function PlantPage({
   params,
 }: {
+  // Keep the Promise-based params if that's your requirement:
   params: Promise<{ slug: string }>;
 }) {
-  const slug = (await params).slug;
+  const { slug } = await params;
 
   // Return from cache if available
   if (plantCache[slug]) {
@@ -37,13 +51,13 @@ export default async function PlantPage({
 
   try {
     // Fetch data from the materialized view
-    const { data: plant, error } = await supabase
+    const { data: rawPlant, error } = await supabase
       .from("plant_full_data")
       .select("*")
       .eq("slug", slug)
       .single();
 
-    if (error || !plant) {
+    if (error || !rawPlant) {
       console.error(
         "Error fetching plant data:",
         error?.message || "Not found"
@@ -51,7 +65,8 @@ export default async function PlantPage({
       return <div className="text-center text-red-500">Plant not found</div>;
     }
 
-    plantCache[slug] = plant as PlantData;
+    // Cache the fully transformed data
+    plantCache[slug] = rawPlant as PlantData;
 
     return (
       <MaxWidthWrapper>
@@ -80,7 +95,6 @@ const StructuredData = ({ plant }: { plant: PlantData }) => {
     description: plant.description,
     scientificName: plant.scientific_name,
     family: plant.family,
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/plant/${plant.slug}`,
   };
 
   return (

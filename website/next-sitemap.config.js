@@ -8,13 +8,8 @@ module.exports = {
   robotsTxtOptions: {
     policies: [
       { userAgent: "*", allow: "/" }, // Allow all bots to crawl the entire site
-      { userAgent: "Googlebot", disallow: "/admin" }, // Disallow Googlebot from /admin
+      { userAgent: "Googlebot", disallow: "/studio" }, // Disallow Googlebot from /studio
     ],
-    additionalSitemaps: [
-      `${process.env.NEXT_PUBLIC_BASE_URL}/sitemap.xml`,
-      // `${process.env.NEXT_PUBLIC_BASE_URL}/blog-sitemap.xml`,
-      // `${process.env.NEXT_PUBLIC_BASE_URL}/category-sitemap.xml`,
-      // `${process.env.NEXT_PUBLIC_BASE_URL}/tips-and-tricks-sitemap.xml`,
-    ],
+    additionalSitemaps: [`${process.env.NEXT_PUBLIC_BASE_URL}/sitemap.xml`],
   },
 };

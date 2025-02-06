@@ -51,7 +51,7 @@ export default async function PlantPage({
     }
 
     // Cache the fully transformed data
-    plantCache[slug] = rawPlant;
+    plantCache[slug] = rawPlant as PlantData;
 
     return (
       <MaxWidthWrapper>

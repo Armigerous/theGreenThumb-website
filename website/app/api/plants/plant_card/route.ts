@@ -59,15 +59,11 @@ export async function GET(request: Request) {
   const plants = (data || []).map((plant) => ({
     slug: plant.slug,
     description: plant.description,
-    scientificName: plant.scientific_name,
-    commonName: plant.first_common_name,
-    tag: plant.first_tag,
-    image: {
-      img: plant.first_image?.trim() ? plant.first_image : null,
-      altText: plant.first_image_alt_text,
-      caption: "",
-      attribution: "",
-    },
+    scientific_name: plant.scientific_name,
+    first_common_name: plant.first_common_name,
+    first_tag: plant.first_tag,
+    first_image: plant.first_image,
+    first_image_alt_text: plant.first_image_alt_text,
   }));
 
   return NextResponse.json({ results: plants, count });

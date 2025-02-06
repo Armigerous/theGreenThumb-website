@@ -11,6 +11,7 @@ import {
 } from "@/sanity/lib/queries";
 import { TipCategory } from "@/types/Tip";
 import { clsx, type ClassValue } from "clsx";
+import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -47,16 +48,22 @@ export const fetchAllTipTitles = cache(async () => {
   }
 });
 
-export const fetchAllTipCategories = cache(async () => {
-  try {
-    const categories = await client.fetch(ALL_CATEGORIES_QUERY);
-    return categories; // Extract and return just the titles
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    throw new Error("Failed to fetch categories");
+export const fetchAllTipCategories = unstable_cache(
+  async () => {
+    try {
+      const categories = await client.fetch(ALL_CATEGORIES_QUERY);
+      return categories;
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      throw new Error("Failed to fetch categories");
+    }
+  },
+  ["tip-categories"],
+  {
+    revalidate: 86400, // 24 hours
+    tags: ["categories"],
   }
-});
-
+);
 type SlugArray = { slug: string }[];
 export const fetchAllTipSlugs = cache(async (): Promise<SlugArray> => {
   try {
@@ -78,26 +85,29 @@ export async function fetchPostViewsById(id: string) {
   }
 }
 
-export async function fetchPaginatedPosts(
-  start: number,
-  end: number,
-  input: string = ""
-) {
-  try {
-    const data = await client.fetch(PAGINATED_POSTS_QUERY, {
-      start,
-      end,
-      input,
-    });
-    return {
-      tips: data.posts,
-      totalCount: data.totalCount,
-    };
-  } catch (error) {
-    console.error("Error fetching paginated posts:", error);
-    throw new Error("Failed to fetch paginated posts");
+export const fetchPaginatedPosts = unstable_cache(
+  async (start: number, end: number, input: string = "") => {
+    try {
+      const data = await client.fetch(PAGINATED_POSTS_QUERY, {
+        start,
+        end,
+        input,
+      });
+      return {
+        tips: data.posts,
+        totalCount: data.totalCount,
+      };
+    } catch (error) {
+      console.error("Error fetching paginated posts:", error);
+      throw new Error("Failed to fetch paginated posts");
+    }
+  },
+  ["paginated-posts"],
+  {
+    revalidate: 3600,
+    tags: ["posts"],
   }
-}
+);
 
 export async function fetchLastSixPosts() {
   try {

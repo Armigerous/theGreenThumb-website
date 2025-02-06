@@ -4,7 +4,7 @@ import React from "react";
 import PlantDetails from "@/components/Database/Plant/PlantDetails";
 import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import { supabase } from "@/lib/supabaseClient";
-import Head from "next/head";
+import { unstable_cache } from "next/cache";
 import { PlantData } from "@/types/plant";
 
 // Revalidate every 24 hours (86400 seconds) for ISR
@@ -25,32 +25,9 @@ export async function generateStaticParams() {
   }));
 }
 
-/**
-
- * A simple in-memory cache to avoid duplicate fetches.
- */
-const plantCache: Record<string, PlantData> = {};
-
-export default async function PlantPage({
-  params,
-}: {
-  // Keep the Promise-based params if that's your requirement:
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-
-  // Return from cache if available
-  if (plantCache[slug]) {
-    return (
-      <MaxWidthWrapper>
-        <PlantDetails plant={plantCache[slug]} />
-        <StructuredData plant={plantCache[slug]} />
-      </MaxWidthWrapper>
-    );
-  }
-
-  try {
-    // Fetch data from the materialized view
+// Cache the plant data fetch function
+const getPlantData = unstable_cache(
+  async (slug: string) => {
     const { data: rawPlant, error } = await supabase
       .from("plant_full_data")
       .select("*")
@@ -58,27 +35,41 @@ export default async function PlantPage({
       .single();
 
     if (error || !rawPlant) {
-      console.error(
-        "Error fetching plant data:",
-        error?.message || "Not found"
-      );
-      return <div className="text-center text-red-500">Plant not found</div>;
+      throw new Error(error?.message || "Plant not found");
     }
 
-    // Cache the fully transformed data
-    plantCache[slug] = rawPlant as PlantData;
+    return rawPlant as PlantData;
+  },
+  ["plant-data"],
+  {
+    revalidate: 86400, // 24 hours
+    tags: ["plants"],
+  }
+);
+
+export default async function PlantPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+
+  try {
+    const plant = await getPlantData(slug);
 
     return (
       <MaxWidthWrapper>
-        <PlantDetails plant={plantCache[slug]} />
-        <StructuredData plant={plantCache[slug]} />
+        <PlantDetails plant={plant} />
+        <StructuredData plant={plant} />
       </MaxWidthWrapper>
     );
   } catch (error) {
-    console.error("Unexpected error while fetching plant data:", error);
+    console.error("Error fetching plant data:", error);
     return (
       <div className="text-center text-red-500">
-        An unexpected error occurred
+        {error instanceof Error && error.message === "Plant not found"
+          ? "Plant not found"
+          : "An unexpected error occurred"}
       </div>
     );
   }
@@ -98,11 +89,9 @@ const StructuredData = ({ plant }: { plant: PlantData }) => {
   };
 
   return (
-    <Head>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-    </Head>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
   );
 };

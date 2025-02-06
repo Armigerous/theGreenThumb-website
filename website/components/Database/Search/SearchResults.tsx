@@ -7,12 +7,23 @@ import PlantCard from "@/components/Database/PlantCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect } from "react";
 import { PlantData } from "@/types/plant";
-export const revalidate = 86400; // Revalidate every 24 hours
+
+// Cache structure to store API responses
+interface CacheEntry {
+  data: ApiResponse;
+  timestamp: number;
+}
 
 interface ApiResponse {
   results: PlantData[];
   count: number;
 }
+
+// Cache duration in milliseconds (1 hour)
+const CACHE_DURATION = 60 * 60 * 1000;
+
+// In-memory cache object
+const responseCache: Record<string, CacheEntry> = {};
 
 const SearchResults = ({
   query,
@@ -33,23 +44,34 @@ const SearchResults = ({
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Use the API endpoint for plant card data.
+        // Construct URL
         let url = `/api/plants/plant_card?limit=${limit}&offset=${offset}`;
+        if (query) url += `&query=${encodeURIComponent(query)}`;
+        if (filters) url += `&filters=${encodeURIComponent(filters)}`;
 
-        // Only add the 'query' param if present.
-        if (query) {
-          url += `&query=${encodeURIComponent(query)}`;
+        // Check cache first
+        const cacheKey = url;
+        const cachedResponse = responseCache[cacheKey];
+        const now = Date.now();
+
+        if (cachedResponse && now - cachedResponse.timestamp < CACHE_DURATION) {
+          setData(cachedResponse.data);
+          setLoading(false);
+          return;
         }
 
-        // Only add the 'filters' param if present.
-        if (filters) {
-          url += `&filters=${encodeURIComponent(filters)}`;
-        }
-
+        // If not in cache or expired, fetch from API
         const res = await fetch(url);
         if (!res.ok) throw new Error("Failed to fetch plant data");
 
         const fetchedData: ApiResponse = await res.json();
+
+        // Update cache
+        responseCache[cacheKey] = {
+          data: fetchedData,
+          timestamp: now,
+        };
+
         setData(fetchedData);
       } catch (error) {
         console.error("Error fetching search results:", error);

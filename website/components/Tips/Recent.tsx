@@ -4,8 +4,18 @@ import { fetchLastSixPosts } from "@/lib/utils";
 import Link from "next/link";
 import { Tip } from "@/types/Tip";
 
+// Revalidate cache every 24 hours
+export const revalidate = 86400;
+
 const Recent = async () => {
   const data: Tip[] = await fetchLastSixPosts();
+
+  // Add cache headers to response
+  const response = new Response(JSON.stringify(data));
+  response.headers.set(
+    "Cache-Control",
+    "public, s-maxage=86400, stale-while-revalidate=172800"
+  );
 
   return (
     <section>

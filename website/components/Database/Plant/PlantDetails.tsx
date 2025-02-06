@@ -202,7 +202,6 @@ const PlantDetails: React.FC<PlantDetailsProps> = ({ plant }) => {
     bark_description: barkDescription,
     poison_symptoms: poisonSymptoms,
     poison_toxic_principle: poisonToxicPrinciple,
-
     fire_risk: fireRisk,
     flower_size: flowerSize,
     fruit_length: fruitLength,

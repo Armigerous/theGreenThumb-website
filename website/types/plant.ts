@@ -8,7 +8,18 @@ export interface PlantData {
   description: string;
   scientific_name: string;
   family: string;
-  images: string[]; // assuming images are stored as an array of URLs
+  images?: PlantImage[] | null;
   sound_file: string; // the URL or path to your sound file
   // ... add other properties as needed
+}
+
+export interface PlantImage {
+  /** The actual image URL */
+  img: string | null;
+  /** Text describing the image */
+  alt_text?: string | null;
+  /** A short caption */
+  caption?: string | null;
+  /** Attribution info (e.g., photographer) */
+  attribution?: string | null;
 }

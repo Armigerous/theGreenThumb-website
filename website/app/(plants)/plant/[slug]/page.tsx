@@ -5,7 +5,7 @@ import PlantDetails from "@/components/Database/Plant/PlantDetails";
 import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import { supabase } from "@/lib/supabaseClient";
 import Head from "next/head";
-import { PlantData } from "@/types/plant";
+import { PlantData, PlantImage } from "@/types/plant";
 
 // Revalidate every 24 hours (86400 seconds) for ISR
 export const revalidate = 86400;
@@ -15,15 +15,13 @@ export const revalidate = 86400;
  */
 const plantCache: Record<string, PlantData> = {};
 
-/**
- * The main PlantPage component.
- */
 export default async function PlantPage({
   params,
 }: {
+  // Keep the Promise-based params if that’s your requirement:
   params: Promise<{ slug: string }>;
 }) {
-  const slug = (await params).slug;
+  const { slug } = await params;
 
   // Return from cache if available
   if (plantCache[slug]) {
@@ -37,13 +35,13 @@ export default async function PlantPage({
 
   try {
     // Fetch data from the materialized view
-    const { data: plant, error } = await supabase
+    const { data: rawPlant, error } = await supabase
       .from("plant_full_data")
       .select("*")
       .eq("slug", slug)
       .single();
 
-    if (error || !plant) {
+    if (error || !rawPlant) {
       console.error(
         "Error fetching plant data:",
         error?.message || "Not found"
@@ -51,7 +49,30 @@ export default async function PlantPage({
       return <div className="text-center text-red-500">Plant not found</div>;
     }
 
-    plantCache[slug] = plant as PlantData;
+    // Transform the raw DB object to match your code’s shape
+    // (assuming rawPlant.images is string[] or PlantImage[]).
+    const transformedImages: PlantImage[] | undefined =
+      rawPlant.images && Array.isArray(rawPlant.images)
+        ? rawPlant.images.map((item: string | PlantImage) => {
+            if (typeof item === "object" && item !== null) {
+              return item;
+            }
+            return {
+              img: item as string,
+              alt_text: null,
+              caption: null,
+              attribution: null,
+            };
+          })
+        : undefined; // Ensure null is converted to undefined
+
+    const plant: PlantData = {
+      ...rawPlant,
+      images: transformedImages,
+    };
+
+    // Cache the fully transformed data
+    plantCache[slug] = plant;
 
     return (
       <MaxWidthWrapper>

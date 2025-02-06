@@ -61,8 +61,8 @@ export function Autocomplete() {
       // Update the "query" param
       params.set("query", searchQuery.trim());
 
-      // (Optional) Reset page to 1 if you have pagination
-      // params.delete("page");
+      // Reset page to 1
+      params.delete("page");
 
       // Push the merged params back to the URL
       router.push(`/plants?${params.toString()}`);

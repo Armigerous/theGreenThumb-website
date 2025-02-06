@@ -4,7 +4,7 @@ Allow: /
 
 # Googlebot
 User-agent: Googlebot
-Disallow: /admin
+Disallow: /studio
 
 # Host
 Host: http://localhost:3000

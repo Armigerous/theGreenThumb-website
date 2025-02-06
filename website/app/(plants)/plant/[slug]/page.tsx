@@ -10,6 +10,21 @@ import { PlantData } from "@/types/plant";
 // Revalidate every 24 hours (86400 seconds) for ISR
 export const revalidate = 86400;
 
+export async function generateStaticParams() {
+  const { data: plants, error } = await supabase
+    .from("plant_autocomplete")
+    .select("slug");
+
+  if (error) {
+    console.error("Error fetching slugs:", error.message);
+    return [];
+  }
+
+  return plants.map((plant) => ({
+    slug: plant.slug,
+  }));
+}
+
 /**
 
  * A simple in-memory cache to avoid duplicate fetches.

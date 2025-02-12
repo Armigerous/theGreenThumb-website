@@ -44,8 +44,12 @@ export async function generateMetadata({
     const { slug } = await params;
     const tip = await getTipData(slug);
 
-    const { title, description, image } = tip;
+    const { title, image } = tip;
     const canonicalUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/tips/${slug}`;
+
+    const description = tip.description
+      ? `${tip.description.slice(0, 150)}...`
+      : "Learn about plant care, growth, and maintenance with expert tips from The GreenThumb.";
 
     return {
       title,
@@ -56,6 +60,15 @@ export async function generateMetadata({
         "horticulture advice",
         "plant care tips",
         "The GreenThumb",
+        "home gardening",
+        "organic gardening",
+        "plant maintenance",
+        "beginner gardening",
+        "garden planning",
+        "sustainable gardening",
+        "how to grow plants",
+        "garden hacks",
+        "DIY gardening",
       ],
       openGraph: {
         title,
@@ -98,27 +111,37 @@ export async function generateMetadata({
 const TipSkeleton = () => (
   <div className="space-y-8">
     {/* Header Skeleton */}
-    <div className="space-y-4">
-      <Skeleton className="h-12 w-3/4" />
-      <Skeleton className="h-4 w-1/2" />
+    <div className="relative w-full h-96 rounded-lg overflow-hidden">
+      <Skeleton className="absolute inset-0 w-full h-full" />
+      <div className="absolute inset-0 bg-black/40 rounded-lg" />
     </div>
 
-    {/* TipDetails Skeleton */}
-    <div className="flex gap-4">
-      <Skeleton className="h-10 w-10 rounded-full" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-32" />
-        <Skeleton className="h-4 w-24" />
+    {/* Tip Details Skeleton */}
+    <div className="py-2 my-10 flex items-center border-2 justify-around flex-wrap font-medium rounded-lg text-lg sm:text-xl px-2 md:px-10 bg-primary text-cream-50 border-cream-800">
+      <Skeleton className="h-6 w-32" /> {/* Date */}
+      <Skeleton className="h-6 w-16" /> {/* Views */}
+      <Skeleton className="h-6 w-20" /> {/* Read Time */}
+      <Skeleton className="h-6 w-24" /> {/* Category */}
+    </div>
+
+    {/* Tip Layout */}
+    <div className="flex flex-col md:flex-row gap-4">
+      {/* Table of Contents Skeleton */}
+      <div className="md:w-1/4 order-1 md:order-none">
+        <Skeleton className="h-8 w-40 mb-4" /> {/* TOC Title */}
+        <Skeleton className="h-6 w-32 mb-2" />
+        <Skeleton className="h-6 w-28 mb-2" />
+        <Skeleton className="h-6 w-24 mb-2" />
       </div>
-    </div>
 
-    {/* Tip Content Skeleton */}
-    <div className="space-y-4">
-      <Skeleton className="h-64 w-full" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-3/4" />
+      {/* Tip Content Skeleton */}
+      <div className="md:w-3/4 order-2 space-y-4">
+        <Skeleton className="h-8 w-3/4 mb-4" /> {/* Title */}
+        <Skeleton className="h-64 w-full mb-4" /> {/* Main Image */}
+        <Skeleton className="h-4 w-full mb-2" />
+        <Skeleton className="h-4 w-full mb-2" />
+        <Skeleton className="h-4 w-3/4 mb-2" />
+        <Skeleton className="h-4 w-1/2 mb-2" />
       </div>
     </div>
   </div>

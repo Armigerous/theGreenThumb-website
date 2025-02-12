@@ -6,6 +6,7 @@ import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import { supabase } from "@/lib/supabaseClient";
 import { unstable_cache } from "next/cache";
 import { PlantData } from "@/types/plant";
+import { Metadata } from "next";
 
 // Revalidate every 24 hours (86400 seconds) for ISR
 export const revalidate = 86400;
@@ -46,6 +47,88 @@ const getPlantData = unstable_cache(
     tags: ["plants"],
   }
 );
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  try {
+    const { slug } = await params;
+    const plant = await getPlantData(slug);
+
+    const title = `${plant.scientific_name} | Plant Care & Info - The GreenThumb`;
+    const description = plant.description
+      ? `${plant.description.slice(0, 150)}...`
+      : "Learn about plant care, growth, and maintenance with expert tips from The GreenThumb.";
+
+    // Ensure tags is an array and filter out null values
+    const tagsArray: string[] = Array.isArray(plant.tags)
+      ? plant.tags.filter((tag): tag is string => tag !== null)
+      : [];
+
+    const keywords = [
+      plant.scientific_name || "",
+      plant.genus || "",
+      plant.family || "",
+      ...tagsArray.map((tag) => tag.toLowerCase()), // Convert tags to lowercase for consistency
+      "gardening",
+      "plant care",
+      "horticulture",
+      "The GreenThumb",
+    ].filter(Boolean); // Remove empty strings
+
+    return {
+      title,
+      description,
+      keywords,
+      openGraph: {
+        title,
+        description,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/plant/${slug}`,
+        images: plant.images?.[0]?.img
+          ? [
+              {
+                url: plant.images[0].img,
+                width: 1200,
+                height: 630,
+                alt: plant.images[0].alt_text || plant.scientific_name || "",
+              },
+            ]
+          : undefined,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: plant.images?.[0]?.img
+          ? [
+              {
+                url: plant.images[0].img,
+                width: 1200,
+                height: 630,
+                alt: plant.images[0].alt_text || plant.scientific_name || "",
+              },
+            ]
+          : undefined,
+      },
+      alternates: {
+        canonical: `${process.env.NEXT_PUBLIC_BASE_URL}/plant/${slug}`,
+      },
+      robots: {
+        index: true,
+        follow: true,
+        noarchive: false,
+        nosnippet: false,
+        notranslate: false,
+        noimageindex: false,
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return {};
+  }
+}
 
 export default async function PlantPage({
   params,

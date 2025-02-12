@@ -35,6 +35,20 @@ export function FilterPanel() {
 
   const router = useRouter();
 
+  // Rehydrate selectedOptions from the URL on component mount
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const filters = params.get("filters");
+    if (filters) {
+      const activeFilters = filters.split(",");
+      const initialSelected: { [key: string]: boolean } = {};
+      activeFilters.forEach((filter) => {
+        initialSelected[filter] = true;
+      });
+      setSelectedOptions(initialSelected);
+    }
+  }, []);
+
   // Toggle checkbox selection
   const toggleOption = React.useCallback((key: string, checked: boolean) => {
     setSelectedOptions((prev) => ({ ...prev, [key]: checked }));

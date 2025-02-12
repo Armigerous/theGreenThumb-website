@@ -10,6 +10,7 @@ export interface PlantImage {
 }
 
 export interface PlantCardData {
+  id: number;
   slug?: string | null;
   scientific_name?: string | null;
   description?: string | null;
@@ -21,6 +22,7 @@ export interface PlantCardData {
 
 /** Full type for plant data (update or split out as needed) */
 export interface PlantData {
+  id: number;
   slug?: string | null;
   genus?: string | null;
   common_names?: (string | null)[];

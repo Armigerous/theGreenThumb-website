@@ -50,7 +50,7 @@ export function FilterCategoryAccordion({
         <CollapsibleContent>
           <div className="space-y-2 pl-6">
             {category.options.map((option) => {
-              const optionKey = `${sectionId}-${category.id}-${option}`;
+              const optionKey = `${category.id}|${option}`;
               return (
                 <div key={optionKey} className="flex items-center space-x-2">
                   <Checkbox

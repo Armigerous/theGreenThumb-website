@@ -25,42 +25,40 @@ import {
   Hand,
 } from "lucide-react";
 
-/**
- * The shape of each category.
- */
 export type FilterCategory = {
+  /**
+   * Unique ID for your UI to distinguish categories
+   * (like "nc-regions" or "soil-texture").
+   */
   id: string;
+  /** The label to show in your UI, e.g. "NC Regions" */
   name: string;
+  /** The actual Postgres column name in plant_full_data. */
+  dbColumn: string;
+  /** The list of possible user-selectable values. */
   options: string[];
-  icon: React.ElementType; // any SVG icon component
+  icon: React.ElementType;
 };
 
-/**
- * The shape of each filter section.
- */
 export type FilterSection = {
   id: string;
   name: string;
-  isAdvanced?: boolean; // <-- indicates if section is advanced
+  isAdvanced?: boolean;
   categories: FilterCategory[];
-  icon: React.ElementType; // any SVG icon component
+  icon: React.ElementType;
 };
 
-/**
- * A single array that includes both “basic” and “advanced” filters.
- * Use `isAdvanced?: boolean` to mark advanced sections.
- */
 export const allFilters: FilterSection[] = [
   /* ------------------ BASIC SECTIONS ------------------ */
   {
     id: "cultural-conditions",
     name: "Cultural Conditions",
-    isAdvanced: false,
     icon: Map,
     categories: [
       {
         id: "light",
         name: "Light",
+        dbColumn: "light_requirements", // JSONB in your table
         options: [
           "Dappled Sunlight (Shade through upper canopy all day)",
           "Deep shade (Less than 2 hours to no direct sunlight)",
@@ -72,6 +70,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "soil-texture",
         name: "Soil Texture",
+        dbColumn: "soil_texture", // JSONB
         options: [
           "Clay",
           "Loam (Silt)",
@@ -84,12 +83,14 @@ export const allFilters: FilterSection[] = [
       {
         id: "soil-ph",
         name: "Soil pH",
+        dbColumn: "soil_ph", // JSONB
         options: ["Acid (<6.0)", "Neutral (6.0-8.0)", "Alkaline (>8.0)"],
         icon: Droplet,
       },
       {
         id: "soil-drainage",
         name: "Soil Drainage",
+        dbColumn: "soil_drainage", // JSONB
         options: [
           "Frequent Standing Water",
           "Good Drainage",
@@ -104,6 +105,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "available-space-to-plant",
         name: "Available Space To Plant",
+        dbColumn: "available_space_to_plant", // JSONB
         options: [
           "Less than 12 inches",
           "12 inches-3 feet",
@@ -116,14 +118,16 @@ export const allFilters: FilterSection[] = [
         icon: Ruler,
       },
       {
-        id: "nc-region",
-        name: "NC Region",
+        id: "nc-regions",
+        name: "NC Regions",
+        dbColumn: "nc_regions", // JSONB
         options: ["Coastal", "Mountains", "Piedmont"],
         icon: Mountain,
       },
       {
         id: "usda-zone",
         name: "USDA Zone",
+        dbColumn: "usda_zones", // JSONB
         options: [
           "1a",
           "1b",
@@ -159,12 +163,12 @@ export const allFilters: FilterSection[] = [
   {
     id: "landscape",
     name: "Landscape",
-    isAdvanced: false,
     icon: TreePine,
     categories: [
       {
         id: "location",
         name: "Location",
+        dbColumn: "landscape_location", // JSONB
         options: [
           "Coastal",
           "Container",
@@ -195,12 +199,13 @@ export const allFilters: FilterSection[] = [
   {
     id: "landscape-advanced",
     name: "Landscape",
-    isAdvanced: true, // <--- marks section as advanced
+    isAdvanced: true,
     icon: TreeDeciduous,
     categories: [
       {
         id: "landscape-theme",
         name: "Landscape Theme",
+        dbColumn: "landscape_theme", // JSONB
         options: [
           "Asian Garden",
           "Butterfly Garden",
@@ -226,6 +231,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "design-feature",
         name: "Design Feature",
+        dbColumn: "design_feature", // JSONB
         options: [
           "Accent",
           "Barrier",
@@ -256,6 +262,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "attracts",
         name: "Attracts",
+        dbColumn: "attracts", // JSONB
         options: [
           "Bats",
           "Bees",
@@ -275,6 +282,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "resistance-to-challenges",
         name: "Resistance To Challenges",
+        dbColumn: "resistance_to_challenges", // JSONB
         options: [
           "Black Walnut",
           "Compaction",
@@ -306,6 +314,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "problems-to-exclude",
         name: "Problems to Exclude",
+        dbColumn: "problems", // JSONB
         options: [
           "Allelopathic",
           "Contact Dermatitis",
@@ -337,6 +346,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "plant-type",
         name: "Plant Type",
+        dbColumn: "plant_types", // JSONB
         options: [
           "Annual",
           "Bulb",
@@ -371,6 +381,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "woody-plant-leaf-characteristics",
         name: "Woody Plant Leaf Characteristics",
+        dbColumn: "leaf_characteristics", // JSONB
         options: [
           "Broadleaf Evergreen",
           "Deciduous",
@@ -382,6 +393,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "habit-form",
         name: "Habit/Form",
+        dbColumn: "plant_habit", // JSONB
         options: [
           "Arching",
           "Ascending",
@@ -413,18 +425,21 @@ export const allFilters: FilterSection[] = [
       {
         id: "growth-rate",
         name: "Growth Rate",
+        dbColumn: "growth_rate", // text or JSONB
         options: ["Slow", "Medium", "Rapid"],
         icon: Clock,
       },
       {
         id: "maintenance",
         name: "Maintenance",
+        dbColumn: "maintenance", // JSONB
         options: ["High", "Low", "Medium"],
         icon: Activity,
       },
       {
         id: "texture",
         name: "Texture",
+        dbColumn: "texture", // text or JSONB
         options: ["Fine", "Medium", "Coarse"],
         icon: Hand,
       },
@@ -439,6 +454,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "flower-color",
         name: "Flower Color",
+        dbColumn: "flower_colors", // JSONB
         options: [
           "Black",
           "Blue",
@@ -460,6 +476,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "flower-value-to-gardener",
         name: "Flower Value To Gardener",
+        dbColumn: "flower_value_to_gardener", // JSONB
         options: [
           "Edible",
           "Fragrant",
@@ -474,6 +491,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "flower-bloom-time",
         name: "Flower Bloom Time",
+        dbColumn: "flower_bloom_time", // JSONB
         options: ["Fall", "Spring", "Summer", "Winter"],
         icon: Sprout,
       },
@@ -488,6 +506,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "leaf-color",
         name: "Leaf Color",
+        dbColumn: "leaf_color", // JSONB
         options: [
           "Black",
           "Blue",
@@ -509,6 +528,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "leaf-texture",
         name: "Leaf Texture",
+        dbColumn: "leaf_feel", // JSONB or text, whichever is correct
         options: [
           "Fleshy",
           "Glossy",
@@ -528,6 +548,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "leaf-value-to-gardener",
         name: "Leaf Value To Gardener",
+        dbColumn: "leaf_value_to_gardener", // JSONB
         options: [
           "Edible",
           "Fragrant",
@@ -541,6 +562,7 @@ export const allFilters: FilterSection[] = [
       {
         id: "deciduous-leaf-fall-color",
         name: "Deciduous Leaf Fall Color",
+        dbColumn: "leaf_fall_color", // JSONB
         options: [
           "Brown/Copper",
           "Cream/Tan",
@@ -555,28 +577,5 @@ export const allFilters: FilterSection[] = [
         icon: Palette,
       },
     ],
-  },
-];
-
-export const predefinedFilterSets = [
-  {
-    name: "Beginner Plants",
-    filters: ["Full Sun", "Loam (Silt)", "Good Drainage", "Medium Maintenance"],
-  },
-  {
-    name: "Indoor Plants",
-    filters: ["Low Light", "Container", "Houseplants"],
-  },
-  {
-    name: "Pollinator Garden",
-    filters: [
-      "Pollinator Garden",
-      "Attracts: Pollinators",
-      "Flower Bloom Time: Spring",
-    ],
-  },
-  {
-    name: "Raleigh Garden",
-    filters: ["Piedmont", "Clay", "7b", "Drought Resistance"],
   },
 ];

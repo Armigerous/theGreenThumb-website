@@ -7,7 +7,8 @@ User-agent: Googlebot
 Disallow: /studio
 
 # Host
-Host: http://localhost:3000
+Host: http://localhost:3000/
 
 # Sitemaps
 Sitemap: http://localhost:3000/sitemap.xml
+Sitemap: http://localhost:3000//sitemap.xml

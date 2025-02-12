@@ -8,7 +8,8 @@ export default function Home() {
     name: "The GreenThumb",
     url: process.env.NEXT_PUBLIC_BASE_URL,
     logo: "/logo.png",
-    description: "Merging the worlds of technology and agriculture.",
+    description:
+      "Merging the worlds of technology and agriculture for happier gardeners.",
   };
 
   return (

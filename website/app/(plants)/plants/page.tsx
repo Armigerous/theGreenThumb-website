@@ -1,7 +1,9 @@
+// app/page.tsx
 import { Suspense } from "react";
 import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import Header from "@/components/Database/Header";
 import Search from "@/components/Database/Search/Search";
+import SearchSkeleton from "@/components/Database/SearchSkeleton";
 
 export const experimental_ppr = true;
 
@@ -15,7 +17,7 @@ export default function Page({
       <Header />
       {/* The main page renders immediately.
           The search results are loaded inside SearchWrapper */}
-      <Suspense fallback={<div>Loading search results...</div>}>
+      <Suspense fallback={<SearchSkeleton />}>
         <SearchWrapper searchParams={searchParams} />
       </Suspense>
     </MaxWidthWrapper>

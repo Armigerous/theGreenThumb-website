@@ -40,3 +40,13 @@ export type TipCategory = {
   };
   description: string;
 };
+
+export interface TipData {
+  title: string;
+  description: string;
+  image: string;
+  author?: string;
+  datePublished: string;
+  dateModified?: string;
+  slug: string;
+}

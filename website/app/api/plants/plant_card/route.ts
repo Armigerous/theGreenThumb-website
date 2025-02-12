@@ -53,10 +53,6 @@ export async function GET(request: Request) {
       }
     }
 
-    // Enhanced debugging for filter parsing
-    console.log("Received filters param:", filtersParam);
-    console.log("Parsed grouped filters:", groupedFilters);
-
     // 3) If we have any filters, query plant_full_data first to get matching IDs
     let matchingIds: number[] | null = null;
     if (Object.keys(groupedFilters).length > 0) {
@@ -64,13 +60,7 @@ export async function GET(request: Request) {
         .from("plant_full_data")
         .select("id", { count: "exact" });
 
-      console.log(
-        "Starting filter query with columns:",
-        Object.keys(groupedFilters)
-      );
-
       for (const [dbColumn, values] of Object.entries(groupedFilters)) {
-        console.log(`Adding filter - Column: "${dbColumn}", Values:`, values);
         // JSON.stringify(values) converts the JS array into a valid JSON array literal,
         // e.g. [ 'Coastal', 'Mountains' ] becomes '["Coastal","Mountains"]'
         supabaseFilterQuery = supabaseFilterQuery.filter(
@@ -98,10 +88,6 @@ export async function GET(request: Request) {
           { status: 500 }
         );
       }
-
-      console.log(
-        `Filter query results: ${filteredData?.length ?? 0} matches found`
-      );
 
       // If no rows match, return empty
       if (!filteredData || filteredData.length === 0) {

@@ -1,4 +1,3 @@
-//api/plants/search/route.ts
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
 import { unstable_cache } from "next/cache";
@@ -6,14 +5,27 @@ import { unstable_cache } from "next/cache";
 // Revalidate cache every 24 hours
 export const revalidate = 86400;
 
-// Cache the search query function
 const getPlantSearchResults = unstable_cache(
-  async (query: string) => {
+  async (query: string, nameType: string) => {
+    // Set table and columns based on the name type
+    const tableName =
+      nameType === "common" ? "plant_common_card_data" : "plant_autocomplete";
+    let selectColumns: string;
+    let searchColumn: string;
+
+    if (nameType === "common") {
+      selectColumns = "slug, common_name";
+      searchColumn = "common_name";
+    } else {
+      selectColumns = "slug, scientific_name";
+      searchColumn = "scientific_name";
+    }
+
     const { data, error } = await supabase
-      .from("plant_autocomplete")
-      .select("slug, scientific_name")
-      .ilike("scientific_name", `%${query}%`)
-      .order("scientific_name", { ascending: true })
+      .from(tableName)
+      .select(selectColumns)
+      .ilike(searchColumn, `%${query}%`)
+      .order(searchColumn, { ascending: true })
       .limit(7);
 
     if (error) {
@@ -36,9 +48,11 @@ const getPlantSearchResults = unstable_cache(
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("query")?.toLowerCase() || "";
+  // Read the nameType parameter from the URL (default to scientific if not provided)
+  const nameType = searchParams.get("nameType") || "scientific";
 
   try {
-    const data = await getPlantSearchResults(query);
+    const data = await getPlantSearchResults(query, nameType);
 
     const response = NextResponse.json({ results: data });
     response.headers.set(

@@ -81,7 +81,7 @@ const CategoryPage = async ({
 }: {
   params: Promise<{ slug: string }>;
 }) => {
-  const { slug } = await params;
+  const slug = (await params).slug;
 
   // Fetch posts and categories
   const categories = await fetchAllTipCategories();

@@ -10,7 +10,12 @@ export const experimental_ppr = true;
 export default function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ query?: string; page?: string; filters?: string }>;
+  searchParams: Promise<{
+    query?: string;
+    page?: string;
+    filters?: string;
+    nameType?: string;
+  }>;
 }) {
   return (
     <MaxWidthWrapper className="text-center">
@@ -28,12 +33,19 @@ export default function Page({
 async function SearchWrapper({
   searchParams,
 }: {
-  searchParams: Promise<{ query?: string; page?: string; filters?: string }>;
+  searchParams: Promise<{
+    query?: string;
+    page?: string;
+    filters?: string;
+    nameType?: string;
+  }>;
 }) {
   const params = await searchParams;
   const query = params.query || "";
   const page = parseInt(params.page || "1", 10);
   const filters = params.filters || "";
-
-  return <Search query={query} page={page} filters={filters} />;
+  const nameType = params.nameType || "scientific";
+  return (
+    <Search query={query} page={page} filters={filters} nameType={nameType} />
+  );
 }

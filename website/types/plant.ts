@@ -9,12 +9,24 @@ export interface PlantImage {
   attribution?: string | null;
 }
 
-export interface PlantCardData {
+export type PlantCardData = PlantCardDataScientific | PlantCardDataCommon;
+export interface PlantCardDataScientific {
   id: number;
   slug?: string | null;
   scientific_name?: string | null;
   description?: string | null;
   first_common_name?: string | null;
+  first_tag?: string | null;
+  first_image?: string | null;
+  first_image_alt_text?: string | null;
+}
+
+export interface PlantCardDataCommon {
+  id: number;
+  slug?: string | null;
+  common_name?: string | null;
+  description?: string | null;
+  scientific_name?: string | null;
   first_tag?: string | null;
   first_image?: string | null;
   first_image_alt_text?: string | null;
@@ -115,4 +127,7 @@ export interface PlantData {
   soil_texture?: (string | null)[];
   stem_color?: (string | null)[];
   usda_zones?: (string | null)[];
+  light_requirements?: string | null;
+  water_requirements?: string | null;
+  usda_hardiness_zones?: string | null;
 }

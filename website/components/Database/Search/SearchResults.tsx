@@ -6,7 +6,7 @@ import PaginationComponent from "../Pagination";
 import PlantCard from "@/components/Database/PlantCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect } from "react";
-import { PlantData } from "@/types/plant";
+import { PlantCardData, PlantData } from "@/types/plant";
 
 // Cache structure to store API responses
 interface CacheEntry {
@@ -29,10 +29,12 @@ const SearchResults = ({
   query,
   page,
   filters,
+  nameType,
 }: {
   query?: string;
   page: number;
   filters?: string;
+  nameType?: string;
 }) => {
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,6 +50,7 @@ const SearchResults = ({
         let url = `/api/plants/plant_card?limit=${limit}&offset=${offset}`;
         if (query) url += `&query=${encodeURIComponent(query)}`;
         if (filters) url += `&filters=${encodeURIComponent(filters)}`;
+        if (nameType) url += `&nameType=${encodeURIComponent(nameType)}`;
 
         // Check cache first
         const cacheKey = url;
@@ -82,7 +85,7 @@ const SearchResults = ({
     };
 
     fetchData();
-  }, [query, page, filters, limit, offset]);
+  }, [query, page, filters, nameType, limit, offset]);
 
   if (loading) {
     return (
@@ -182,8 +185,11 @@ const SearchResults = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {data.results.map((plant) => (
-            <PlantCard key={plant.slug} plant={plant} />
+          {data.results.map((plant: PlantCardData) => (
+            <PlantCard
+              key={`${plant.slug}-${plant.scientific_name}`}
+              plant={plant}
+            />
           ))}
         </div>
       )}

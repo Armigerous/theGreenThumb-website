@@ -1,12 +1,11 @@
+// next.config.ts
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   experimental: {
     ppr: "incremental",
   },
-
   transpilePackages: ["next-mdx-remote"],
-
   images: {
     dangerouslyAllowSVG: true,
     remotePatterns: [

@@ -35,13 +35,13 @@ const PlantCard = ({ plant }: { plant: PlantCardData }) => {
 
   return (
     <Card
-      key={plant.slug}
+      key={`${plant.slug}-${plant.scientific_name}`}
       className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left"
     >
       <Link href={`/plant/${plant.slug}`}>
         <Image
           src={imageUrl || "/no-plant-image.png"}
-          alt={plant.first_image_alt_text || "Plant Image"}
+          alt={plant.first_image_alt_text || `${plant.scientific_name} Image`}
           width={300}
           height={200}
           className="w-full object-cover h-48"
@@ -53,10 +53,18 @@ const PlantCard = ({ plant }: { plant: PlantCardData }) => {
       <CardHeader>
         <Link href={`/plant/${plant.slug}`} className="group/header">
           <CardTitle className="text-lg font-semibold line-clamp-1 group-hover/header:underline">
-            {plant.scientific_name}
+            {"common_name" in plant
+              ? plant.common_name
+              : "first_common_name" in plant
+                ? plant.scientific_name
+                : null}
           </CardTitle>
           <CardDescription className="text-sm text-muted-foreground line-clamp-1">
-            {plant.first_common_name}
+            {"common_name" in plant
+              ? plant.scientific_name
+              : "first_common_name" in plant
+                ? plant.first_common_name
+                : null}
           </CardDescription>
         </Link>
         {plant.first_tag && (

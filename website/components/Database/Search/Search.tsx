@@ -5,15 +5,22 @@ const Search = ({
   query,
   page,
   filters,
+  nameType,
 }: {
   query?: string;
   page: number;
   filters?: string;
+  nameType?: string;
 }) => {
   return (
     <div className="text-left">
       <Autocomplete />
-      <SearchResults query={query} page={page} filters={filters} />
+      <SearchResults
+        query={query}
+        page={page}
+        filters={filters}
+        nameType={nameType}
+      />
     </div>
   );
 };

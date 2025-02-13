@@ -3,7 +3,11 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
 import { allFilters } from "@/types/filterData";
-import { PlantCardData } from "@/types/plant";
+import {
+  PlantCardData,
+  PlantCardDataCommon,
+  PlantCardDataScientific,
+} from "@/types/plant";
 
 /**
  * Build a Map from each filter category's "id" (like "nc-regions")
@@ -75,7 +79,6 @@ export async function GET(request: Request) {
       const { data: filteredData, error: filterError } =
         await supabaseFilterQuery.returns<{ id: number }[]>();
 
-      // Enhanced error logging
       if (filterError) {
         console.error("Filter query failed:", {
           error: filterError,
@@ -90,7 +93,6 @@ export async function GET(request: Request) {
         );
       }
 
-      // If no rows match, return empty
       if (!filteredData || filteredData.length === 0) {
         const emptyResponse = NextResponse.json({ results: [], count: 0 });
         emptyResponse.headers.set(
@@ -103,35 +105,56 @@ export async function GET(request: Request) {
       matchingIds = filteredData.map((row) => row.id);
     }
 
-    // 4) Now query the materialized view "plant_card_data"
-    //    - if we have matchingIds, use .in("id", matchingIds)
-    //    - apply search if provided
-    //    - apply pagination
+    // 4) Now query the appropriate materialized view based on nameType
+    const tableName =
+      nameType === "common" ? "plant_common_card_data" : "plant_card_data";
+
+    let orderColumn: string;
+    let selectColumns: string;
+    if (nameType === "common") {
+      orderColumn = "common_name";
+      selectColumns = `
+        id,
+        slug,
+        common_name,
+        description,
+        scientific_name,
+        first_tag,
+        first_image,
+        first_image_alt_text
+      `;
+    } else {
+      orderColumn = "scientific_name";
+      selectColumns = `
+        id,
+        slug,
+        scientific_name,
+        description,
+        first_common_name,
+        first_tag,
+        first_image,
+        first_image_alt_text
+      `;
+    }
+
     let supabaseQuery = supabase
-      .from("plant_card_data")
-      .select(
-        `
-          id,
-          slug,
-          scientific_name,
-          description,
-          first_common_name,
-          first_tag,
-          first_image,
-          first_image_alt_text
-        `,
-        { count: "exact" }
-      )
-      .order("scientific_name", { ascending: true })
+      .from(tableName as "plant_card_data")
+      .select(selectColumns, { count: "exact" })
+      .order(orderColumn, { ascending: true })
       .range(offset, offset + limit - 1);
 
     if (matchingIds) {
       supabaseQuery = supabaseQuery.in("id", matchingIds);
     }
 
-    // If a search query is provided, apply an OR filter across multiple columns
+    // Apply search filter across multiple columns
     if (query) {
-      const orFilter = `scientific_name.ilike.%${query}%,first_common_name.ilike.%${query}%,description.ilike.%${query}%`;
+      let orFilter: string;
+      if (nameType === "common") {
+        orFilter = `scientific_name.ilike.%${query}%,common_name.ilike.%${query}%,description.ilike.%${query}%`;
+      } else {
+        orFilter = `scientific_name.ilike.%${query}%,first_common_name.ilike.%${query}%,description.ilike.%${query}%`;
+      }
       supabaseQuery = supabaseQuery.or(orFilter);
     }
 
@@ -144,16 +167,51 @@ export async function GET(request: Request) {
     }
 
     // 5) Map the data to the shape the frontend needs
-    const plants = (data || []).map((row) => ({
-      id: row.id,
-      slug: row.slug,
-      scientific_name: row.scientific_name,
-      description: row.description,
-      first_common_name: row.first_common_name,
-      first_tag: row.first_tag,
-      first_image: row.first_image,
-      first_image_alt_text: row.first_image_alt_text,
-    }));
+    const plants = (data || []).map((row) => {
+      if (nameType === "common") {
+        const commonRow = row as unknown as {
+          id: number;
+          slug: string | null;
+          common_name: string | null;
+          description: string | null;
+          scientific_name: string | null;
+          first_tag: string | null;
+          first_image: string | null;
+          first_image_alt_text: string | null;
+        };
+        return {
+          id: commonRow.id,
+          slug: commonRow.slug,
+          common_name: commonRow.common_name,
+          description: commonRow.description,
+          scientific_name: commonRow.scientific_name,
+          first_tag: commonRow.first_tag,
+          first_image: commonRow.first_image,
+          first_image_alt_text: commonRow.first_image_alt_text,
+        } satisfies PlantCardDataCommon;
+      } else {
+        const scientificRow = row as unknown as {
+          id: number;
+          slug: string | null;
+          scientific_name: string | null;
+          description: string | null;
+          first_common_name: string | null;
+          first_tag: string | null;
+          first_image: string | null;
+          first_image_alt_text: string | null;
+        };
+        return {
+          id: scientificRow.id,
+          slug: scientificRow.slug,
+          scientific_name: scientificRow.scientific_name,
+          description: scientificRow.description,
+          first_common_name: scientificRow.first_common_name,
+          first_tag: scientificRow.first_tag,
+          first_image: scientificRow.first_image,
+          first_image_alt_text: scientificRow.first_image_alt_text,
+        } satisfies PlantCardDataScientific;
+      }
+    });
 
     // 6) Return JSON with appropriate caching headers
     const response = NextResponse.json({ results: plants, count });

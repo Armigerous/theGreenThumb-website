@@ -18,7 +18,7 @@ import {
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Switch } from "@nextui-org/react";
 import { Search, SlidersHorizontalIcon, Atom, Users } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 interface PlantSearchResult {
@@ -31,19 +31,34 @@ export function Autocomplete() {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [plants, setPlants] = useState<PlantSearchResult[]>([]);
-  const [useCommonNames, setUseCommonNames] = useState(false);
+
+  // Get the current search parameters from the URL.
+  const searchParams = useSearchParams();
+  // Determine the initial state of the switch:
+  // If "nameType" equals "common", set useCommonNames to true;
+  // otherwise, default to "scientific" (false).
+  const initialUseCommonNames = searchParams?.get("nameType") === "common";
+  const [useCommonNames, setUseCommonNames] = useState(initialUseCommonNames);
+
   const triggerRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
+
+  // Optional: if you expect the URL to change externally and want to keep the switch in sync,
+  // you can update the state when the searchParams change.
+  useEffect(() => {
+    const urlNameType = searchParams?.get("nameType") === "common";
+    setUseCommonNames(urlNameType);
+  }, [searchParams]);
 
   useEffect(() => {
     const delayDebounce = setTimeout(async () => {
       try {
         const url =
           searchQuery.trim() === ""
-            ? `/api/plants/search`
+            ? `/api/plants/search?nameType=${useCommonNames ? "common" : "scientific"}`
             : `/api/plants/search?query=${encodeURIComponent(
                 searchQuery.trim()
-              )}`;
+              )}&nameType=${useCommonNames ? "common" : "scientific"}`;
 
         const response = await fetch(url);
         const result = await response.json();
@@ -54,7 +69,7 @@ export function Autocomplete() {
     }, 300);
 
     return () => clearTimeout(delayDebounce);
-  }, [searchQuery]);
+  }, [searchQuery, useCommonNames]);
 
   const navigateToSearch = () => {
     if (searchQuery.trim()) {
@@ -82,7 +97,7 @@ export function Autocomplete() {
     );
   };
 
-  // Handler to update the naming mode and update URL accordingly.
+  // Handler to update the naming mode and update the URL accordingly.
   const handleToggle = (value: boolean) => {
     setUseCommonNames(value);
     const params = new URLSearchParams(window.location.search);
@@ -116,7 +131,7 @@ export function Autocomplete() {
           >
             <Command>
               <CommandInput
-                placeholder="Alcea rosea, Euryale ferox, Acalypha..."
+                placeholder={"Alcea rosea, Euryale ferox, Acalypha..."}
                 value={searchQuery}
                 onValueChange={setSearchQuery}
                 onKeyDown={(e) => {
@@ -131,7 +146,7 @@ export function Autocomplete() {
                   <CommandGroup heading="Top Results">
                     {plants.map((plant) => (
                       <CommandItem
-                        key={plant.slug}
+                        key={`${plant.slug}-${useCommonNames ? plant.common_name : plant.scientific_name}`}
                         onSelect={() => {
                           router.push(`/plant/${plant.slug}`);
                           setOpen(false);
@@ -180,12 +195,12 @@ export function Autocomplete() {
           thumbIcon={({ isSelected, className }) =>
             isSelected ? (
               <Users
-                className={`${className} rounded-full bg-cream-100`}
+                className={`${className} rounded-full bg-cream-100 text-primary font-bold`}
                 fill="none"
               />
             ) : (
               <Atom
-                className={`${className}  rounded-full bg-cream-100`}
+                className={`${className} rounded-full bg-cream-100 text-primary font-bold`}
                 fill="none"
               />
             )

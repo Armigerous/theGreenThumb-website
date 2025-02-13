@@ -9,12 +9,24 @@ export interface PlantImage {
   attribution?: string | null;
 }
 
-export interface PlantCardData {
+export type PlantCardData = PlantCardDataScientific | PlantCardDataCommon;
+export interface PlantCardDataScientific {
   id: number;
   slug?: string | null;
   scientific_name?: string | null;
   description?: string | null;
   first_common_name?: string | null;
+  first_tag?: string | null;
+  first_image?: string | null;
+  first_image_alt_text?: string | null;
+}
+
+export interface PlantCardDataCommon {
+  id: number;
+  slug?: string | null;
+  common_name?: string | null;
+  description?: string | null;
+  scientific_name?: string | null;
   first_tag?: string | null;
   first_image?: string | null;
   first_image_alt_text?: string | null;

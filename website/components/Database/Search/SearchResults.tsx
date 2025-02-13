@@ -29,10 +29,12 @@ const SearchResults = ({
   query,
   page,
   filters,
+  nameType,
 }: {
   query?: string;
   page: number;
   filters?: string;
+  nameType?: string;
 }) => {
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,6 +50,7 @@ const SearchResults = ({
         let url = `/api/plants/plant_card?limit=${limit}&offset=${offset}`;
         if (query) url += `&query=${encodeURIComponent(query)}`;
         if (filters) url += `&filters=${encodeURIComponent(filters)}`;
+        if (nameType) url += `&nameType=${encodeURIComponent(nameType)}`;
 
         // Check cache first
         const cacheKey = url;

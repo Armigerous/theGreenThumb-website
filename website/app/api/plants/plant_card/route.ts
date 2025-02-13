@@ -27,6 +27,7 @@ export async function GET(request: Request) {
     const limit = Number(searchParams.get("limit") || "28");
     const offset = Number(searchParams.get("offset") || "0");
     const filtersParam = searchParams.get("filters") || "";
+    const nameType = searchParams.get("nameType") || "scientific";
 
     // 2) Convert filtersParam into { dbColumn: string[] }
     //    e.g. "nc-regions|Coastal,soil-ph|Neutral (6.0-8.0)"

@@ -78,13 +78,26 @@ export async function generateMetadata({
       ? plant.common_names
       : [];
 
-    // Create a comprehensive list of keywords
+    // Enhanced NC-focused keywords
     const keywords = [
       plant.scientific_name,
       ...allCommonNames,
       plant.genus,
       plant.family,
       ...(plant.tags || []),
+      // North Carolina specific terms
+      "North Carolina native plants",
+      "NC garden plants",
+      "plants that grow in North Carolina",
+      "North Carolina gardening",
+      "NC plant care",
+      "Piedmont plants",
+      "Coastal Plain plants",
+      "Mountain region plants",
+      // Region-specific search patterns
+      `${plant.scientific_name} North Carolina`,
+      `growing ${commonName} in NC`,
+      `${commonName} NC native`,
       // Common search patterns
       `${plant.scientific_name} care`,
       `${plant.scientific_name} plant`,
@@ -109,11 +122,20 @@ export async function generateMetadata({
       "outdoor plants",
     ].filter(Boolean);
 
-    // Create a rich description that includes key information
-    let description = `Complete guide for ${commonName} (${plant.scientific_name}) care. Learn about light requirements${plant.light ? ` (${plant.light.join(", ")})` : ""}, water requirements${plant.water_requirements ? ` (${plant.water_requirements})` : ""}, and soil preferences${plant.soil_drainage ? ` (${plant.soil_drainage.join(", ")})` : ""}. USDA zones ${plant.usda_zones?.join("-") || "varies"}. Expert plant care tips and growing instructions from The GreenThumb.`;
+    // Enhanced NC-focused description
+    let description = `Complete guide for growing ${commonName} (${plant.scientific_name}) in North Carolina. Learn about light requirements${plant.light ? ` (${plant.light.join(", ")})` : ""}, water needs${plant.water_requirements ? ` (${plant.water_requirements})` : ""}, and soil preferences${plant.soil_drainage ? ` (${plant.soil_drainage.join(", ")})` : ""}. Perfect for USDA zones ${plant.usda_zones?.join("-") || "varies"}, common in NC gardens. Expert plant care tips from The GreenThumb's North Carolina growing guide.`;
     description = description.slice(0, 150);
-    let title = `${commonName} (${plant.scientific_name || ""}) Care Guide - Growing Tips & Instructions`;
+
+    let title = `${commonName} Care Guide - How to Grow in North Carolina (NC) - Complete Instructions`;
     title = title.slice(0, 60);
+
+    // Create full URL for the image
+    const ogImage = plant.images?.[0]?.img
+      ? new URL(plant.images[0].img).protocol === "http"
+        ? plant.images[0].img
+        : `${baseUrl}${plant.images[0].img}`
+      : `${baseUrl}/no-plant-image.png`; // Provide a default image
+
     return {
       title,
       description,
@@ -126,7 +148,14 @@ export async function generateMetadata({
         description,
         url: `${baseUrl}/plant/${canonicalSlug}`,
         type: "article",
-        images: plant.images?.[0]?.img ? [{ url: plant.images[0].img }] : [],
+        images: [
+          {
+            url: ogImage,
+            width: 1200,
+            height: 630,
+            alt: `${commonName} (${plant.scientific_name})`,
+          },
+        ],
         siteName: "The GreenThumb",
         locale: "en_US",
       },
@@ -134,7 +163,7 @@ export async function generateMetadata({
         card: "summary_large_image",
         title: `${commonName} Care Guide`,
         description: `Learn how to grow ${commonName} (${plant.scientific_name}). Complete care instructions and tips.`,
-        images: plant.images?.[0]?.img ? [plant.images[0].img] : [],
+        images: [ogImage],
       },
       robots: {
         index: true,
@@ -202,7 +231,7 @@ const StructuredData = ({ plant }: { plant: PlantData }) => {
   const jsonLd = {
     "@context": "https://schema.org/",
     "@type": "Article",
-    headline: `${plant.scientific_name} Care Guide`,
+    headline: `Growing ${plant.scientific_name} in North Carolina - Complete Care Guide`,
     description: plant.description,
     image: plant.images?.[0]?.img,
     datePublished: new Date().toISOString(),
@@ -270,6 +299,16 @@ const StructuredData = ({ plant }: { plant: PlantData }) => {
             plant.width_min && plant.width_max
               ? `${plant.width_min} to ${plant.width_max} feet`
               : undefined,
+        },
+        {
+          "@type": "PropertyValue",
+          name: "Region",
+          value: "North Carolina",
+        },
+        {
+          "@type": "PropertyValue",
+          name: "NC Climate Zones",
+          value: "Mountains, Piedmont, and Coastal Plain",
         },
       ].filter((prop) => prop.value !== undefined),
     },

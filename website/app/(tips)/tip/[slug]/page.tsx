@@ -41,7 +41,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   try {
-    const { slug } = await params;
+    const slug = (await params).slug;
     const tip = await getTipData(slug);
 
     const { title, image } = tip;

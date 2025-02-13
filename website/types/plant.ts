@@ -127,4 +127,7 @@ export interface PlantData {
   soil_texture?: (string | null)[];
   stem_color?: (string | null)[];
   usda_zones?: (string | null)[];
+  light_requirements?: string | null;
+  water_requirements?: string | null;
+  usda_hardiness_zones?: string | null;
 }

@@ -12,7 +12,7 @@ import { DialogTitle } from "@radix-ui/react-dialog";
 import { CoffeeIcon, PenBoxIcon, Search } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Tip } from "@/types/Tip";
 
@@ -44,6 +44,10 @@ export default function SearchBarDialog({ tips }: SearchBarDialogProps) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
+
+  const filteredTips = tips.filter((tip) =>
+    tip.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <>
@@ -77,10 +81,7 @@ export default function SearchBarDialog({ tips }: SearchBarDialogProps) {
               <CommandGroup heading="Suggestions">
                 {getRandomItems(tips, 3).map((tip, index) => (
                   <Link href={`/tip/${tip.slug}`} key={index}>
-                    <CommandItem
-                      key={index}
-                      className="cursor-pointer hover:bg-brand-100"
-                    >
+                    <CommandItem className="cursor-pointer hover:bg-brand-100">
                       <CoffeeIcon className="w-5 h-5 mr-2" />
                       <span className="text-cream-800 truncate max-w-sm">
                         {tip.title}
@@ -92,14 +93,11 @@ export default function SearchBarDialog({ tips }: SearchBarDialogProps) {
             </>
           ) : (
             <>
-              {tips.length > 0 ? (
+              {filteredTips.length > 0 ? (
                 <CommandGroup heading="Similar Results">
-                  {tips.map((tip, index: number) => (
+                  {filteredTips.map((tip, index: number) => (
                     <Link href={`/tip/${tip.slug}`} key={index}>
-                      <CommandItem
-                        key={index}
-                        className="cursor-pointer hover:bg-brand-100"
-                      >
+                      <CommandItem className="cursor-pointer hover:bg-brand-100">
                         <PenBoxIcon className="w-5 h-5 mr-2" />
                         <span className="text-cream-800 truncate max-w-sm">
                           {highlightMatch(tip.title, searchQuery)}
@@ -112,7 +110,7 @@ export default function SearchBarDialog({ tips }: SearchBarDialogProps) {
                 <CommandEmpty>No results found.</CommandEmpty>
               )}
             </>
-          )}
+          )}{" "}
         </CommandList>
       </CommandDialog>
     </>

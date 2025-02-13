@@ -1,12 +1,16 @@
 // app/plant/[slug]/page.tsx
 
-import React from "react";
+import React, { Suspense } from "react";
 import PlantDetails from "@/components/Database/Plant/PlantDetails";
+import PlantDetailsSkeleton from "@/components/Database/Plant/PlantDetailsSkeleton";
 import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import { supabase } from "@/lib/supabaseClient";
 import { unstable_cache } from "next/cache";
 import { PlantData } from "@/types/plant";
 import { Metadata } from "next";
+
+// Enable partial prerendering
+export const experimental_ppr = true;
 
 // Revalidate every 24 hours (86400 seconds) for ISR
 export const revalidate = 86400;
@@ -153,21 +157,15 @@ export async function generateMetadata({
   }
 }
 
-export default async function PlantPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const slug = (await params).slug;
-
+// Create a separate component for the plant content to enable suspense boundary
+async function PlantContent({ slug }: { slug: string }) {
   try {
     const plant = await getPlantData(slug);
-
     return (
-      <MaxWidthWrapper>
+      <>
         <PlantDetails plant={plant} />
         <StructuredData plant={plant} />
-      </MaxWidthWrapper>
+      </>
     );
   } catch (error) {
     console.error("Error fetching plant data:", error);
@@ -179,6 +177,22 @@ export default async function PlantPage({
       </div>
     );
   }
+}
+
+export default async function PlantPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const slug = (await params).slug;
+
+  return (
+    <MaxWidthWrapper>
+      <Suspense fallback={<PlantDetailsSkeleton />}>
+        <PlantContent slug={slug} />
+      </Suspense>
+    </MaxWidthWrapper>
+  );
 }
 
 /**

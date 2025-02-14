@@ -52,44 +52,136 @@ const getPlantData = unstable_cache(
   }
 );
 
-export const generateMetadata = async ({
+export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
-}): Promise<Metadata> => {
-  const slug = (await params).slug;
-  const plant = await getPlantData(slug);
+}): Promise<Metadata> {
+  try {
+    const slug = (await params).slug;
+    const plant = await getPlantData(slug);
 
-  const ogImageUrl = new URL(`${process.env.NEXT_PUBLIC_BASE_URL}/api/og`);
-  ogImageUrl.searchParams.set("scientificName", plant.scientific_name ?? "");
-  ogImageUrl.searchParams.set(
-    "commonNames",
-    plant.common_names?.join(", ") ?? ""
-  );
-  ogImageUrl.searchParams.set("description", plant.description ?? "");
+    // Get the scientific slug if this is a common name
+    const { data: scientificData } = await supabase
+      .from("plant_common_card_data")
+      .select("scientific_slug")
+      .eq("slug", slug)
+      .single();
 
-  return {
-    title: plant.scientific_name ?? "Plant Details",
-    description: plant.description ?? "Plant Details",
-    openGraph: {
-      title: plant.scientific_name ?? "Plant Details",
-      description: plant.description ?? "Plant Details",
-      images: [
-        {
-          url: ogImageUrl.toString(),
-          width: 1200,
-          height: 630,
+    // The canonical URL should always be the scientific name version
+    const canonicalSlug = scientificData?.scientific_slug || slug;
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      "https://www.theofficialgreenthumb.com";
+
+    const commonName = plant.common_names?.[0] || "Unknown";
+    const allCommonNames = Array.isArray(plant.common_names)
+      ? plant.common_names
+      : [];
+
+    // Enhanced NC-focused keywords
+    const keywords = [
+      plant.scientific_name,
+      ...allCommonNames,
+      plant.genus,
+      plant.family,
+      ...(plant.tags || []),
+      // North Carolina specific terms
+      "North Carolina native plants",
+      "NC garden plants",
+      "plants that grow in North Carolina",
+      "North Carolina gardening",
+      "NC plant care",
+      "Piedmont plants",
+      "Coastal Plain plants",
+      "Mountain region plants",
+      // Region-specific search patterns
+      `${plant.scientific_name} North Carolina`,
+      `growing ${commonName} in NC`,
+      `${commonName} NC native`,
+      // Common search patterns
+      `${plant.scientific_name} care`,
+      `${plant.scientific_name} plant`,
+      `how to grow ${plant.scientific_name}`,
+      ...allCommonNames.flatMap((name) => [
+        `${name} care`,
+        `${name} plant`,
+        `how to grow ${name}`,
+        `${name} care guide`,
+        `${name} growing tips`,
+      ]),
+      // Generic gardening terms
+      "plant care",
+      "gardening guide",
+      "plant maintenance",
+      "growing tips",
+      "North Carolina plants",
+      "The GreenThumb",
+      "plant care instructions",
+      "garden plants",
+      "indoor plants",
+      "outdoor plants",
+    ].filter(Boolean);
+
+    // Enhanced NC-focused description
+    let description = `Complete guide for growing ${commonName} (${plant.scientific_name}) in North Carolina. Learn about light requirements${plant.light ? ` (${plant.light.join(", ")})` : ""}, water needs${plant.water_requirements ? ` (${plant.water_requirements})` : ""}, and soil preferences${plant.soil_drainage ? ` (${plant.soil_drainage.join(", ")})` : ""}. Perfect for USDA zones ${plant.usda_zones?.join("-") || "varies"}, common in NC gardens. Expert plant care tips from The GreenThumb's North Carolina growing guide.`;
+    description = description.slice(0, 150);
+
+    let title = `${commonName} Care Guide - How to Grow in North Carolina (NC) - Complete Instructions`;
+    title = title.slice(0, 60);
+
+    // Create full URL for the image
+    const ogImage = plant.images?.[0]?.img || `/no-plant-image.png`;
+
+    return {
+      title,
+      description,
+      keywords: keywords.join(", "),
+      alternates: {
+        canonical: `${baseUrl}/plant/${canonicalSlug}`,
+      },
+      openGraph: {
+        title: `${commonName} (${plant.scientific_name || ""}) Care Guide - Complete Growing Instructions`,
+        description,
+        url: `${baseUrl}/plant/${canonicalSlug}`,
+        type: "article",
+        images: [
+          {
+            url: ogImage,
+            width: 1200,
+            height: 630,
+            alt: `${commonName} (${plant.scientific_name})`,
+          },
+        ],
+        siteName: "The GreenThumb",
+        locale: "en_US",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${commonName} Care Guide`,
+        description: `Learn how to grow ${commonName} (${plant.scientific_name}). Complete care instructions and tips.`,
+        images: [ogImage],
+      },
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          "max-video-preview": -1,
+          "max-image-preview": "large",
+          "max-snippet": -1,
         },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: plant.scientific_name ?? "Plant Details",
-      description: plant.description ?? "Plant Details",
-      images: [ogImageUrl.toString()],
-    },
-  };
-};
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return {
+      title: "Plant Not Found",
+      description: "The requested plant could not be found.",
+    };
+  }
+}
 
 // Create a separate component for the plant content to enable suspense boundary
 async function PlantContent({ slug }: { slug: string }) {

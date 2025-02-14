@@ -60,6 +60,9 @@ export async function generateMetadata({
   try {
     const slug = (await params).slug;
     const plant = await getPlantData(slug);
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      "https://www.theofficialgreenthumb.com";
 
     // Get the scientific slug if this is a common name
     const { data: scientificData } = await supabase
@@ -70,9 +73,6 @@ export async function generateMetadata({
 
     // The canonical URL should always be the scientific name version
     const canonicalSlug = scientificData?.scientific_slug || slug;
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ||
-      "https://www.theofficialgreenthumb.com";
 
     const commonName = plant.common_names?.[0] || "Unknown";
     const allCommonNames = Array.isArray(plant.common_names)
@@ -130,8 +130,20 @@ export async function generateMetadata({
     let title = `${commonName} Care Guide - How to Grow in North Carolina (NC) - Complete Instructions`;
     title = title.slice(0, 60);
 
-    // Create full URL for the image
-    const ogImage = plant.images?.[0]?.img || `/no-plant-image.png`;
+    // Ensure we have a valid image URL for OpenGraph
+    const ogImage = plant.images?.[0]?.img
+      ? {
+          url: plant.images[0].img, // Use the S3 URL directly
+          width: 1200,
+          height: 630,
+          alt: `${plant.scientific_name} plant image`,
+        }
+      : {
+          url: `${baseUrl}/no-plant-image.png`,
+          width: 1200,
+          height: 630,
+          alt: "Default plant image",
+        };
 
     return {
       title,
@@ -145,14 +157,7 @@ export async function generateMetadata({
         description,
         url: `${baseUrl}/plant/${canonicalSlug}`,
         type: "article",
-        images: [
-          {
-            url: ogImage,
-            width: 1200,
-            height: 630,
-            alt: `${commonName} (${plant.scientific_name})`,
-          },
-        ],
+        images: [ogImage],
         siteName: "The GreenThumb",
         locale: "en_US",
       },

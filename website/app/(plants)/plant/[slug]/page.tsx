@@ -71,7 +71,8 @@ export async function generateMetadata({
     // The canonical URL should always be the scientific name version
     const canonicalSlug = scientificData?.scientific_slug || slug;
     const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL || "https://thegreenthumb.com";
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      "https://www.theofficialgreenthumb.com";
 
     const commonName = plant.common_names?.[0] || "Unknown";
     const allCommonNames = Array.isArray(plant.common_names)

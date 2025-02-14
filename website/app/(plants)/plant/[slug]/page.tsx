@@ -55,9 +55,10 @@ const getPlantData = unstable_cache(
 export const generateMetadata = async ({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> => {
-  const plant = await getPlantData(params.slug);
+  const slug = (await params).slug;
+  const plant = await getPlantData(slug);
 
   return {
     title: plant.scientific_name ?? "Plant Details",

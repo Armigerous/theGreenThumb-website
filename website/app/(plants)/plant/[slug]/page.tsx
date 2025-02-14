@@ -131,11 +131,7 @@ export async function generateMetadata({
     title = title.slice(0, 60);
 
     // Create full URL for the image
-    const ogImage = plant.images?.[0]?.img
-      ? new URL(plant.images[0].img).protocol === "http"
-        ? plant.images[0].img
-        : `${baseUrl}${plant.images[0].img}`
-      : `${baseUrl}/no-plant-image.png`; // Provide a default image
+    const ogImage = plant.images?.[0]?.img || `/no-plant-image.png`;
 
     return {
       title,

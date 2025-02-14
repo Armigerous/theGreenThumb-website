@@ -45,11 +45,6 @@ module.exports = {
         allow: ["/"],
         disallow: ["/api/*", "/admin/*"],
       },
-      // Explicitly allow OG images
-      {
-        userAgent: "*",
-        allow: ["/api/og"],
-      },
     ],
     additionalSitemaps: [`${process.env.NEXT_PUBLIC_BASE_URL}/sitemap.xml`],
   },

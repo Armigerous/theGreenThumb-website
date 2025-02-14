@@ -60,6 +60,14 @@ export const generateMetadata = async ({
   const slug = (await params).slug;
   const plant = await getPlantData(slug);
 
+  const ogImageUrl = new URL(`${process.env.NEXT_PUBLIC_BASE_URL}/api/og`);
+  ogImageUrl.searchParams.set("scientificName", plant.scientific_name ?? "");
+  ogImageUrl.searchParams.set(
+    "commonNames",
+    plant.common_names?.join(", ") ?? ""
+  );
+  ogImageUrl.searchParams.set("description", plant.description ?? "");
+
   return {
     title: plant.scientific_name ?? "Plant Details",
     description: plant.description ?? "Plant Details",
@@ -68,7 +76,7 @@ export const generateMetadata = async ({
       description: plant.description ?? "Plant Details",
       images: [
         {
-          url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/og?title=${encodeURIComponent(plant.scientific_name ?? "")}`,
+          url: ogImageUrl.toString(),
           width: 1200,
           height: 630,
         },
@@ -78,9 +86,7 @@ export const generateMetadata = async ({
       card: "summary_large_image",
       title: plant.scientific_name ?? "Plant Details",
       description: plant.description ?? "Plant Details",
-      images: [
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/og?title=${encodeURIComponent(plant.scientific_name ?? "")}`,
-      ],
+      images: [ogImageUrl.toString()],
     },
   };
 };

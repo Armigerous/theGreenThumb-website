@@ -4,7 +4,7 @@ import { dynamicBlurDataUrl } from "@/lib/dynamicBlurDataUrl";
 import DOMPurify from "isomorphic-dompurify";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState, useMemo } from "react";
 import { Badge } from "../ui/badge";
 import {
   Card,
@@ -16,12 +16,42 @@ import {
 } from "../ui/card";
 import { PlantCardData } from "@/types/plant";
 
-const PlantCard = ({ plant }: { plant: PlantCardData }) => {
+const PlantCard = memo(({ plant }: { plant: PlantCardData }) => {
   const [blurDataUrl, setBlurDataUrl] = useState<string | undefined>(undefined);
 
-  const imageUrl = plant.first_image
-    ? plant.first_image
-    : "/no-plant-image.png";
+  // Memoize values that are computed from props
+  const imageUrl = useMemo(
+    () => plant.first_image || "/no-plant-image.png",
+    [plant.first_image]
+  );
+
+  const displayName = useMemo(
+    () =>
+      "common_name" in plant
+        ? plant.common_name
+        : "first_common_name" in plant
+          ? plant.scientific_name
+          : null,
+    [plant]
+  );
+
+  const subName = useMemo(
+    () =>
+      "common_name" in plant
+        ? plant.scientific_name
+        : "first_common_name" in plant
+          ? plant.first_common_name
+          : null,
+    [plant]
+  );
+
+  const sanitizedDescription = useMemo(
+    () =>
+      DOMPurify.sanitize(plant.description || "", {
+        ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
+      }),
+    [plant.description]
+  );
 
   useEffect(() => {
     const fetchBlurDataUrl = async () => {
@@ -34,37 +64,32 @@ const PlantCard = ({ plant }: { plant: PlantCardData }) => {
   }, [imageUrl]);
 
   return (
-    <Card
-      key={`${plant.slug}-${plant.scientific_name}`}
-      className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left"
-    >
+    <Card className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left">
       <Link href={`/plant/${plant.slug}`}>
-        <Image
-          src={imageUrl || "/no-plant-image.png"}
-          alt={plant.first_image_alt_text || `${plant.scientific_name} Image`}
-          width={300}
-          height={200}
-          className="w-full object-cover h-48"
-          placeholder="blur"
-          blurDataURL={blurDataUrl || "https://placehold.co/600x400"} // Dynamically set blurDataURL
-        />
+        <div className="relative w-full h-48">
+          <Image
+            src={imageUrl}
+            alt={plant.first_image_alt_text || `${plant.scientific_name} Image`}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover"
+            loading="lazy"
+            placeholder="blur"
+            blurDataURL={
+              blurDataUrl ||
+              "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQtJSAyVC08MTY3LjIyOUFTRjo/Tj4yMkhiSk46NjVBQVRAQkBAQEBAQED/2wBDAR4eHh0aHTQaGjRAOC40QEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQED/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+            }
+          />
+        </div>
       </Link>
 
       <CardHeader>
         <Link href={`/plant/${plant.slug}`} className="group/header">
           <CardTitle className="text-lg font-semibold line-clamp-1 group-hover/header:underline">
-            {"common_name" in plant
-              ? plant.common_name
-              : "first_common_name" in plant
-                ? plant.scientific_name
-                : null}
+            {displayName}
           </CardTitle>
           <CardDescription className="text-sm text-muted-foreground line-clamp-1">
-            {"common_name" in plant
-              ? plant.scientific_name
-              : "first_common_name" in plant
-                ? plant.first_common_name
-                : null}
+            {subName}
           </CardDescription>
         </Link>
         {plant.first_tag && (
@@ -76,11 +101,7 @@ const PlantCard = ({ plant }: { plant: PlantCardData }) => {
       <CardContent>
         <div
           className="text-sm text-muted-foreground md:line-clamp-3 line-clamp-2"
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(plant.description || "", {
-              ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
-            }),
-          }}
+          dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
         />
       </CardContent>
       <Link href={`/plant/${plant.slug}`}>
@@ -92,6 +113,8 @@ const PlantCard = ({ plant }: { plant: PlantCardData }) => {
       </Link>
     </Card>
   );
-};
+});
+
+PlantCard.displayName = "PlantCard";
 
 export default PlantCard;

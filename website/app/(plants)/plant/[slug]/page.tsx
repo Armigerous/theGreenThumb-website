@@ -15,39 +15,67 @@ export const experimental_ppr = true;
 // Revalidate every 24 hours (86400 seconds) for ISR
 export const revalidate = 86400;
 
-export async function generateStaticParams() {
-  const { data: plants, error } = await supabase
-    .from("plant_autocomplete")
-    .select("slug");
+// Cache the slugs query
+const getPlantSlugs = unstable_cache(
+  async () => {
+    const { data: plants, error } = await supabase
+      .from("plant_autocomplete")
+      .select("slug");
 
-  if (error) {
-    console.error("Error fetching slugs:", error.message);
-    return [];
+    if (error) {
+      console.error("Error fetching slugs:", error.message);
+      return [];
+    }
+
+    return plants.map((plant) => ({
+      slug: plant.slug,
+    }));
+  },
+  ["plant-slugs"],
+  {
+    revalidate: 86400,
+    tags: ["plants"],
   }
+);
 
-  return plants.map((plant) => ({
-    slug: plant.slug,
-  }));
+export async function generateStaticParams() {
+  return getPlantSlugs();
 }
 
 // Cache the plant data fetch function
 const getPlantData = unstable_cache(
   async (slug: string) => {
-    const { data: rawPlant, error } = await supabase
+    // First get the plant data
+    const { data: plant, error: plantError } = await supabase
       .from("plant_full_data")
       .select("*")
       .eq("slug", slug)
       .single();
 
-    if (error || !rawPlant) {
-      throw new Error(error?.message || "Plant not found");
+    if (plantError || !plant) {
+      throw new Error(plantError?.message || "Plant not found");
     }
 
-    return rawPlant as PlantData;
+    // Then get the scientific slug if this is a common name
+    const { data: scientificData, error: slugError } = await supabase
+      .from("plant_common_card_data")
+      .select("scientific_slug")
+      .eq("slug", slug)
+      .single();
+
+    if (slugError && slugError.code !== "PGRST116") {
+      // Ignore not found error
+      console.error("Error fetching scientific slug:", slugError);
+    }
+
+    return {
+      plant: plant as PlantData,
+      scientificSlug: scientificData?.scientific_slug || slug,
+    };
   },
   ["plant-data"],
   {
-    revalidate: 86400, // 24 hours
+    revalidate: 86400,
     tags: ["plants"],
   }
 );
@@ -59,20 +87,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   try {
     const slug = (await params).slug;
-    const plant = await getPlantData(slug);
+    const { plant, scientificSlug } = await getPlantData(slug);
     const baseUrl =
       process.env.NEXT_PUBLIC_BASE_URL ||
       "https://www.theofficialgreenthumb.com";
-
-    // Get the scientific slug if this is a common name
-    const { data: scientificData } = await supabase
-      .from("plant_common_card_data")
-      .select("scientific_slug")
-      .eq("slug", slug)
-      .single();
-
-    // The canonical URL should always be the scientific name version
-    const canonicalSlug = scientificData?.scientific_slug || slug;
 
     const commonName = plant.common_names?.[0] || "Unknown";
     const allCommonNames = Array.isArray(plant.common_names)
@@ -103,61 +121,43 @@ export async function generateMetadata({
       `${plant.scientific_name} care`,
       `${plant.scientific_name} plant`,
       `how to grow ${plant.scientific_name}`,
-      ...allCommonNames.flatMap((name) => [
-        `${name} care`,
-        `${name} plant`,
-        `how to grow ${name}`,
-        `${name} care guide`,
-        `${name} growing tips`,
-      ]),
-      // Generic gardening terms
-      "plant care",
-      "gardening guide",
-      "plant maintenance",
-      "growing tips",
-      "North Carolina plants",
-      "The GreenThumb",
-      "plant care instructions",
-      "garden plants",
-      "indoor plants",
-      "outdoor plants",
+      ...allCommonNames
+        .map((name) => [
+          `${name} care`,
+          `${name} plant`,
+          `how to grow ${name}`,
+          `${name} care guide`,
+          `${name} growing tips`,
+        ])
+        .flat(),
     ].filter(Boolean);
 
-    // Enhanced NC-focused description
-    let description = `Complete guide for growing ${commonName} (${plant.scientific_name}) in North Carolina. Learn about light requirements${plant.light ? ` (${plant.light.join(", ")})` : ""}, water needs${plant.water_requirements ? ` (${plant.water_requirements})` : ""}, and soil preferences${plant.soil_drainage ? ` (${plant.soil_drainage.join(", ")})` : ""}. Perfect for USDA zones ${plant.usda_zones?.join("-") || "varies"}, common in NC gardens. Expert plant care tips from The GreenThumb's North Carolina growing guide.`;
-    description = description.slice(0, 150);
+    // Create a rich description that includes key information
+    const description =
+      `Complete guide for ${commonName} (${plant.scientific_name}) care. Learn about light requirements${plant.light ? ` (${plant.light.join(", ")})` : ""}, water requirements${plant.water_requirements ? ` (${plant.water_requirements})` : ""}, and soil preferences${plant.soil_drainage ? ` (${plant.soil_drainage.join(", ")})` : ""}. USDA zones ${plant.usda_zones?.join("-") || "varies"}.`.slice(
+        0,
+        150
+      );
 
-    let title = `${commonName} Care Guide - How to Grow in North Carolina (NC) - Complete Instructions`;
-    title = title.slice(0, 60);
-
-    // Ensure we have a valid image URL for OpenGraph
-    const ogImage = plant.images?.[0]?.img
-      ? {
-          url: plant.images[0].img, // Use the S3 URL directly
-          width: 1200,
-          height: 630,
-          alt: `${plant.scientific_name} plant image`,
-        }
-      : {
-          url: `${baseUrl}/no-plant-image.png`,
-          width: 1200,
-          height: 630,
-          alt: "Default plant image",
-        };
+    const title =
+      `${commonName} (${plant.scientific_name || ""}) Care Guide - Growing Tips & Instructions`.slice(
+        0,
+        60
+      );
 
     return {
       title,
       description,
       keywords: keywords.join(", "),
       alternates: {
-        canonical: `${baseUrl}/plant/${canonicalSlug}`,
+        canonical: `${baseUrl}/plant/${scientificSlug}`,
       },
       openGraph: {
         title: `${commonName} (${plant.scientific_name || ""}) Care Guide - Complete Growing Instructions`,
         description,
-        url: `${baseUrl}/plant/${canonicalSlug}`,
+        url: `${baseUrl}/plant/${scientificSlug}`,
         type: "article",
-        images: [ogImage],
+        images: plant.images?.[0]?.img ? [{ url: plant.images[0].img }] : [],
         siteName: "The GreenThumb",
         locale: "en_US",
       },
@@ -165,7 +165,7 @@ export async function generateMetadata({
         card: "summary_large_image",
         title: `${commonName} Care Guide`,
         description: `Learn how to grow ${commonName} (${plant.scientific_name}). Complete care instructions and tips.`,
-        images: [ogImage],
+        images: plant.images?.[0]?.img ? [plant.images[0].img] : [],
       },
       robots: {
         index: true,
@@ -191,7 +191,7 @@ export async function generateMetadata({
 // Create a separate component for the plant content to enable suspense boundary
 async function PlantContent({ slug }: { slug: string }) {
   try {
-    const plant = await getPlantData(slug);
+    const { plant } = await getPlantData(slug);
     return (
       <>
         <PlantDetails plant={plant} />

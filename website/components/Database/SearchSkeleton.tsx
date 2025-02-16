@@ -10,7 +10,7 @@ export default function SearchSkeleton() {
   return (
     <div className="text-left">
       {/* Skeleton for the Autocomplete/Search Input */}
-      <div className="px-4">
+      <div className="px-4 pl-0">
         <Skeleton className="w-full max-w-screen-sm h-10 my-2 rounded-lg" />
       </div>
 

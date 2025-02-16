@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { memo, useState, useEffect, useCallback, useMemo } from "react";
+import { memo, useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { PlantCardData, PlantData } from "@/types/plant";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -120,6 +121,9 @@ const SearchResults = memo(
     const [data, setData] = useState<ApiResponse | null>(null);
     const [loading, setLoading] = useState(true);
 
+    // Create a ref for the scrolling container
+    const parentRef = useRef<HTMLDivElement>(null);
+
     const limit = 28;
     const offset = (page - 1) * limit;
 
@@ -130,7 +134,7 @@ const SearchResults = memo(
       if (filters) baseUrl += `&filters=${encodeURIComponent(filters)}`;
       if (nameType) baseUrl += `&nameType=${encodeURIComponent(nameType)}`;
       return baseUrl;
-    }, [query, page, filters, nameType, limit, offset]);
+    }, [query, filters, nameType, limit, offset]);
 
     // Memoize the fetch function
     const fetchData = useCallback(async () => {
@@ -171,6 +175,26 @@ const SearchResults = memo(
       fetchData();
     }, [fetchData]);
 
+    // Calculate the number of columns based on screen size
+    const getColumnCount = () => {
+      if (typeof window === "undefined") return 4; // Default for SSR
+      const width = window.innerWidth;
+      if (width < 640) return 1; // sm
+      if (width < 768) return 2; // md
+      if (width < 1024) return 3; // lg
+      return 4; // xl and above
+    };
+
+    const columnCount = useMemo(() => getColumnCount(), []);
+
+    // Setup virtualizer
+    const rowVirtualizer = useVirtualizer({
+      count: data ? Math.ceil(data.results.length / columnCount) : 0,
+      getScrollElement: () => parentRef.current,
+      estimateSize: () => 400, // Estimated height of each row
+      overscan: 5, // Number of items to render outside of the visible area
+    });
+
     if (loading) {
       return (
         <div className="container mx-auto py-4">
@@ -200,17 +224,48 @@ const SearchResults = memo(
           </p>
         </div>
 
-        {/* Conditional Rendering for No Results */}
         {data.results.length === 0 ? (
           <NoResults />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {data.results.map((plant: PlantCardData) => (
-              <PlantCard
-                key={`${plant.slug}-${plant.scientific_name}`}
-                plant={plant}
-              />
-            ))}
+          <div ref={parentRef} className="h-[800px] overflow-auto">
+            <div
+              style={{
+                height: `${rowVirtualizer.getTotalSize()}px`,
+                width: "100%",
+                position: "relative",
+              }}
+            >
+              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                const fromIndex = virtualRow.index * columnCount;
+                const toIndex = Math.min(
+                  fromIndex + columnCount,
+                  data.results.length
+                );
+                const rowItems = data.results.slice(fromIndex, toIndex);
+
+                return (
+                  <div
+                    key={virtualRow.index}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: `${virtualRow.size}px`,
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                  >
+                    {rowItems.map((plant: PlantCardData) => (
+                      <PlantCard
+                        key={`${plant.slug}-${plant.scientific_name}`}
+                        plant={plant}
+                      />
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 

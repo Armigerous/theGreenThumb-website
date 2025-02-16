@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo, Suspense } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -24,224 +24,303 @@ import {
   SunIcon,
   TreesIcon as TreeIcon,
 } from "lucide-react";
-import AudioPlayerButton from "./AudioButton";
-import ImageGallery from "./ImageGallery";
+import dynamic from "next/dynamic";
 import { PlantData, PlantImage } from "@/types/plant";
 
+// Dynamically import heavy components
+const AudioPlayerButton = dynamic(() => import("./AudioButton"), {
+  ssr: false,
+  loading: () => <div className="w-6 h-6 bg-gray-200 animate-pulse rounded" />,
+});
+
+const ImageGallery = dynamic(() => import("./ImageGallery"), {
+  loading: () => (
+    <div className="w-full aspect-video bg-gray-200 animate-pulse rounded" />
+  ),
+});
+
 /** Displays an array of strings (multi-value) */
-const PlantArrayFact = ({
-  label,
-  data,
-}: {
-  label: string;
-  data?: Array<string | null>;
-}) => {
-  const filteredData =
-    data?.filter((item): item is string => item !== null) || [];
+const PlantArrayFact = memo(
+  ({ label, data }: { label: string; data?: Array<string | null> }) => {
+    const filteredData =
+      data?.filter((item): item is string => item !== null) || [];
 
-  return (
-    <>
-      <span className="font-semibold text-cream-800">{label}:</span>
-      {filteredData.length > 0 ? (
-        <ul className="list-disc ml-6">
-          {filteredData.map((item: string, index: number) => (
-            <li key={index}>{item}</li>
-          ))}
-        </ul>
-      ) : (
-        <span className="ml-1">Not specified</span>
-      )}
-    </>
-  );
-};
-
-/** Displays a single string (single-value) */
-const PlantFact = ({
-  label,
-  data,
-}: {
-  label: string;
-  data?: string | null;
-}) => (
-  <p>
-    <span className="font-semibold text-cream-800">{label}:</span>
-    <span className="ml-1">{data || "Not specified"}</span>
-  </p>
+    return (
+      <>
+        <span className="font-semibold text-cream-800">{label}:</span>
+        {filteredData.length > 0 ? (
+          <ul className="list-disc ml-6">
+            {filteredData.map((item: string, index: number) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+        ) : (
+          <span className="ml-1">Not specified</span>
+        )}
+      </>
+    );
+  }
 );
 
+PlantArrayFact.displayName = "PlantArrayFact";
+
+/** Displays a single string (single-value) */
+const PlantFact = memo(
+  ({ label, data }: { label: string; data?: string | null }) => (
+    <p>
+      <span className="font-semibold text-cream-800">{label}:</span>
+      <span className="ml-1">{data || "Not specified"}</span>
+    </p>
+  )
+);
+
+PlantFact.displayName = "PlantFact";
+
+// Separate the image section into its own component for better code splitting
+const PlantImages = memo(({ images }: { images: PlantImage[] }) => {
+  if (!images || images.length === 0) {
+    return <p className="text-muted-foreground">No images available.</p>;
+  }
+
+  return (
+    <ImageGallery
+      images={images
+        .filter((img: PlantImage) => img.img !== null)
+        .map(({ img, alt_text, caption, attribution }: PlantImage) => ({
+          img: img as string,
+          altText: alt_text || "No description available",
+          caption: caption || "",
+          attribution: attribution || "",
+        }))}
+    />
+  );
+});
+
+PlantImages.displayName = "PlantImages";
+
+// Separate the basic info section into its own component
+const BasicInfo = memo(
+  ({
+    scientificName,
+    soundFile,
+    genus,
+    species,
+    family,
+    phoneticSpelling,
+    commonNames,
+    description,
+  }: {
+    scientificName: string | null | undefined;
+    soundFile?: string | null;
+    genus?: string | null;
+    species?: string | null;
+    family?: string | null;
+    phoneticSpelling?: string | null;
+    commonNames?: (string | null)[];
+    description?: string | null;
+  }) => {
+    if (!scientificName) return null;
+
+    const sanitizedDescription = DOMPurify.sanitize(description || "", {
+      ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
+    });
+
+    return (
+      <>
+        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
+          {scientificName}
+          {soundFile && <AudioPlayerButton soundFile={soundFile} />}
+        </h1>
+        <p className="text-xl text-muted-foreground mb-2">
+          {genus && `Genus: ${genus} - `}
+          {species && `Species: ${species} - `}
+          {family && `Family: ${family}`}
+        </p>
+        {phoneticSpelling && (
+          <p className="text-sm text-muted-foreground mb-4">
+            Phonetic Spelling: {phoneticSpelling}
+          </p>
+        )}
+        {commonNames && commonNames.length > 0 && (
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold">Common Names:</h3>
+            <ul className="list-disc ml-6">
+              {commonNames.map((name: string | null, index: number) =>
+                name ? <li key={index}>{name}</li> : null
+              )}
+            </ul>
+          </div>
+        )}
+        <div
+          className="prose prose-sm mb-4 text-lg"
+          dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+        />
+      </>
+    );
+  }
+);
+
+BasicInfo.displayName = "BasicInfo";
+
+// Tags component
+const Tags = memo(({ tags }: { tags?: (string | null)[] }) => (
+  <div className="my-8">
+    <h2 className="text-lg font-semibold mb-2">Tags</h2>
+    <div className="flex flex-wrap gap-2">
+      {tags && tags.length > 0 ? (
+        tags
+          .filter((tag: string | null): tag is string => tag !== null)
+          .map((tag: string, index: number) => <Badge key={index}>{tag}</Badge>)
+      ) : (
+        <span className="text-muted-foreground">No tags available.</span>
+      )}
+    </div>
+  </div>
+));
+
+Tags.displayName = "Tags";
+
 const PlantDetails: React.FC<{ plant: PlantData }> = ({ plant }) => {
-  // Destructure fields from your updated materialized view:
   const {
     genus,
     common_names: commonNames,
     species,
     scientific_name: scientificName,
-
     family,
     sound_file: soundFile,
     phonetic_spelling: phoneticSpelling,
     description,
-    profile_video: profileVideo,
+    images: plantImages,
+    tags,
     height_max: heightMax,
     height_min: heightMin,
     width_max: widthMax,
     width_min: widthMin,
+    usda_zones: usdaZones,
+    nc_region: ncRegion,
     origin,
+    life_cycle: lifeCycle,
+    plant_types: plantTypes,
+    habit,
     distribution,
     uses,
-    images: plantImages,
-    wildlife_value: wildlifeValue,
-    edibility,
     flower_description: flowerDescription,
-    leaf_description: leafDescription,
-    fruit_description: fruitDescription,
-    stem_description: stemDescription,
-    bark_description: barkDescription,
-    poison_symptoms: poisonSymptoms,
-    poison_toxic_principle: poisonToxicPrinciple,
-    fire_risk: fireRisk,
+    flower_bloom_time: flowerBloomTime,
+    flower_color: flowerColor,
+    flower_inflorescence: flowerInflorescence,
+    flower_petals: flowerPetals,
+    flower_shape: flowerShape,
     flower_size: flowerSize,
-    fruit_length: fruitLength,
-    fruit_width: fruitWidth,
-    garden_spaces: gardenSpaces,
-    growth_rate: growthRate,
+    flower_value_to_gardener: flowerValueToGardener,
+    leaf_description: leafDescription,
+    leaf_arrangement: leafArrangement,
+    leaf_characteristics: leafCharacteristics,
+    leaf_color: leafColor,
+    leaf_fall_color: leafFallColor,
+    leaf_feel: leafFeel,
     leaf_hairs_present: leafHairsPresent,
     leaf_length: leafLength,
     leaf_width: leafWidth,
-    poison_dermatitis: poisonDermatitis,
-    poison_severity: poisonSeverity,
+    leaf_margin: leafMargin,
+    leaf_shape: leafShape,
+    leaf_type: leafType,
+    leaf_value_to_gardener: leafValueToGardener,
+    fruit_description: fruitDescription,
+    fruit_color: fruitColor,
+    fruit_display_harvest_time: fruitDisplayHarvestTime,
+    fruit_length: fruitLength,
+    fruit_type: fruitType,
+    fruit_value_to_gardener: fruitValueToGardener,
+    fruit_width: fruitWidth,
+    stem_description: stemDescription,
     stem_aromatic: stemAromatic,
     stem_bud_scale: stemBudScale,
     stem_bud_terminal: stemBudTerminal,
     stem_buds: stemBuds,
+    stem_color: stemColor,
     stem_cross_section: stemCrossSection,
     stem_form: stemForm,
     stem_leaf_scar_shape: stemLeafScarShape,
     stem_lenticels: stemLenticels,
     stem_pith: stemPith,
     stem_surface: stemSurface,
-    texture,
-
-    tags,
-    attracts,
-    available_space_to_plant: availableSpaceToPlant,
+    bark_description: barkDescription,
     bark_attachment: barkAttachment,
     bark_color: barkColor,
     bark_plate_shape: barkPlateShape,
-    design_features: designFeatures,
-    flower_bloom_time: flowerBloomTime,
-    flower_color: flowerColor,
-    flower_inflorescence: flowerInflorescence,
-    flower_petals: flowerPetals,
-    flower_shape: flowerShape,
-    flower_value_to_gardener: flowerValueToGardener,
-    fruit_color: fruitColor,
-    fruit_display_harvest_time: fruitDisplayHarvestTime,
-    fruit_type: fruitType,
-    fruit_value_to_gardener: fruitValueToGardener,
-    habit,
-    landscape_location: landscapeLocation,
-    landscape_theme: landscapeTheme,
-    leaf_arrangement: leafArrangement,
-    leaf_characteristics: leafCharacteristics,
-    leaf_color: leafColor,
-    leaf_fall_color: leafFallColor,
-    leaf_feel: leafFeel,
-    leaf_margin: leafMargin,
-    leaf_shape: leafShape,
-    leaf_type: leafType,
-    leaf_value_to_gardener: leafValueToGardener,
-    life_cycle: lifeCycle,
     light,
-    maintenance,
-    nc_region: ncRegion,
-    plant_types: plantTypes,
-    poison_part: poisonPart,
-    problems,
-    propagation,
-    resistance_to_challenges: resistanceToChallenges,
     soil_drainage: soilDrainage,
     soil_ph: soilPh,
     soil_texture: soilTexture,
-    stem_color: stemColor,
-    usda_zones: usdaZones,
+    available_space_to_plant: availableSpaceToPlant,
+    maintenance,
+    growth_rate: growthRate,
+    propagation,
+    problems,
+    resistance_to_challenges: resistanceToChallenges,
+    garden_spaces: gardenSpaces,
+    landscape_location: landscapeLocation,
+    landscape_theme: landscapeTheme,
+    design_features: designFeatures,
+    fire_risk: fireRisk,
+    texture,
+    wildlife_value: wildlifeValue,
+    attracts,
+    edibility,
+    poison_symptoms: poisonSymptoms,
+    poison_toxic_principle: poisonToxicPrinciple,
+    poison_dermatitis: poisonDermatitis,
+    poison_part: poisonPart,
+    poison_severity: poisonSeverity,
+    profile_video: profileVideo,
   } = plant;
-
-  // Sanitize any HTML description
-  const sanitizedDescription = DOMPurify.sanitize(description || "", {
-    ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
-  });
 
   return (
     <section className="my-12">
       <div className="flex flex-col md:flex-row gap-6 mb-8">
         {/* Left Column: Images */}
         <div className="md:w-1/2">
-          {plantImages && plantImages.length > 0 ? (
-            <ImageGallery
-              images={plantImages
-                .filter((img: PlantImage) => img.img !== null)
-                .map(({ img, alt_text, caption, attribution }: PlantImage) => ({
-                  img: img as string,
-                  altText: alt_text || "No description available",
-                  caption: caption || "",
-                  attribution: attribution || "",
-                }))}
-            />
-          ) : (
-            <p className="text-muted-foreground">No images available.</p>
-          )}
+          <Suspense
+            fallback={
+              <div className="w-full aspect-video bg-gray-200 animate-pulse rounded" />
+            }
+          >
+            <PlantImages images={plantImages || []} />
+          </Suspense>
         </div>
 
         {/* Right Column: Basic Info */}
         <div className="md:w-1/2">
-          <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-            {scientificName}
-            {soundFile && <AudioPlayerButton soundFile={soundFile} />}
-          </h1>
-          <p className="text-xl text-muted-foreground mb-2">
-            {genus && `Genus: ${genus} - `}
-            {species && `Species: ${species} - `}
-            {family && `Family: ${family}`}
-          </p>
-          {phoneticSpelling && (
-            <p className="text-sm text-muted-foreground mb-4">
-              Phonetic Spelling: {phoneticSpelling}
-            </p>
-          )}
-          {commonNames && commonNames.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold">Common Names:</h3>
-              <ul className="list-disc ml-6">
-                {commonNames.map((name: string | null, index: number) =>
-                  name ? <li key={index}>{name}</li> : null
-                )}
-              </ul>
-            </div>
-          )}
-
-          <div
-            className="prose prose-sm mb-4 text-lg"
-            dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
-          />
+          <Suspense
+            fallback={
+              <div className="animate-pulse space-y-4">
+                <div className="h-8 bg-gray-200 rounded w-3/4" />
+                <div className="h-4 bg-gray-200 rounded w-1/2" />
+                <div className="h-4 bg-gray-200 rounded w-2/3" />
+              </div>
+            }
+          >
+            <BasicInfo
+              scientificName={scientificName}
+              soundFile={soundFile}
+              genus={genus}
+              species={species}
+              family={family}
+              phoneticSpelling={phoneticSpelling}
+              commonNames={commonNames}
+              description={description}
+            />
+          </Suspense>
         </div>
       </div>
 
-      {/* Tags */}
-      <div className="my-8">
-        <h2 className="text-lg font-semibold mb-2">Tags</h2>
-        <div className="flex flex-wrap gap-2">
-          {tags && tags.length > 0 ? (
-            tags
-              .filter((tag: string | null): tag is string => tag !== null)
-              .map((tag: string, index: number) => (
-                <Badge key={index}>{tag}</Badge>
-              ))
-          ) : (
-            <span className="text-muted-foreground">No tags available.</span>
-          )}
-        </div>
-      </div>
+      <Suspense
+        fallback={
+          <div className="h-16 bg-gray-200 animate-pulse rounded my-8" />
+        }
+      >
+        <Tags tags={tags} />
+      </Suspense>
 
       {/* TABS */}
       <Tabs defaultValue="overview" className="w-full">
@@ -670,4 +749,4 @@ const PlantDetails: React.FC<{ plant: PlantData }> = ({ plant }) => {
   );
 };
 
-export default PlantDetails;
+export default memo(PlantDetails);

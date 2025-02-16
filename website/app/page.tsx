@@ -1,5 +1,17 @@
-import Homepage from "@/components/Home/Homepage";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import Script from "next/script";
+
+// Dynamically import the Homepage component
+const Homepage = dynamic(() => import("@/components/Home/Homepage"), {
+  loading: () => (
+    <div className="animate-pulse space-y-8">
+      <div className="h-96 bg-gray-200 rounded" />
+      <div className="h-64 bg-gray-200 rounded" />
+      <div className="h-48 bg-gray-200 rounded" />
+    </div>
+  ),
+});
 
 export default function Home() {
   const jsonLdData = {
@@ -19,7 +31,17 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }}
       />
-      <Homepage />
+      <Suspense
+        fallback={
+          <div className="animate-pulse space-y-8">
+            <div className="h-96 bg-gray-200 rounded" />
+            <div className="h-64 bg-gray-200 rounded" />
+            <div className="h-48 bg-gray-200 rounded" />
+          </div>
+        }
+      >
+        <Homepage />
+      </Suspense>
     </main>
   );
 }

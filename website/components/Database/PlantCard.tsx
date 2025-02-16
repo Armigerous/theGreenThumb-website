@@ -19,10 +19,17 @@ import { PlantCardData } from "@/types/plant";
 const PlantCard = memo(({ plant }: { plant: PlantCardData }) => {
   const [blurDataUrl, setBlurDataUrl] = useState<string | undefined>(undefined);
 
-  // Memoize values that are computed from props
   const imageUrl = useMemo(
-    () => plant.first_image || "/no-plant-image.png",
+    () => (plant.first_image ? plant.first_image : "/no-plant-image.png"),
     [plant.first_image]
+  );
+
+  const sanitizedDescription = useMemo(
+    () =>
+      DOMPurify.sanitize(plant.description || "", {
+        ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
+      }),
+    [plant.description]
   );
 
   const displayName = useMemo(
@@ -45,14 +52,6 @@ const PlantCard = memo(({ plant }: { plant: PlantCardData }) => {
     [plant]
   );
 
-  const sanitizedDescription = useMemo(
-    () =>
-      DOMPurify.sanitize(plant.description || "", {
-        ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
-      }),
-    [plant.description]
-  );
-
   useEffect(() => {
     const fetchBlurDataUrl = async () => {
       if (imageUrl) {
@@ -64,7 +63,10 @@ const PlantCard = memo(({ plant }: { plant: PlantCardData }) => {
   }, [imageUrl]);
 
   return (
-    <Card className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left">
+    <Card
+      key={`${plant.slug}-${plant.scientific_name}`}
+      className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left"
+    >
       <Link href={`/plant/${plant.slug}`}>
         <div className="relative w-full h-48">
           <Image
@@ -77,8 +79,8 @@ const PlantCard = memo(({ plant }: { plant: PlantCardData }) => {
             placeholder="blur"
             blurDataURL={
               blurDataUrl ||
-              "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQtJSAyVC08MTY3LjIyOUFTRjo/Tj4yMkhiSk46NjVBQVRAQkBAQEBAQED/2wBDAR4eHh0aHTQaGjRAOC40QEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQED/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-            }
+              "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQtJSAyVC08MTY3LjIyOUFTRjo/Tj4yMkhiSk46NjVBQVRAQkBAQEBAQED/2wBDAR4eHh0aHTQaGjRAOC40QEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQED/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+            } // Fallback blur data URL
           />
         </div>
       </Link>
@@ -101,7 +103,9 @@ const PlantCard = memo(({ plant }: { plant: PlantCardData }) => {
       <CardContent>
         <div
           className="text-sm text-muted-foreground md:line-clamp-3 line-clamp-2"
-          dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+          dangerouslySetInnerHTML={{
+            __html: sanitizedDescription,
+          }}
         />
       </CardContent>
       <Link href={`/plant/${plant.slug}`}>

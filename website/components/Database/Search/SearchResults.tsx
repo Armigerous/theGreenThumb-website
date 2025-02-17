@@ -36,22 +36,31 @@ const responseCache: Record<string, CacheEntry> = {};
 
 // Separate PlantCardSkeleton into its own component for reuse
 const PlantCardSkeleton = memo(() => (
-  <div className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left">
-    <Skeleton className="w-full h-48 object-cover rounded-t-xl" />
-    <div className="p-4 space-y-2">
-      <Skeleton className="h-5 w-3/4 rounded-md" />
-      <Skeleton className="h-4 w-1/2 rounded-md" />
+  <div className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left h-[480px] mx-auto max-w-sm">
+    <div className="relative w-full h-48">
+      <Skeleton className="absolute inset-0 w-full h-full" />
     </div>
-    <div className="px-4 pb-2">
-      <Skeleton className="h-6 w-20 rounded-md" />
+
+    <div className="px-5 py-4">
+      <div className="space-y-2">
+        <Skeleton className="h-6 w-3/4" /> {/* Title */}
+        <Skeleton className="h-4 w-1/2" /> {/* Subtitle */}
+      </div>
+      <div className="mt-2">
+        <Skeleton className="h-6 w-20 rounded-full" /> {/* Badge */}
+      </div>
     </div>
-    <div className="px-4 space-y-2">
-      <Skeleton className="h-4 w-full rounded-md" />
-      <Skeleton className="h-4 w-5/6 rounded-md" />
-      <Skeleton className="h-4 w-4/6 rounded-md" />
+
+    <div className="px-5">
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-5/6" />
+        <Skeleton className="h-4 w-4/6" />
+      </div>
     </div>
-    <div className="p-4">
-      <Skeleton className="h-4 w-24 rounded-md" />
+
+    <div className="px-5 py-4 mt-auto">
+      <Skeleton className="h-4 w-24" /> {/* Learn more */}
     </div>
   </div>
 ));
@@ -60,7 +69,7 @@ PlantCardSkeleton.displayName = "PlantCardSkeleton";
 
 // Error state component
 const ErrorState = memo(() => (
-  <div className="container mx-auto px-4 py-8 text-center">
+  <div className="container mx-auto py-8 text-center">
     <Image
       src="/sad-plant.png"
       alt="Error"
@@ -214,7 +223,7 @@ const SearchResults = memo(
     const totalPages = Math.ceil(data.count / limit);
 
     return (
-      <div className="container mx-auto px-4 sm:px-6 py-4">
+      <div className="w-full py-4">
         <div className="text-left mb-4">
           <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-cream-800">
             {query ? `Search results for "${query}"` : "All Plants"}

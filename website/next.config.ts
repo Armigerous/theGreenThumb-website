@@ -44,7 +44,15 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "www.theofficialgreenthumb.com",
+      },
+      {
+        protocol: "https",
+        hostname: "eit-planttoolbox-prod.s3.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "s3.amazonaws.com",
       },
     ],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],

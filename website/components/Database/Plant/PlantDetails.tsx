@@ -26,17 +26,16 @@ import {
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { PlantData, PlantImage } from "@/types/plant";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Dynamically import heavy components
 const AudioPlayerButton = dynamic(() => import("./AudioButton"), {
   ssr: false,
-  loading: () => <div className="w-6 h-6 bg-gray-200 animate-pulse rounded" />,
+  loading: () => <Skeleton className="w-6 h-6 rounded" />,
 });
 
 const ImageGallery = dynamic(() => import("./ImageGallery"), {
-  loading: () => (
-    <div className="w-full aspect-video bg-gray-200 animate-pulse rounded" />
-  ),
+  loading: () => <div className="w-full aspect-video rounded" />,
 });
 
 /** Displays an array of strings (multi-value) */
@@ -273,6 +272,18 @@ const PlantDetails: React.FC<{ plant: PlantData }> = ({ plant }) => {
     poison_part: poisonPart,
     poison_severity: poisonSeverity,
     profile_video: profileVideo,
+    // climbing_method | array
+    // cultivar | array
+    // synonyms | array
+    // appendage | array
+    // similar | array of other plants
+    // confused with | array of other plants
+    // native alternative | array of other plants
+    // common_insect_problems | 1 to 1
+    // common_disease_problems | 1 to 1
+    // other_plant_problems | 1 to 1
+    // resistance | 1 to 1
+    // bulb_storage | 1 to 1
   } = plant;
 
   return (

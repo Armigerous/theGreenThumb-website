@@ -191,13 +191,13 @@ const SearchResults = memo(
     const rowVirtualizer = useVirtualizer({
       count: data ? Math.ceil(data.results.length / columnCount) : 0,
       getScrollElement: () => parentRef.current,
-      estimateSize: () => 400, // Estimated height of each row
-      overscan: 5, // Number of items to render outside of the visible area
+      estimateSize: () => 520, // Increased from 400 to account for full card height
+      overscan: 5,
     });
 
     if (loading) {
       return (
-        <div className="container mx-auto py-4">
+        <div className="container mx-auto px-4 sm:px-6 py-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {Array.from({ length: limit }).map((_, index) => (
               <PlantCardSkeleton key={index} />
@@ -214,7 +214,7 @@ const SearchResults = memo(
     const totalPages = Math.ceil(data.count / limit);
 
     return (
-      <div className="container mx-auto py-4">
+      <div className="container mx-auto px-4 sm:px-6 py-4">
         <div className="text-left mb-4">
           <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-cream-800">
             {query ? `Search results for "${query}"` : "All Plants"}
@@ -227,45 +227,52 @@ const SearchResults = memo(
         {data.results.length === 0 ? (
           <NoResults />
         ) : (
-          <div ref={parentRef} className="h-[800px] overflow-auto">
+          <div className="relative">
             <div
-              style={{
-                height: `${rowVirtualizer.getTotalSize()}px`,
-                width: "100%",
-                position: "relative",
-              }}
+              ref={parentRef}
+              className="h-[80vh] sm:h-[900px] overflow-auto scrollbar-hide overscroll-none"
             >
-              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                const fromIndex = virtualRow.index * columnCount;
-                const toIndex = Math.min(
-                  fromIndex + columnCount,
-                  data.results.length
-                );
-                const rowItems = data.results.slice(fromIndex, toIndex);
+              <div
+                style={{
+                  height: `${rowVirtualizer.getTotalSize()}px`,
+                  width: "100%",
+                  position: "relative",
+                }}
+              >
+                {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                  const fromIndex = virtualRow.index * columnCount;
+                  const toIndex = Math.min(
+                    fromIndex + columnCount,
+                    data.results.length
+                  );
+                  const rowItems = data.results.slice(fromIndex, toIndex);
 
-                return (
-                  <div
-                    key={virtualRow.index}
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: `${virtualRow.size}px`,
-                      transform: `translateY(${virtualRow.start}px)`,
-                    }}
-                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
-                  >
-                    {rowItems.map((plant: PlantCardData) => (
-                      <PlantCard
-                        key={`${plant.slug}-${plant.scientific_name}`}
-                        plant={plant}
-                      />
-                    ))}
-                  </div>
-                );
-              })}
+                  return (
+                    <div
+                      key={virtualRow.index}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: `${virtualRow.size}px`,
+                        transform: `translateY(${virtualRow.start}px)`,
+                      }}
+                      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-8"
+                    >
+                      {rowItems.map((plant: PlantCardData, index: number) => (
+                        <PlantCard
+                          key={`${plant.slug}-${plant.scientific_name}`}
+                          plant={plant}
+                          index={index}
+                        />
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
+            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none" />
           </div>
         )}
 

@@ -106,7 +106,7 @@ export function Autocomplete() {
   };
 
   return (
-    <div className="flex w-full flex-col items-start gap-2">
+    <div className="flex w-full flex-col items-start gap-2 px-4 sm:px-6">
       <div className="flex w-full items-center gap-2">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -128,6 +128,11 @@ export function Autocomplete() {
             style={{
               width: triggerRef.current?.offsetWidth || "auto",
             }}
+            align="start"
+            side="bottom"
+            sideOffset={4}
+            alignOffset={0}
+            avoidCollisions={false}
           >
             <Command>
               <CommandInput

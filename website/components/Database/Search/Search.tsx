@@ -13,7 +13,7 @@ const Search = ({
   nameType?: string;
 }) => {
   return (
-    <div className="text-left">
+    <div className="text-left mx-auto px-8 md:px-0 sm:px-4">
       <Autocomplete />
       <SearchResults
         query={query}

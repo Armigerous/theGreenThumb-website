@@ -36,23 +36,21 @@ const responseCache: Record<string, CacheEntry> = {};
 
 // Separate PlantCardSkeleton into its own component for reuse
 const PlantCardSkeleton = memo(() => (
-  <div className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left h-[480px] mx-auto max-w-sm">
+  <div className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left h-[480px] w-full">
     <div className="relative w-full h-48">
       <Skeleton className="absolute inset-0 w-full h-full" />
     </div>
 
-    <div className="px-5 py-4">
-      <div className="space-y-2">
+    <div className="px-5 py-4 space-y-2">
+      <div className="space-y-1">
         <Skeleton className="h-6 w-3/4" /> {/* Title */}
-        <Skeleton className="h-4 w-1/2" /> {/* Subtitle */}
+        <Skeleton className="h-4 w-1/2" /> {/* Scientific name */}
       </div>
-      <div className="mt-2">
-        <Skeleton className="h-6 w-20 rounded-full" /> {/* Badge */}
-      </div>
+      <Skeleton className="h-5 w-24 rounded-full" /> {/* Badge */}
     </div>
 
     <div className="px-5">
-      <div className="space-y-2">
+      <div className="space-y-1">
         <Skeleton className="h-4 w-full" />
         <Skeleton className="h-4 w-5/6" />
         <Skeleton className="h-4 w-4/6" />
@@ -60,7 +58,7 @@ const PlantCardSkeleton = memo(() => (
     </div>
 
     <div className="px-5 py-4 mt-auto">
-      <Skeleton className="h-4 w-24" /> {/* Learn more */}
+      <Skeleton className="h-4 w-20" /> {/* Learn more */}
     </div>
   </div>
 ));
@@ -206,7 +204,12 @@ const SearchResults = memo(
 
     if (loading) {
       return (
-        <div className="container mx-auto px-4 sm:px-6 py-4">
+        <div className="container mx-auto py-4">
+          <div className="mb-4">
+            <Skeleton className="h-10 w-48 md:w-64 mb-2" />{" "}
+            {/* Heading skeleton */}
+            <Skeleton className="h-4 w-32" /> {/* Results count skeleton */}
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {Array.from({ length: limit }).map((_, index) => (
               <PlantCardSkeleton key={index} />

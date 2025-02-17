@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 
 import { FilterSearch } from "./FilterSearch";
 import { FilterSectionAccordion } from "./FilterSectionAccordion";
+import { PremadeFilters } from "./PremadeFilters";
 import { allFilters, FilterSection } from "@/types/filterData";
 
 export function FilterPanel() {
@@ -121,6 +122,30 @@ export function FilterPanel() {
     router.replace(`?${params.toString()}`);
   }, [router]);
 
+  // Apply premade filter
+  const handlePremadeFilter = React.useCallback(
+    (filters: string[]) => {
+      // Reset existing filters
+      setSelectedOptions({});
+
+      // Create new filters object
+      const newFilters: { [key: string]: boolean } = {};
+      filters.forEach((filter) => {
+        newFilters[filter] = true;
+      });
+
+      // Set new filters
+      setSelectedOptions(newFilters);
+
+      // Update URL and trigger search
+      const params = new URLSearchParams(window.location.search);
+      params.set("filters", filters.join(","));
+      params.delete("page");
+      router.replace(`?${params.toString()}`);
+    },
+    [router]
+  );
+
   return (
     <Sidebar side="left" aria-label="Filter Panel">
       <SidebarHeader>
@@ -136,6 +161,9 @@ export function FilterPanel() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+
+        {/* Premade filters */}
+        <PremadeFilters onApplyPremadeFilter={handlePremadeFilter} />
 
         {/* Filter search box */}
         <FilterSearch

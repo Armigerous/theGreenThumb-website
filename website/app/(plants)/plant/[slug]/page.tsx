@@ -141,6 +141,7 @@ export async function generateMetadata({
         type: "article",
         images: [ogImage],
         siteName: "The GreenThumb",
+        locale: "en_US",
       },
       twitter: {
         card: "summary_large_image",
@@ -148,12 +149,16 @@ export async function generateMetadata({
         description,
         images: [ogImage],
       },
+      robots: {
+        index: true,
+        follow: true,
+      },
     };
   } catch (error) {
     console.error("Error generating metadata:", error);
     return {
-      title: "Plant Not Found",
-      description: "The requested plant could not be found.",
+      title: "Plant Not Found | The GreenThumb",
+      description: "The requested plant information could not be found.",
     };
   }
 }

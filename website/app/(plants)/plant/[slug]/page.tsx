@@ -100,7 +100,6 @@ export async function generateMetadata({
   try {
     const slug = (await params).slug;
     const { plant, scientificSlug } = await getPlantDataWithSlug(slug);
-
     const commonName = plant.common_names?.[0] || "Unknown";
     const baseUrl =
       process.env.NEXT_PUBLIC_BASE_URL || "https://theofficialgreenthumb.com";
@@ -114,6 +113,20 @@ export async function generateMetadata({
     const title =
       `${commonName} (${plant.scientific_name || ""}) Care Guide`.slice(0, 60);
 
+    const ogImage = plant.images?.[0]?.img
+      ? {
+          url: plant.images[0].img, // Use the S3 URL directly
+          width: 1200,
+          height: 630,
+          alt: `${plant.scientific_name} plant image`,
+        }
+      : {
+          url: `${baseUrl}/no-plant-image.png`,
+          width: 1200,
+          height: 630,
+          alt: "Default plant image",
+        };
+
     return {
       title,
       description,
@@ -126,14 +139,14 @@ export async function generateMetadata({
         description,
         url: `${baseUrl}/plant/${scientificSlug}`,
         type: "article",
-        images: plant.images?.[0]?.img ? [{ url: plant.images[0].img }] : [],
+        images: [ogImage],
         siteName: "The GreenThumb",
       },
       twitter: {
         card: "summary_large_image",
         title: `${commonName} Care Guide`,
         description,
-        images: plant.images?.[0]?.img ? [plant.images[0].img] : [],
+        images: [ogImage],
       },
     };
   } catch (error) {

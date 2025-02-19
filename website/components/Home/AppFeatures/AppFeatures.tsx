@@ -79,9 +79,13 @@ const AppFeatures: React.FC = () => {
               </motion.b>{" "}
               Garden.
             </h1>
-            <Button className="w-48 sm:w-72 h-16 sm:h-20 rounded-xl text-lg sm:text-2xl font-bold text-cream-50 bg-primary">
-              <Link href="/contact">ASK US DIRECTLY</Link>
-            </Button>
+            <div style={{ zIndex: 10 }}>
+              <Link href="/contact" className="block w-fit">
+                <Button className="w-48 sm:w-72 h-16 sm:h-20 rounded-xl text-lg sm:text-2xl font-bold text-cream-50 bg-primary">
+                  ASK US DIRECTLY
+                </Button>
+              </Link>
+            </div>
           </div>
         </motion.div>
 
@@ -102,12 +106,13 @@ const AppFeatures: React.FC = () => {
                 <p>{feature.content} </p>
               </CardContent>
               <CardFooter className="mt-1">
-                <Button
-                  className="w-full bg-primary text-cream-50 text-base sm:text-xl 
-                   transition-all ease-in"
-                >
-                  <Link href={feature.url}>Read More</Link>
-                </Button>
+                <div style={{ zIndex: 10 }}>
+                  <Link href={feature.url} className="block w-full">
+                    <Button className="w-full bg-primary text-cream-50 text-base sm:text-xl transition-all ease-in">
+                      Read More
+                    </Button>
+                  </Link>
+                </div>
               </CardFooter>
             </Card>
           ))}

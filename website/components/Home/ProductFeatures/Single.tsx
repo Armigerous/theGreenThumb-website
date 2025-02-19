@@ -47,11 +47,13 @@ const Single: React.FC<{ item: ProductFeature }> = ({ item }) => {
           <p className="text-sm md:text-base lg:text-lg leading-relaxed">
             {item.desc}
           </p>
-          <Button className="px-4 py-2 bg-primary text-cream-50 rounded-md hover:scale-105 transition-transform">
-            <Link className="text-lg md:text-xl" href={item.url}>
-              Read More
+          <div style={{ zIndex: 10 }}>
+            <Link href={item.url} className="block w-fit">
+              <Button className="px-4 py-2 bg-primary text-cream-50 rounded-md hover:scale-105 transition-transform text-lg md:text-xl">
+                Read More
+              </Button>
             </Link>
-          </Button>
+          </div>
         </div>
       </motion.div>
     </section>

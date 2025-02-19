@@ -1,14 +1,15 @@
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import Script from "next/script";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Dynamically import the Homepage component
 const Homepage = dynamic(() => import("@/components/Home/Homepage"), {
   loading: () => (
-    <div className="animate-pulse space-y-8">
-      <div className="h-96 bg-gray-200 rounded" />
-      <div className="h-64 bg-gray-200 rounded" />
-      <div className="h-48 bg-gray-200 rounded" />
+    <div className="space-y-8">
+      <Skeleton className="h-96 w-full" />
+      <Skeleton className="h-64 w-full" />
+      <Skeleton className="h-48 w-full" />
     </div>
   ),
 });
@@ -33,10 +34,10 @@ export default function Home() {
       />
       <Suspense
         fallback={
-          <div className="animate-pulse space-y-8">
-            <div className="h-96 bg-gray-200 rounded" />
-            <div className="h-64 bg-gray-200 rounded" />
-            <div className="h-48 bg-gray-200 rounded" />
+          <div className="space-y-8">
+            <Skeleton className="h-96 w-full" />
+            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-48 w-full" />
           </div>
         }
       >

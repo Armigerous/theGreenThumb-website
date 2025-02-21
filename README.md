@@ -1,1 +1,1 @@
-# theGreenThumb-website
+The GreenThumb website

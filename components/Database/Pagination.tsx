@@ -36,7 +36,7 @@ const PaginationComponent = ({
 
   return (
     <Pagination className="py-10">
-      <PaginationContent className="flex items-center space-x-2">
+      <PaginationContent className="flex items-center space-x-1 px-4 md:px-0">
         {/* Previous Page Button */}
         <PaginationItem>
           <PaginationPrevious

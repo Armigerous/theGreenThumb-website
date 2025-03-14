@@ -4,6 +4,12 @@ import { TableValue } from "@sanity/table";
 import Image from "next/image";
 import slugify from "slugify";
 
+// Define a type for the child object in PortableText
+interface PortableTextChild {
+  text: string;
+  [key: string]: unknown;
+}
+
 const Content = ({ tip }: { tip: Tip }) => {
   const { body } = tip;
 
@@ -18,6 +24,17 @@ const Content = ({ tip }: { tip: Tip }) => {
   // Custom components for Portable Text
   const components: Partial<PortableTextReactComponents> = {
     types: {
+      block: ({ value }) => {
+        // This is a fallback that shouldn't be used directly
+        // as blocks are handled by the block components below
+        return (
+          <p>
+            {value.children
+              ?.map((child: PortableTextChild) => child.text)
+              .join("")}
+          </p>
+        );
+      },
       image: ({
         value,
       }: {
@@ -75,26 +92,53 @@ const Content = ({ tip }: { tip: Tip }) => {
       },
     },
     block: {
-      h1: ({ children }: { children?: React.ReactNode }) => {
+      normal: ({ children }) => {
+        return <p className="mb-4">{children}</p>;
+      },
+      h1: ({ children }) => {
         const text = children ? String(children) : "";
         const slug = generateSlug(text);
         return <h1 id={slug}>{children}</h1>;
       },
-      h2: ({ children }: { children?: React.ReactNode }) => {
+      h2: ({ children }) => {
         const text = children ? String(children) : "";
         const slug = generateSlug(text);
         return <h2 id={slug}>{children}</h2>;
       },
-      h3: ({ children }: { children?: React.ReactNode }) => {
+      h3: ({ children }) => {
         const text = children ? String(children) : "";
         const slug = generateSlug(text);
         return <h3 id={slug}>{children}</h3>;
       },
-      h4: ({ children }: { children?: React.ReactNode }) => {
+      h4: ({ children }) => {
         const text = children ? String(children) : "";
         const slug = generateSlug(text);
         return <h4 id={slug}>{children}</h4>;
       },
+      ul: ({ children }) => {
+        return <ul className="list-disc pl-6 mb-4">{children}</ul>;
+      },
+      list: ({ children }) => {
+        return <ul className="list-disc pl-6 mb-4">{children}</ul>;
+      },
+    },
+    listItem: {
+      bullet: ({ children }) => {
+        return <li className="mb-1">{children}</li>;
+      },
+    },
+    marks: {
+      link: ({ children, value }) => {
+        const href = value?.href || "#";
+        const rel = href.startsWith("/") ? undefined : "noreferrer noopener";
+        return (
+          <a href={href} rel={rel} className="text-brand-600 hover:underline">
+            {children}
+          </a>
+        );
+      },
+      strong: ({ children }) => <strong>{children}</strong>,
+      em: ({ children }) => <em>{children}</em>,
     },
   };
 

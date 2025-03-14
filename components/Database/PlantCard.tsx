@@ -4,8 +4,8 @@ import { PlantCardData } from "@/types/plant";
 import DOMPurify from "isomorphic-dompurify";
 import Image from "next/image";
 import Link from "next/link";
-import { memo, useMemo } from "react";
-import { Badge } from "../ui/badge";
+import { memo, useEffect, useState, useMemo } from "react";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -14,13 +14,28 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { dynamicBlurDataUrl } from "@/lib/dynamicBlurDataUrl";
 
 const PlantCard = memo(
   ({ plant, index }: { plant: PlantCardData; index: number }) => {
+    const [blurDataUrl, setBlurDataUrl] = useState<string | undefined>(
+      undefined
+    );
+
     const imageUrl = useMemo(
       () => plant.first_image || "/no-plant-image.png",
       [plant.first_image]
     );
+
+    useEffect(() => {
+      const fetchBlurDataUrl = async () => {
+        if (imageUrl) {
+          const blurUrl = await dynamicBlurDataUrl(imageUrl);
+          setBlurDataUrl(blurUrl);
+        }
+      };
+      fetchBlurDataUrl();
+    }, [imageUrl]);
 
     const sanitizedDescription = useMemo(
       () =>
@@ -34,7 +49,7 @@ const PlantCard = memo(
       () =>
         "common_name" in plant
           ? plant.common_name
-          : "first_common_name" in plant
+          : "scientific_name" in plant
             ? plant.scientific_name
             : null,
       [plant]
@@ -44,8 +59,8 @@ const PlantCard = memo(
       () =>
         "common_name" in plant
           ? plant.scientific_name
-          : "first_common_name" in plant
-            ? plant.first_common_name
+          : "scientific_name" in plant
+            ? plant.common_name
             : null,
       [plant]
     );
@@ -53,7 +68,7 @@ const PlantCard = memo(
     return (
       <Card
         key={`${plant.slug}-${plant.scientific_name}`}
-        className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left h-[480px] mx-auto max-w-sm"
+        className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left h-[430px] mx-auto max-w-sm flex flex-col"
       >
         <Link href={`/plant/${plant.slug}`}>
           <div className="relative w-full h-48">
@@ -65,6 +80,10 @@ const PlantCard = memo(
               src={imageUrl}
               priority={index < 4}
               loading={index < 4 ? "eager" : "lazy"}
+              placeholder="blur"
+              blurDataURL={
+                blurDataUrl || "data:image/jpeg;base64,/9j/4AAQSkZJRg=="
+              } // Fallback blur
             />
           </div>
         </Link>
@@ -84,7 +103,7 @@ const PlantCard = memo(
             </Link>
           )}
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-grow px-5 py-0">
           <div
             className="text-sm text-muted-foreground md:line-clamp-3 line-clamp-2"
             dangerouslySetInnerHTML={{
@@ -93,7 +112,7 @@ const PlantCard = memo(
           />
         </CardContent>
         <Link href={`/plant/${plant.slug}`}>
-          <CardFooter>
+          <CardFooter className="mt-auto px-5 py-4">
             <p className="text-sm text-primary group-hover/card:underline">
               Learn more
             </p>

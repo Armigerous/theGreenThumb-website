@@ -526,8 +526,8 @@ export const allFilters: FilterSection[] = [
         icon: Paintbrush,
       },
       {
-        id: "leaf-texture",
-        name: "Leaf Texture",
+        id: "leaf-feel",
+        name: "Leaf Feel",
         dbColumn: "leaf_feel", // JSONB or text, whichever is correct
         options: [
           "Fleshy",

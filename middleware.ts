@@ -1,26 +1,42 @@
 // middleware.ts
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { NextResponse } from "next/server";
 
-export async function middleware(req: NextRequest) {
-  const url = req.nextUrl;
-  if (!url.pathname.startsWith("/plant/")) return NextResponse.next();
+const isProtectedRoute = createRouteMatcher(['/chat(.*)', '/chat/(.*)'])
 
-  const commonSlug = url.pathname.split("/plant/")[1];
-  if (!commonSlug) return NextResponse.next();
+export default clerkMiddleware(async (auth, req) => {
+  // Handle plant URL rewrites
+  if (req.nextUrl.pathname.startsWith("/plant/")) {
+    const commonSlug = req.nextUrl.pathname.split("/plant/")[1];
+    if (commonSlug) {
+      // Fetch scientific_slug using commonSlug from Supabase
+      const { data, error } = await supabase
+        .from("plant_common_card_data")
+        .select("scientific_slug")
+        .eq("slug", commonSlug)
+        .single();
 
-  // Fetch scientific_slug using commonSlug from Supabase
-  const { data, error } = await supabase
-    .from("plant_common_card_data")
-    .select("scientific_slug")
-    .eq("slug", commonSlug)
-    .single();
+      if (!error && data) {
+        // Rewrite the URL internally
+        const url = req.nextUrl.clone();
+        url.pathname = `/plant/${data.scientific_slug}`;
+        return NextResponse.rewrite(url);
+      }
+    }
+  }
 
-  if (error || !data) return NextResponse.next();
+  // Protect chat routes
+  if (isProtectedRoute(req)) {
+    await auth.protect();
+  }
+})
 
-  // Instead of redirecting, rewrite internally
-  // Note: The browser URL remains as /plant/commonSlug
-  url.pathname = `/plant/${data.scientific_slug}`;
-  return NextResponse.rewrite(url);
+export const config = {
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+  ],
 }

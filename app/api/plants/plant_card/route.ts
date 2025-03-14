@@ -74,7 +74,7 @@ export async function GET(request: Request) {
         slug,
         scientific_name,
         description,
-        first_common_name,
+        common_name,
         first_tag,
         first_image,
         first_image_alt_text
@@ -120,7 +120,7 @@ export async function GET(request: Request) {
             slug: string | null;
             scientific_name: string | null;
             description: string | null;
-            first_common_name: string | null;
+            common_name: string | null;
             first_tag: string | null;
             first_image: string | null;
             first_image_alt_text: string | null;
@@ -130,7 +130,7 @@ export async function GET(request: Request) {
             slug: scientificRow.slug,
             scientific_name: scientificRow.scientific_name,
             description: scientificRow.description,
-            first_common_name: scientificRow.first_common_name,
+            common_name: scientificRow.common_name,
             first_tag: scientificRow.first_tag,
             first_image: scientificRow.first_image,
             first_image_alt_text: scientificRow.first_image_alt_text,
@@ -244,7 +244,7 @@ export async function GET(request: Request) {
         slug,
         scientific_name,
         description,
-        first_common_name,
+        common_name,
         first_tag,
         first_image,
         first_image_alt_text
@@ -267,7 +267,7 @@ export async function GET(request: Request) {
       if (nameType === "common") {
         orFilter = `scientific_name.ilike.%${query}%,common_name.ilike.%${query}%,description.ilike.%${query}%`;
       } else {
-        orFilter = `scientific_name.ilike.%${query}%,first_common_name.ilike.%${query}%,description.ilike.%${query}%`;
+        orFilter = `scientific_name.ilike.%${query}%,common_name.ilike.%${query}%,description.ilike.%${query}%`;
       }
       supabaseQuery = supabaseQuery.or(orFilter);
     }
@@ -309,7 +309,7 @@ export async function GET(request: Request) {
           slug: string | null;
           scientific_name: string | null;
           description: string | null;
-          first_common_name: string | null;
+          common_name: string | null;
           first_tag: string | null;
           first_image: string | null;
           first_image_alt_text: string | null;
@@ -319,7 +319,7 @@ export async function GET(request: Request) {
           slug: scientificRow.slug,
           scientific_name: scientificRow.scientific_name,
           description: scientificRow.description,
-          first_common_name: scientificRow.first_common_name,
+          common_name: scientificRow.common_name,
           first_tag: scientificRow.first_tag,
           first_image: scientificRow.first_image,
           first_image_alt_text: scientificRow.first_image_alt_text,

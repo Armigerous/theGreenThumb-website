@@ -16,11 +16,11 @@ export default function SearchSkeleton() {
 
       {/* Skeleton for Search Results */}
       <div className="container mx-auto py-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {Array.from({ length: limit }).map((_, index) => (
             <div
               key={index}
-              className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left"
+              className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left h-[430px] mx-auto max-w-sm flex flex-col"
             >
               {/* Image Skeleton */}
               <Skeleton className="w-full h-48 object-cover rounded-t-xl" />

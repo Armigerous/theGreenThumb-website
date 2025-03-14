@@ -7,6 +7,7 @@ import { memo, useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { PlantCardData, PlantData } from "@/types/plant";
 import { Skeleton } from "@/components/ui/skeleton";
+import useSWR from "swr";
 
 // Dynamically import components
 const PaginationComponent = dynamic(() => import("../Pagination"), {
@@ -17,12 +18,6 @@ const PlantCard = dynamic(() => import("@/components/Database/PlantCard"), {
   loading: () => <PlantCardSkeleton />,
 });
 
-// Cache structure to store API responses
-interface CacheEntry {
-  data: ApiResponse;
-  timestamp: number;
-}
-
 interface ApiResponse {
   results: PlantData[];
   count: number;
@@ -31,12 +26,25 @@ interface ApiResponse {
 // Cache duration in milliseconds (1 hour)
 const CACHE_DURATION = 60 * 60 * 1000;
 
-// In-memory cache object
-const responseCache: Record<string, CacheEntry> = {};
+// Fetcher function for SWR
+const fetcher = async (url: string) => {
+  const response = await fetch(url, {
+    next: {
+      revalidate: 3600,
+      tags: ["plants"],
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+};
 
 // Separate PlantCardSkeleton into its own component for reuse
 const PlantCardSkeleton = memo(() => (
-  <div className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left h-[480px] w-full">
+  <div className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left h-[430px] w-full">
     <div className="relative w-full h-48">
       <Skeleton className="absolute inset-0 w-full h-full" />
     </div>
@@ -65,8 +73,8 @@ const PlantCardSkeleton = memo(() => (
 
 PlantCardSkeleton.displayName = "PlantCardSkeleton";
 
-// Error state component
-const ErrorState = memo(() => (
+// Update the ErrorState component to accept and display error messages
+const ErrorState = memo(({ message }: { message?: string }) => (
   <div className="container mx-auto py-8 text-center">
     <Image
       src="/sad-plant.png"
@@ -80,8 +88,8 @@ const ErrorState = memo(() => (
       Oops! Something went wrong 🌱
     </h2>
     <p className="text-sm text-muted-foreground mt-2">
-      We couldn{"'"}t load the plants. Maybe take a break and try again in a few
-      minutes?
+      {message ||
+        "We couldn't load the plants. Maybe take a break and try again in a few minutes?"}
     </p>
     <Link href="/" className="text-primary mt-4 inline-block underline">
       Go back to Home
@@ -125,62 +133,14 @@ const SearchResults = memo(
     filters?: string;
     nameType?: string;
   }) => {
-    const [data, setData] = useState<ApiResponse | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [showTopFade, setShowTopFade] = useState(false);
+    const [showBottomFade, setShowBottomFade] = useState(true);
 
     // Create a ref for the scrolling container
     const parentRef = useRef<HTMLDivElement>(null);
 
     const limit = 28;
     const offset = (page - 1) * limit;
-
-    // Memoize the URL construction
-    const url = useMemo(() => {
-      let baseUrl = `/api/plants/plant_card?limit=${limit}&offset=${offset}`;
-      if (query) baseUrl += `&query=${encodeURIComponent(query)}`;
-      if (filters) baseUrl += `&filters=${encodeURIComponent(filters)}`;
-      if (nameType) baseUrl += `&nameType=${encodeURIComponent(nameType)}`;
-      return baseUrl;
-    }, [query, filters, nameType, limit, offset]);
-
-    // Memoize the fetch function
-    const fetchData = useCallback(async () => {
-      setLoading(true);
-      try {
-        // Check cache first
-        const cachedResponse = responseCache[url];
-        const now = Date.now();
-
-        if (cachedResponse && now - cachedResponse.timestamp < CACHE_DURATION) {
-          setData(cachedResponse.data);
-          setLoading(false);
-          return;
-        }
-
-        // If not in cache or expired, fetch from API
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("Failed to fetch plant data");
-
-        const fetchedData: ApiResponse = await res.json();
-
-        // Update cache
-        responseCache[url] = {
-          data: fetchedData,
-          timestamp: now,
-        };
-
-        setData(fetchedData);
-      } catch (error) {
-        console.error("Error fetching search results:", error);
-        setData(null);
-      } finally {
-        setLoading(false);
-      }
-    }, [url]);
-
-    useEffect(() => {
-      fetchData();
-    }, [fetchData]);
 
     // Calculate the number of columns based on screen size
     const getColumnCount = () => {
@@ -194,15 +154,56 @@ const SearchResults = memo(
 
     const columnCount = useMemo(() => getColumnCount(), []);
 
+    // Construct the URL for SWR
+    const url = useMemo(() => {
+      let baseUrl = `/api/plants/plant_card?limit=${limit}&offset=${offset}`;
+      if (query) baseUrl += `&query=${encodeURIComponent(query)}`;
+      if (filters) baseUrl += `&filters=${encodeURIComponent(filters)}`;
+      if (nameType) baseUrl += `&nameType=${encodeURIComponent(nameType)}`;
+      return baseUrl;
+    }, [query, filters, nameType, limit, offset]);
+
+    // Use SWR for data fetching
+    const { data, error, isLoading } = useSWR<ApiResponse>(url, fetcher, {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: true,
+      dedupingInterval: CACHE_DURATION,
+      keepPreviousData: true,
+    });
+
     // Setup virtualizer
     const rowVirtualizer = useVirtualizer({
       count: data ? Math.ceil(data.results.length / columnCount) : 0,
       getScrollElement: () => parentRef.current,
-      estimateSize: () => 520, // Increased from 400 to account for full card height
+      estimateSize: () => 450,
       overscan: 5,
     });
 
-    if (loading) {
+    // Handle scroll events to update fade visibility
+    const handleScroll = useCallback(() => {
+      if (!parentRef.current) return;
+
+      const { scrollTop, scrollHeight, clientHeight } = parentRef.current;
+      const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1;
+
+      setShowTopFade(scrollTop > 0);
+      setShowBottomFade(!isAtBottom);
+    }, []);
+
+    useEffect(() => {
+      const container = parentRef.current;
+      if (!container) return;
+
+      container.addEventListener("scroll", handleScroll);
+      // Initial check
+      handleScroll();
+
+      return () => {
+        container.removeEventListener("scroll", handleScroll);
+      };
+    }, [handleScroll]);
+
+    if (isLoading) {
       return (
         <div className="container mx-auto py-4">
           <div className="mb-4">
@@ -210,7 +211,7 @@ const SearchResults = memo(
             {/* Heading skeleton */}
             <Skeleton className="h-4 w-32" /> {/* Results count skeleton */}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {Array.from({ length: limit }).map((_, index) => (
               <PlantCardSkeleton key={index} />
             ))}
@@ -219,8 +220,12 @@ const SearchResults = memo(
       );
     }
 
+    if (error) {
+      return <ErrorState message={error.message} />;
+    }
+
     if (!data || data.results.length === 0) {
-      return <ErrorState />;
+      return <NoResults />;
     }
 
     const totalPages = Math.ceil(data.count / limit);
@@ -236,57 +241,67 @@ const SearchResults = memo(
           </p>
         </div>
 
-        {data.results.length === 0 ? (
-          <NoResults />
-        ) : (
-          <div className="relative">
-            <div
-              ref={parentRef}
-              className="h-[80vh] sm:h-[900px] overflow-auto scrollbar-hide overscroll-none"
-            >
-              <div
-                style={{
-                  height: `${rowVirtualizer.getTotalSize()}px`,
-                  width: "100%",
-                  position: "relative",
-                }}
-              >
-                {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                  const fromIndex = virtualRow.index * columnCount;
-                  const toIndex = Math.min(
-                    fromIndex + columnCount,
-                    data.results.length
-                  );
-                  const rowItems = data.results.slice(fromIndex, toIndex);
+        <div className="relative">
+          {/* Top fade */}
+          <div
+            className={`absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-white to-transparent pointer-events-none z-10 transition-opacity duration-200 ${
+              showTopFade ? "opacity-100" : "opacity-0"
+            }`}
+          />
 
-                  return (
-                    <div
-                      key={virtualRow.index}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: `${virtualRow.size}px`,
-                        transform: `translateY(${virtualRow.start}px)`,
-                      }}
-                      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-8"
-                    >
-                      {rowItems.map((plant: PlantCardData, index: number) => (
-                        <PlantCard
-                          key={`${plant.slug}-${plant.scientific_name}`}
-                          plant={plant}
-                          index={index}
-                        />
-                      ))}
-                    </div>
-                  );
-                })}
-              </div>
+          <div
+            ref={parentRef}
+            className="h-[80vh] sm:h-[900px] overflow-auto scrollbar-hide overscroll-none"
+            onScroll={handleScroll}
+          >
+            <div
+              style={{
+                height: `${rowVirtualizer.getTotalSize()}px`,
+                width: "100%",
+                position: "relative",
+              }}
+            >
+              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                const fromIndex = virtualRow.index * columnCount;
+                const toIndex = Math.min(
+                  fromIndex + columnCount,
+                  data.results.length
+                );
+                const rowItems = data.results.slice(fromIndex, toIndex);
+
+                return (
+                  <div
+                    key={virtualRow.index}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: `${virtualRow.size}px`,
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-2"
+                  >
+                    {rowItems.map((plant: PlantCardData, index: number) => (
+                      <PlantCard
+                        key={`${plant.slug}-${plant.scientific_name}`}
+                        plant={plant}
+                        index={index}
+                      />
+                    ))}
+                  </div>
+                );
+              })}
             </div>
-            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none" />
           </div>
-        )}
+
+          {/* Bottom fade */}
+          <div
+            className={`absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none z-10 transition-opacity duration-200 ${
+              showBottomFade ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        </div>
 
         {/* Pagination Component */}
         {data.results.length > 0 && (

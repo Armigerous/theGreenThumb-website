@@ -1,13 +1,26 @@
 import { embed, embedMany } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { deepseek } from "@/lib/ai/deepseek";
 import { cosineDistance, desc, gt, sql } from "drizzle-orm";
 import { embeddings } from "@/lib/db/schema/embeddings";
 import { db } from "@/lib/db";
 
 const embeddingModel = openai.embedding("text-embedding-ada-002");
 
-const generateChunks = (plant: any): string[] => {
+interface PlantData {
+  scientific_name?: string;
+  common_names?: string[];
+  description?: string;
+  genus?: string;
+  species?: string;
+  family?: string;
+  height_min?: number;
+  height_max?: number;
+  width_min?: number;
+  width_max?: number;
+  [key: string]: unknown;
+}
+
+const generateChunks = (plant: PlantData): string[] => {
   const chunks = [];
   if (plant.scientific_name)
     chunks.push(`Scientific name: ${plant.scientific_name}`);
@@ -31,7 +44,7 @@ const generateChunks = (plant: any): string[] => {
 };
 
 export const generateEmbeddings = async (
-  plant: any
+  plant: PlantData
 ): Promise<Array<{ embedding: number[]; content: string }>> => {
   const chunks = generateChunks(plant);
   const { embeddings } = await embedMany({

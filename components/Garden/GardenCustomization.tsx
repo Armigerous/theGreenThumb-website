@@ -17,7 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Search, X } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 
 interface PlantSearchResult {
@@ -36,8 +36,8 @@ interface SelectedPlant {
  * GardenCustomization Component - Specific Plants & Recommendations
  *
  * Database field mapping:
- * - specificPlantIds -> specific_plant_ids (jsonb array) in userGardens table
- * - wantsRecommendations -> wants_recommendations (boolean) in userGardens table
+ * - specificPlantIds -> userPlantsId (string[]) in userGardens table
+ * - wantsRecommendations -> wantsRecommendations (boolean) in userGardens table
  */
 interface GardenCustomizationProps {
   settings: UserGardens;
@@ -55,8 +55,11 @@ const GardenCustomization = ({
   const [selectedPlants, setSelectedPlants] = useState<SelectedPlant[]>([]);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  // Ensure values exist
-  const specificPlantIds = settings?.specificPlantIds || [];
+  // Ensure values exist using useMemo to avoid re-renders
+  const specificPlantIds = useMemo(
+    () => settings?.userPlantsId || [],
+    [settings?.userPlantsId]
+  );
   const wantsRecommendations = settings?.wantsRecommendations ?? true;
 
   // Load selected plants on component mount
@@ -64,13 +67,15 @@ const GardenCustomization = ({
     const loadSelectedPlants = async () => {
       try {
         const plants = await Promise.all(
-          specificPlantIds.map(async (scientificSlug) => {
+          specificPlantIds.map(async (scientificSlug: string) => {
             const response = await fetch(`/plant/${scientificSlug}`);
             if (!response.ok) return null;
             return response.json();
           })
         );
-        setSelectedPlants(plants.filter((p): p is SelectedPlant => p !== null));
+        setSelectedPlants(
+          plants.filter((p: unknown): p is SelectedPlant => p !== null)
+        );
       } catch (error) {
         console.error("Error loading selected plants:", error);
       }
@@ -102,7 +107,7 @@ const GardenCustomization = ({
     if (!specificPlantIds.includes(scientificSlug)) {
       setSettings({
         ...settings,
-        specificPlantIds: [...specificPlantIds, scientificSlug],
+        userPlantsId: [...specificPlantIds, scientificSlug],
       });
       setSelectedPlants([...selectedPlants, plant]);
     }
@@ -113,7 +118,7 @@ const GardenCustomization = ({
   const handleRemovePlant = (plantId: string) => {
     setSettings({
       ...settings,
-      specificPlantIds: specificPlantIds.filter((id) => id !== plantId),
+      userPlantsId: specificPlantIds.filter((id: string) => id !== plantId),
     });
     setSelectedPlants(
       selectedPlants.filter((plant) => {

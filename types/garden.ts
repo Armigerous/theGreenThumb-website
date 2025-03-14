@@ -18,7 +18,7 @@ export interface UserGardens {
   sunlightIds: string[]; // Full Sun, Partial Shade, Dappled Sunlight, Deep Shade
   
   // Soil Profile
-  soilTypeIds: string[]; // Clay, Loam, Sand, etc.
+  soilTextureIds: string[]; // Clay, Loam, Sand, etc.
   soilPhIds: string[]; // Acid, Neutral, Alkaline
   soilDrainageIds: string[]; // Good Drainage, Occasional Flooding, Very Dry, etc.
   
@@ -69,7 +69,7 @@ export const defaultUserGardens: UserGardens = {
   sunlightIds: [],
   
   // Soil Profile
-  soilTypeIds: [],
+  soilTextureIds: [],
   soilPhIds: [],
   soilDrainageIds: [],
   

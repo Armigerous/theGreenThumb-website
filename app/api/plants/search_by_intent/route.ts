@@ -2,6 +2,24 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
 import { PlantCardDataCommon, PlantCardDataScientific } from "@/types/plant";
 
+// Define proper types for intent data structure
+interface Entity {
+  scientific_name?: string;
+  plant?: string;
+  common_name?: string;
+  light_level?: string;
+  soil_texture?: string;
+  type?: string;
+  flower_color?: string;
+  wildlife_type?: string;
+  [key: string]: string | undefined;
+}
+
+interface Intent {
+  intent: string;
+  entities: Entity;
+}
+
 export async function POST(request: Request) {
   try {
     const { intents } = await request.json();
@@ -39,19 +57,11 @@ export async function POST(request: Request) {
     // Determine which table to query based on name type
     const tableName = isScientificName ? "plant_card_data" : "plant_common_card_data";
     
-    // Build the query
-    let query = supabase.from(tableName);
-    
-    // Use the correct method for text search
-    if (isScientificName) {
-      query = query.textSearch('scientific_name', plantName, { type: 'websearch' });
-    } else {
-      // For common names
-      query = query.textSearch('common_name', plantName, { type: 'websearch' });
-    }
-    
-    // Execute the query
-    const { data, error, count } = await query.select("*", { count: "exact" });
+    // Build the query - use a simpler approach with select and no filtering
+    // We'll filter the results in memory after fetching
+    const { data, error } = await supabase
+      .from(tableName)
+      .select("*", { count: "exact" });
     
     if (error) {
       console.error("Supabase query error:", error);
@@ -61,12 +71,20 @@ export async function POST(request: Request) {
       );
     }
     
-    // Process the results based on the table queried
-    const results = processResults(data, isScientificName);
+    // Filter the results in memory based on the plant name
+    const searchColumn = isScientificName ? 'scientific_name' : 'common_name';
+    const filteredData = data?.filter(item => {
+      const value = item[searchColumn];
+      return value && typeof value === 'string' && 
+        value.toLowerCase().includes(plantName!.toLowerCase());
+    }) || [];
+    
+    // Process the filtered results
+    const results = processResults(filteredData, isScientificName);
     
     return NextResponse.json({ 
       results, 
-      count,
+      count: results.length,
       searchType: isScientificName ? "scientific" : "common",
       query: plantName
     }, {
@@ -85,40 +103,40 @@ export async function POST(request: Request) {
 }
 
 // Process results based on the table queried
-function processResults(data: Record<string, any>[], isScientificName: boolean) {
+function processResults(data: Record<string, unknown>[], isScientificName: boolean) {
   if (!data || data.length === 0) return [];
   
   return data.map(row => {
     if (isScientificName) {
       return {
-        id: row.id,
-        slug: row.slug,
-        scientific_name: row.scientific_name,
-        description: row.description,
-        common_name: row.common_name,
-        first_tag: row.first_tag,
-        first_image: row.first_image,
-        first_image_alt_text: row.first_image_alt_text,
+        id: row.id as number,
+        slug: row.slug as string | null,
+        scientific_name: row.scientific_name as string | null,
+        description: row.description as string | null,
+        common_name: row.common_name as string | null,
+        first_tag: row.first_tag as string | null,
+        first_image: row.first_image as string | null,
+        first_image_alt_text: row.first_image_alt_text as string | null,
       } satisfies PlantCardDataScientific;
     } else {
       return {
-        id: row.id,
-        slug: row.slug,
-        common_name: row.common_name,
-        description: row.description,
-        scientific_name: row.scientific_name,
-        first_tag: row.first_tag,
-        first_image: row.first_image,
-        first_image_alt_text: row.first_image_alt_text,
+        id: row.id as number,
+        slug: row.slug as string | null,
+        common_name: row.common_name as string | null,
+        description: row.description as string | null,
+        scientific_name: row.scientific_name as string | null,
+        first_tag: row.first_tag as string | null,
+        first_image: row.first_image as string | null,
+        first_image_alt_text: row.first_image_alt_text as string | null,
       } satisfies PlantCardDataCommon;
     }
   });
 }
 
 // Handle search based on intents without specific plant name
-async function handleIntentBasedSearch(intents: Record<string, any>[]) {
+async function handleIntentBasedSearch(intents: Intent[]) {
   // Extract search criteria from intents
-  const searchCriteria: Record<string, any> = {};
+  const searchCriteria: Record<string, string> = {};
   
   for (const intent of intents) {
     switch (intent.intent) {

@@ -241,7 +241,7 @@ export async function POST(request: NextRequest) {
         if (
           (topic.includes("sunlight") && userGarden.sunlightIds?.length > 0) ||
           (topic.includes("soil") && 
-            (userGarden.soilTypeIds?.length > 0 || 
+            (userGarden.soilTextureIds?.length > 0 || 
              userGarden.soilPhIds?.length > 0 || 
              userGarden.soilDrainageIds?.length > 0)) ||
           (topic.includes("drought") && userGarden.resistanceChallengeIds?.some((id: string) => id.toLowerCase().includes("drought"))) ||

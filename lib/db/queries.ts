@@ -1,12 +1,11 @@
 import { db } from "@/lib/db";
 import { plantFullData } from "@/lib/db/schema/resources";
-
-// Prepare the database with query builder
+import { SQL } from "drizzle-orm";
 
 // Create query builder
 export const queries = {
   plants: {
-    findFirst: async (where: any) => {
+    findFirst: async (where: SQL<unknown>) => {
       return await db
         .select()
         .from(plantFullData)

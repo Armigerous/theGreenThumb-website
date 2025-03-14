@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
  *
  * Database field mapping:
  * - sunlightIds -> sunlight_ids (jsonb array) in userGardens table
- * - soilTypeIds -> soil_texture_ids (jsonb array) in userGardens table
+ * - soilTextureIds -> soil_texture_ids (jsonb array) in userGardens table
  * - soilPhIds -> soil_ph_ids (jsonb array) in userGardens table
  * - soilDrainageIds -> soil_drainage_ids (jsonb array) in userGardens table
  */
@@ -44,12 +44,14 @@ const GardenEnvironment = ({
     if (checked) {
       setSettings({
         ...settings,
-        soilTypeIds: [...(settings.soilTypeIds || []), texture],
+        soilTextureIds: [...(settings.soilTextureIds || []), texture],
       });
     } else {
       setSettings({
         ...settings,
-        soilTypeIds: (settings.soilTypeIds || []).filter((t) => t !== texture),
+        soilTextureIds: (settings.soilTextureIds || []).filter(
+          (t) => t !== texture
+        ),
       });
     }
   };
@@ -134,7 +136,7 @@ const GardenEnvironment = ({
                 <div key={texture} className="flex items-center space-x-2">
                   <Checkbox
                     id={`soil-texture-${texture}`}
-                    checked={(settings.soilTypeIds || []).includes(texture)}
+                    checked={(settings.soilTextureIds || []).includes(texture)}
                     onCheckedChange={(checked) =>
                       handleSoilTextureChange(texture, checked as boolean)
                     }

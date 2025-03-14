@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -793,7 +793,7 @@ export default function LoadingEntertainment({
   const displayModeChangeTime = 45000; // 45 seconds per display mode (increased from 32s)
 
   // Get a random fact that hasn't been shown recently with seasonal priority
-  const getNextFactIndex = () => {
+  const getNextFactIndex = useCallback(() => {
     // Start fresh if we've shown almost all facts
     if (pastFacts.size >= allGardeningFacts.length - 10) {
       setPastFacts(new Set());
@@ -823,7 +823,7 @@ export default function LoadingEntertainment({
 
     setPastFacts((prev) => new Set([...prev, nextIndex]));
     return nextIndex;
-  };
+  }, [pastFacts, allGardeningFacts, currentSeason]);
 
   // Cycle display modes for variety
   useEffect(() => {
@@ -868,7 +868,7 @@ export default function LoadingEntertainment({
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [currentFactIndex, processingState]);
+  }, [currentFactIndex, processingState, getNextFactIndex]);
 
   // Reset animation state with a smoother transition
   useEffect(() => {

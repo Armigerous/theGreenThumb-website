@@ -160,13 +160,13 @@ export default function GardenInfoDisplay({
               <h4 className="font-medium">Soil Type & Drainage</h4>
             </div>
             <div className="flex flex-wrap gap-1 mt-2">
-              {formatArrayData(userGarden.soilTypeIds).map((soilType) => (
+              {formatArrayData(userGarden.soilTextureIds).map((soilTexture) => (
                 <Badge
-                  key={soilType}
+                  key={soilTexture}
                   variant="outline"
                   className={getBadgeStyles()}
                 >
-                  {soilType}
+                  {soilTexture}
                 </Badge>
               ))}
               {formatArrayData(userGarden.soilDrainageIds).map((drainage) => (

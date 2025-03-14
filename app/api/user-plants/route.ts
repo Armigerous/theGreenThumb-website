@@ -153,14 +153,14 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: "Garden not found" }, { status: 404 });
         }
         
-        // Add plant to the specificPlantIds array if not already there
-        const currentPlantIds = (garden.specificPlantIds as string[]) || [];
+        // Add plant to the userPlantsId array if not already there
+        const currentPlantIds = (garden.userPlantsId as string[]) || [];
         if (!currentPlantIds.includes(plantId)) {
           const updatedPlantIds = [...currentPlantIds, plantId];
           
           const updatedGarden = await db.update(userGardens)
             .set({
-              specificPlantIds: updatedPlantIds,
+              userPlantsId: updatedPlantIds,
               updatedAt: new Date().toISOString()
             })
             .where(eq(userGardens.id, gardenId))
@@ -199,13 +199,13 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: "Garden not found" }, { status: 404 });
         }
         
-        // Remove plant from the specificPlantIds array
-        const currentPlantIds = (garden.specificPlantIds as string[]) || [];
+        // Remove plant from the userPlantsId array
+        const currentPlantIds = (garden.userPlantsId as string[]) || [];
         const updatedPlantIds = currentPlantIds.filter(id => id !== plantId);
         
         const updatedGarden = await db.update(userGardens)
           .set({
-            specificPlantIds: updatedPlantIds,
+            userPlantsId: updatedPlantIds,
             updatedAt: new Date().toISOString()
           })
           .where(eq(userGardens.id, gardenId))
@@ -245,7 +245,7 @@ export async function POST(request: NextRequest) {
         // Update garden with new plant IDs
         const updatedGarden = await db.update(userGardens)
           .set({
-            specificPlantIds: plantIds,
+            userPlantsId: plantIds,
             updatedAt: new Date().toISOString()
           })
           .where(eq(userGardens.id, gardenId))

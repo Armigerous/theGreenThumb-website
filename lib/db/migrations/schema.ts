@@ -7,7 +7,7 @@ export const landscapeLocationLookup = pgTable("landscape_location_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -15,7 +15,7 @@ export const stemSurfaceLookup = pgTable("stem_surface_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -23,7 +23,7 @@ export const stemBudScalesLookup = pgTable("stem_bud_scales_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -31,7 +31,7 @@ export const flowerInflorescenceLookup = pgTable("flower_inflorescence_lookup", 
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -39,7 +39,7 @@ export const plantTypesLookup = pgTable("plant_types_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -47,13 +47,13 @@ export const tagsLookup = pgTable("tags_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
 export const emails = pgTable("emails", {
 	email: text().primaryKey().notNull(),
-}, (table) => [
+}, () => [
 	pgPolicy("Allow insert for everyone", { as: "permissive", for: "insert", to: ["anon"], withCheck: sql`true`  }),
 ]);
 
@@ -61,7 +61,7 @@ export const leafColorLookup = pgTable("leaf_color_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -69,7 +69,7 @@ export const soilPhLookup = pgTable("soil_ph_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -77,7 +77,7 @@ export const leafMarginLookup = pgTable("leaf_margin_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -85,7 +85,7 @@ export const fruitLengthLookup = pgTable("fruit_length_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -93,7 +93,7 @@ export const leafFeelLookup = pgTable("leaf_feel_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -101,7 +101,7 @@ export const landscapeThemeLookup = pgTable("landscape_theme_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -109,7 +109,7 @@ export const barkColorLookup = pgTable("bark_color_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -117,7 +117,7 @@ export const growthRateLookup = pgTable("growth_rate_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -125,7 +125,7 @@ export const soilDrainageLookup = pgTable("soil_drainage_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -133,7 +133,7 @@ export const flowerValueToGardenerLookup = pgTable("flower_value_to_gardener_loo
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -372,7 +372,7 @@ export const propagationLookup = pgTable("propagation_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -390,7 +390,7 @@ export const leafValueToGardenerLookup = pgTable("leaf_value_to_gardener_lookup"
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -398,7 +398,7 @@ export const stemCrossSectionLookup = pgTable("stem_cross_section_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -406,7 +406,7 @@ export const fruitColorLookup = pgTable("fruit_color_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -414,7 +414,7 @@ export const fruitWidthLookup = pgTable("fruit_width_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -422,7 +422,7 @@ export const poisonSeverityLookup = pgTable("poison_severity_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -430,14 +430,14 @@ export const textureLookup = pgTable("texture_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
 export const designFeatureLookup = pgTable("design_feature_lookup", {
 	id: smallint().primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -445,7 +445,7 @@ export const barkAttachmentLookup = pgTable("bark_attachment_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -471,7 +471,7 @@ export const leafCharacteristicsLookup = pgTable("leaf_characteristics_lookup", 
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -479,7 +479,7 @@ export const flowerBloomTimeLookup = pgTable("flower_bloom_time_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -487,7 +487,7 @@ export const leafFallColorLookup = pgTable("leaf_fall_color_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -495,7 +495,7 @@ export const stemFormLookup = pgTable("stem_form_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -503,7 +503,7 @@ export const fruitValueToGardenerLookup = pgTable("fruit_value_to_gardener_looku
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -511,7 +511,7 @@ export const fireRiskLookup = pgTable("fire_risk_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -519,7 +519,7 @@ export const poisonDermatitisLookup = pgTable("poison_dermatitis_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -527,7 +527,7 @@ export const flowerSizeLookup = pgTable("flower_size_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -535,7 +535,7 @@ export const availableSpaceToPlantLookup = pgTable("available_space_to_plant_loo
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -543,7 +543,7 @@ export const barkPlateShapeLookup = pgTable("bark_plate_shape_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -551,7 +551,7 @@ export const flowerShapeLookup = pgTable("flower_shape_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -559,7 +559,7 @@ export const habitLookup = pgTable("habit_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -567,7 +567,7 @@ export const attractsLookup = pgTable("attracts_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -575,7 +575,7 @@ export const leafTypeLookup = pgTable("leaf_type_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -583,7 +583,7 @@ export const fruitDisplayHarvestTimeLookup = pgTable("fruit_display_harvest_time
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -591,7 +591,7 @@ export const stemLeafScarShapeLookup = pgTable("stem_leaf_scar_shape_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -616,7 +616,7 @@ export const stemAromaticLookup = pgTable("stem_aromatic_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -624,7 +624,7 @@ export const ncRegionLookup = pgTable("nc_region_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -632,7 +632,7 @@ export const leafHairsPresentLookup = pgTable("leaf_hairs_present_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -655,7 +655,7 @@ export const gardenSpacesLookup = pgTable("garden_spaces_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -663,7 +663,7 @@ export const flowerPetalsLookup = pgTable("flower_petals_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -671,7 +671,7 @@ export const resistanceToChallengesLookup = pgTable("resistance_to_challenges_lo
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -679,7 +679,7 @@ export const maintenanceLookup = pgTable("maintenance_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -687,7 +687,7 @@ export const fruitTypeLookup = pgTable("fruit_type_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -695,7 +695,7 @@ export const stemLenticelsLookup = pgTable("stem_lenticels_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -703,7 +703,7 @@ export const stemBudsLookup = pgTable("stem_buds_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -768,7 +768,7 @@ export const usdaZoneLookup = pgTable("usda_zone_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -776,7 +776,7 @@ export const leafArrangementLookup = pgTable("leaf_arrangement_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -784,7 +784,7 @@ export const leafLengthLookup = pgTable("leaf_length_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -792,7 +792,7 @@ export const lifeCycleLookup = pgTable("life_cycle_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -809,7 +809,7 @@ export const stemPithLookup = pgTable("stem_pith_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -817,7 +817,7 @@ export const problemsLookup = pgTable("problems_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -825,7 +825,7 @@ export const lightLookup = pgTable("light_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -842,7 +842,7 @@ export const stemBudTerminalLookup = pgTable("stem_bud_terminal_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -873,7 +873,7 @@ export const leafWidthLookup = pgTable("leaf_width_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -881,7 +881,7 @@ export const leafShapeLookup = pgTable("leaf_shape_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -889,7 +889,7 @@ export const flowerColorLookup = pgTable("flower_color_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -897,7 +897,7 @@ export const poisonPartLookup = pgTable("poison_part_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -905,7 +905,7 @@ export const stemColorLookup = pgTable("stem_color_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 
@@ -913,7 +913,7 @@ export const soilTextureLookup = pgTable("soil_texture_lookup", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint({ mode: "number" }).primaryKey().notNull(),
 	name: text(),
-}, (table) => [
+}, () => [
 	pgPolicy("Enable read access for all users", { as: "permissive", for: "select", to: ["public"], using: sql`true` }),
 ]);
 export const plantCardData = pgMaterializedView("plant_card_data", {	id: integer(),

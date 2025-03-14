@@ -57,13 +57,13 @@ export async function POST(req: Request) {
     }
     
     // Soil type
-    if (gardenData.soilTypeIds && gardenData.soilTypeIds.length > 0) {
-      const soilTypeIds = safeIntArray(gardenData.soilTypeIds);
-      if (soilTypeIds.length > 0) {
+    if (gardenData.soilTextureIds && gardenData.soilTextureIds.length > 0) {
+      const soilTextureIds = safeIntArray(gardenData.soilTextureIds);
+      if (soilTextureIds.length > 0) {
         conditions.push(
           sql`jsonb_array_length(${plantFullData.soilTexture}) > 0 AND EXISTS (
             SELECT 1 FROM jsonb_array_elements_text(${plantFullData.soilTexture}) AS soil
-            WHERE soil = ${soilTypeIds[0].toString()}
+            WHERE soil = ${soilTextureIds[0].toString()}
           )`
         );
       }

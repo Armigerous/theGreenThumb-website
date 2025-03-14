@@ -28,7 +28,7 @@ interface CareLogFormProps {
   onCancel: () => void;
 }
 
-const CareLogForm = ({ plantId, onSave, onCancel }: CareLogFormProps) => {
+const CareLogForm = ({ onSave, onCancel }: CareLogFormProps) => {
   const [date, setDate] = useState<Date>(new Date());
   const [type, setType] = useState<
     "water" | "fertilize" | "prune" | "treatment"

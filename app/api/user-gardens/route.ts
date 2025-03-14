@@ -33,7 +33,7 @@ export async function GET() {
     const locationLookups = await db.select().from(landscapeLocationLookup);
     const spaceAvailableLookups = await db.select().from(availableSpaceToPlantLookup);
     const soilPhLookups = await db.select().from(soilPhLookup);
-    const soilTypeLookups = await db.select().from(soilTextureLookup);
+    const soilTextureLookups = await db.select().from(soilTextureLookup);
     const soilDrainageLookups = await db.select().from(soilDrainageLookup);
     const sunlightLookups = await db.select().from(lightLookup);
     const usdaZonesLookups = await db.select().from(usdaZoneLookup);
@@ -72,7 +72,7 @@ export async function GET() {
       locationIds: mapIdsToStrings(settings.locationIds as number[], locationLookups),
       spaceAvailableIds: mapIdsToStrings(settings.spaceAvailableIds as number[], spaceAvailableLookups),
       sunlightIds: mapIdsToStrings(settings.sunlightIds as number[], sunlightLookups),
-      soilTypeIds: mapIdsToStrings(settings.soilTypeIds as number[], soilTypeLookups),
+      soilTextureIds: mapIdsToStrings(settings.soilTextureIds as number[], soilTextureLookups),
       soilPhIds: mapIdsToStrings(settings.soilPhIds as number[], soilPhLookups),
       soilDrainageIds: mapIdsToStrings(settings.soilDrainageIds as number[], soilDrainageLookups),
       gardenThemeIds: mapIdsToStrings(settings.gardenThemeIds as number[], gardenThemeLookups),
@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
     const locationLookups = await db.select().from(landscapeLocationLookup);
     const spaceAvailableLookups = await db.select().from(availableSpaceToPlantLookup);
     const soilPhLookups = await db.select().from(soilPhLookup);
-    const soilTypeLookups = await db.select().from(soilTextureLookup);
+    const soilTextureLookups = await db.select().from(soilTextureLookup);
     const soilDrainageLookups = await db.select().from(soilDrainageLookup);
     const sunlightLookups = await db.select().from(lightLookup);
     const usdaZonesLookups = await db.select().from(usdaZoneLookup);
@@ -174,7 +174,7 @@ export async function POST(request: NextRequest) {
       locationIds: mapToIds(data.locationIds, locationLookups),
       spaceAvailableIds: mapToIds(data.spaceAvailableIds, spaceAvailableLookups),
       soilPhIds: mapToIds(data.soilPhIds, soilPhLookups),
-      soilTypeIds: mapToIds(data.soilTypeIds, soilTypeLookups),
+      soilTextureIds: mapToIds(data.soilTextureIds, soilTextureLookups),
       soilDrainageIds: mapToIds(data.soilDrainageIds, soilDrainageLookups),
       usdaZonesIds: mapToIds(data.usda_zones_ids, usdaZonesLookups),
       ncRegionsIds: mapToIds(data.ncRegionsIds, ncRegionsLookups),

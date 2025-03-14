@@ -19,7 +19,7 @@ import { Checkbox } from "@/components/ui/checkbox";
  * - ncRegionsIds -> nc_regions_ids (jsonb array) in userGardens table
  * - usda_zones_ids -> usda_zones_ids (jsonb array) in userGardens table
  * - sunlightIds -> sunlight_ids (jsonb array) in userGardens table
- * - soilTypeIds -> soil_texture_ids (jsonb array) in userGardens table
+ * - soilTextureIds -> soil_texture_ids (jsonb array) in userGardens table
  * - soilPhIds -> soil_ph_ids (jsonb array) in userGardens table
  * - soilDrainageIds -> soil_drainage_ids (jsonb array) in userGardens table
  * - spaceAvailableIds -> space_available_ids (jsonb array) in userGardens table
@@ -44,7 +44,7 @@ const GardenBasicInfo = ({ settings, setSettings }: GardenBasicInfoProps) => {
   const ncRegionsIds = settings?.ncRegionsIds || [];
   const usda_zones_ids = settings?.usda_zones_ids || [];
   const sunlightIds = settings?.sunlightIds || [];
-  const soilTypeIds = settings?.soilTypeIds || [];
+  const soilTextureIds = settings?.soilTextureIds || [];
   const soilPhIds = settings?.soilPhIds || [];
   const soilDrainageIds = settings?.soilDrainageIds || [];
   const spaceAvailableIds = settings?.spaceAvailableIds || [];
@@ -84,12 +84,14 @@ const GardenBasicInfo = ({ settings, setSettings }: GardenBasicInfoProps) => {
     if (checked) {
       setSettings({
         ...settings,
-        soilTypeIds: [...(settings.soilTypeIds || []), texture],
+        soilTextureIds: [...(settings.soilTextureIds || []), texture],
       });
     } else {
       setSettings({
         ...settings,
-        soilTypeIds: (settings.soilTypeIds || []).filter((t) => t !== texture),
+        soilTextureIds: (settings.soilTextureIds || []).filter(
+          (t) => t !== texture
+        ),
       });
     }
   };
@@ -264,7 +266,7 @@ const GardenBasicInfo = ({ settings, setSettings }: GardenBasicInfoProps) => {
                     <div key={texture} className="flex items-center space-x-2">
                       <Checkbox
                         id={`soil-texture-${texture}`}
-                        checked={(soilTypeIds || []).includes(texture)}
+                        checked={(soilTextureIds || []).includes(texture)}
                         onCheckedChange={(checked) =>
                           handleSoilTextureChange(texture, checked as boolean)
                         }

@@ -16,7 +16,7 @@ import {
   CalendarClock,
   Plus,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { UserGardens, defaultUserGardens } from "@/types/garden";
 import GardenBasicInfo from "@/components/User/Garden/GardenBasicInfo";
 import GardenStyle from "@/components/User/Garden/GardenStyle";
@@ -40,7 +40,7 @@ import Link from "next/link";
  * - ncRegionsIds -> nc_regions_ids (jsonb array)
  * - usda_zones_ids -> usda_zones_ids (jsonb array)
  * - sunlightIds -> sunlight_ids (jsonb array)
- * - soilTypeIds -> soil_texture_ids (jsonb array)
+ * - soilTextureIds -> soil_texture_ids (jsonb array)
  * - soilPhIds -> soil_ph_ids (jsonb array)
  * - soilDrainageIds -> soil_drainage_ids (jsonb array)
  * - spaceAvailableIds -> space_available_ids (jsonb array)
@@ -90,7 +90,7 @@ const ensureCompleteSettings = (
       "ncRegionsIds",
       "usda_zones_ids",
       "sunlightIds",
-      "soilTypeIds",
+      "soilTextureIds",
       "soilPhIds",
       "soilDrainageIds",
       "spaceAvailableIds",
@@ -149,7 +149,7 @@ const fetcher = async (url: string) => {
     ncRegionsIds: dbSettings.ncRegionsIds || [],
     usda_zones_ids: dbSettings.usda_zones_ids || [],
     sunlightIds: dbSettings.sunlightIds || [],
-    soilTypeIds: dbSettings.soilTypeIds || [],
+    soilTextureIds: dbSettings.soilTextureIds || [],
     soilPhIds: dbSettings.soilPhIds || [],
     soilDrainageIds: dbSettings.soilDrainageIds || [],
     gardenThemeIds: dbSettings.gardenThemeIds || [],
@@ -254,7 +254,7 @@ export default function MyGardenPage() {
         locationIds: userGardens?.locationIds || [],
         spaceAvailableIds: userGardens?.spaceAvailableIds || [],
         soilPhIds: userGardens?.soilPhIds || [],
-        soilTypeIds: userGardens?.soilTypeIds || [],
+        soilTextureIds: userGardens?.soilTextureIds || [],
         soilDrainageIds: userGardens?.soilDrainageIds || [],
         usda_zones_ids: userGardens?.usda_zones_ids || [],
         ncRegionsIds: userGardens?.ncRegionsIds || [],

@@ -1,9 +1,9 @@
 type DebugInfo = {
   operation: string;
   query?: string;
-  params?: any;
+  params?: Record<string, unknown>;
   duration?: number;
-  result?: any;
+  result?: unknown;
   error?: Error;
 };
 

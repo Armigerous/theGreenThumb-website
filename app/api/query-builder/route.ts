@@ -127,21 +127,25 @@ type QueryFilter = {
   entities: Record<string, string>;
 };
 
+// Type for Drizzle query result
+// Using unknown instead of any to be more type-safe while still allowing the build to pass
+type DrizzleQuery = unknown;
+
 // Type definitions for intent handlers
 type IntentHandler = {
   buildConditions: (entities: Record<string, string>) => {
     conditions: (SQL<unknown> | undefined)[];
   };
   buildQuery: (entities: Record<string, string>) => {
-    query: any; // Using any here as the specific Drizzle type is complex
+    query: DrizzleQuery;
   };
 };
 
 // Helper function to validate entities
-const validateEntities = (
+const validateEntities = <T>(
   entities: Record<string, string>,
-  validationSchema: z.ZodType<any>
-) => {
+  validationSchema: z.ZodType<T>
+): T => {
   try {
     return validationSchema.parse(entities);
   } catch (error) {
@@ -168,12 +172,12 @@ const buildPlantNameConditions = (plant: string) => {
 };
 
 // Helper function to build JSONB array contains condition
-const buildJsonbArrayContains = (column: any, value: string) => {
+const buildJsonbArrayContains = (column: unknown, value: string) => {
   return sql`${column} @> jsonb_build_array(${value}::text)`;
 };
 
 // Helper function to create a basic query structure
-const createBaseQuery = (selectedFields: Record<string, any>) => {
+const createBaseQuery = (selectedFields: Record<string, unknown>) => {
   return db
     .select({
       scientific_name: plantFullData.scientificName,
@@ -1821,7 +1825,7 @@ export async function POST(req: Request) {
     }
 
     // Validate intents format
-    if (!intents.every((filter) => filter && filter.intent)) {
+    if (!intents.every((filter: unknown) => filter && typeof filter === 'object' && 'intent' in (filter as Record<string, unknown>))) {
       console.error("Invalid filter format:", intents);
       return NextResponse.json(
         { error: "Invalid filter format. Each intent must have an 'intent' property." },
@@ -1830,9 +1834,9 @@ export async function POST(req: Request) {
     }
 
     // Convert intents to QueryFilter format
-    const filters: QueryFilter[] = intents.map((intent: any) => ({
-      intent: intent.intent,
-      entities: intent.entities || {},
+    const filters: QueryFilter[] = intents.map((intent: Record<string, unknown>) => ({
+      intent: intent.intent as string,
+      entities: (intent.entities as Record<string, string>) || {},
     }));
 
     // Add garden-specific filters if available
@@ -1867,7 +1871,7 @@ export async function POST(req: Request) {
 }
 
 // Helper function to add garden-specific filters
-function addGardenFilters(filters: QueryFilter[], userGarden: Record<string, any>) {
+function addGardenFilters(filters: QueryFilter[], userGarden: Record<string, unknown>) {
   // Check if we need to add garden-specific filters
   const hasExplicitFilters = new Set(filters.map(f => f.intent));
   
@@ -1875,198 +1879,212 @@ function addGardenFilters(filters: QueryFilter[], userGarden: Record<string, any
   // For explicit filters, we'll add garden data as supplementary information
   
   // Add region filter
-  if (userGarden.ncRegionsIds?.length > 0) {
+  const ncRegionsIds = userGarden.ncRegionsIds as string[] | undefined;
+  if (Array.isArray(ncRegionsIds) && ncRegionsIds.length > 0) {
     if (!hasExplicitFilters.has('nc_regions')) {
       filters.push({
         intent: 'nc_regions',
-        entities: { region: userGarden.ncRegionsIds[0] } // Use the first region as default
+        entities: { region: ncRegionsIds[0] } // Use the first region as default
       });
     }
     // Store region info for personalization in the response
     filters.forEach(filter => {
-      filter.entities.user_region = userGarden.ncRegionsIds[0];
+      filter.entities.user_region = ncRegionsIds[0];
     });
   }
   
   // Add USDA zone filter
-  if (userGarden.usda_zones_ids?.length > 0) {
+  const usda_zones_ids = userGarden.usda_zones_ids as string[] | undefined;
+  if (Array.isArray(usda_zones_ids) && usda_zones_ids.length > 0) {
     if (!hasExplicitFilters.has('usda_zones')) {
       filters.push({
         intent: 'usda_zones',
-        entities: { usda_zone: userGarden.usda_zones_ids[0] } // Use the first zone as default
+        entities: { usda_zone: usda_zones_ids[0] } // Use the first zone as default
       });
     }
     // Store zone info for personalization in the response
     filters.forEach(filter => {
-      filter.entities.user_zone = userGarden.usda_zones_ids[0];
+      filter.entities.user_zone = usda_zones_ids[0];
     });
   }
   
   // Add light requirements filter
-  if (userGarden.sunlightIds?.length > 0) {
+  const sunlightIds = userGarden.sunlightIds as string[] | undefined;
+  if (Array.isArray(sunlightIds) && sunlightIds.length > 0) {
     if (!hasExplicitFilters.has('light_requirements')) {
       filters.push({
         intent: 'light_requirements',
-        entities: { light_level: userGarden.sunlightIds[0] } // Use the first sunlight preference
+        entities: { light_level: sunlightIds[0] } // Use the first sunlight preference
       });
     }
     // Store light info for personalization in the response
     filters.forEach(filter => {
-      filter.entities.user_light = userGarden.sunlightIds[0];
+      filter.entities.user_light = sunlightIds[0];
     });
   }
   
   // Add soil texture filter
-  if (userGarden.soilTypeIds?.length > 0) {
+  const soilTextureIds = userGarden.soilTextureIds as string[] | undefined;
+  if (Array.isArray(soilTextureIds) && soilTextureIds.length > 0) {
     if (!hasExplicitFilters.has('soil_texture')) {
       filters.push({
         intent: 'soil_texture',
-        entities: { soil_texture: userGarden.soilTypeIds[0] } // Use the first soil type
+        entities: { soil_texture: soilTextureIds[0] } // Use the first soil type
       });
     }
     // Store soil info for personalization in the response
     filters.forEach(filter => {
-      filter.entities.user_soil = userGarden.soilTypeIds[0];
+      filter.entities.user_soil = soilTextureIds[0];
     });
   }
   
   // Add soil pH filter
-  if (userGarden.soilPhIds?.length > 0) {
+  const soilPhIds = userGarden.soilPhIds as string[] | undefined;
+  if (Array.isArray(soilPhIds) && soilPhIds.length > 0) {
     if (!hasExplicitFilters.has('soil_ph')) {
       filters.push({
         intent: 'soil_ph',
-        entities: { soil_ph_value: userGarden.soilPhIds[0] } // Use the first soil pH
+        entities: { soil_ph_value: soilPhIds[0] } // Use the first soil pH
       });
     }
     // Store pH info for personalization in the response
     filters.forEach(filter => {
-      filter.entities.user_soil_ph = userGarden.soilPhIds[0];
+      filter.entities.user_soil_ph = soilPhIds[0];
     });
   }
   
   // Add soil drainage filter
-  if (userGarden.soilDrainageIds?.length > 0) {
+  const soilDrainageIds = userGarden.soilDrainageIds as string[] | undefined;
+  if (Array.isArray(soilDrainageIds) && soilDrainageIds.length > 0) {
     if (!hasExplicitFilters.has('soil_drainage')) {
       filters.push({
         intent: 'soil_drainage',
-        entities: { soil_drainage_type: userGarden.soilDrainageIds[0] } // Use the first drainage type
+        entities: { soil_drainage_type: soilDrainageIds[0] } // Use the first drainage type
       });
     }
     // Store drainage info for personalization in the response
     filters.forEach(filter => {
-      filter.entities.user_drainage = userGarden.soilDrainageIds[0];
+      filter.entities.user_drainage = soilDrainageIds[0];
     });
   }
   
   // Add available space filter
-  if (userGarden.spaceAvailableIds?.length > 0) {
+  const spaceAvailableIds = userGarden.spaceAvailableIds as string[] | undefined;
+  if (Array.isArray(spaceAvailableIds) && spaceAvailableIds.length > 0) {
     if (!hasExplicitFilters.has('available_space')) {
       filters.push({
         intent: 'available_space',
-        entities: { space_requirement: userGarden.spaceAvailableIds[0] } // Use the first space requirement
+        entities: { space_requirement: spaceAvailableIds[0] } // Use the first space requirement
       });
     }
     // Store space info for personalization in the response
     filters.forEach(filter => {
-      filter.entities.user_space = userGarden.spaceAvailableIds[0];
+      filter.entities.user_space = spaceAvailableIds[0];
     });
   }
   
   // Add landscape location filter
-  if (userGarden.locationIds?.length > 0) {
+  const locationIds = userGarden.locationIds as string[] | undefined;
+  if (Array.isArray(locationIds) && locationIds.length > 0) {
     if (!hasExplicitFilters.has('landscape_location')) {
       filters.push({
         intent: 'landscape_location',
-        entities: { location_type: userGarden.locationIds[0] } // Use the first location type
+        entities: { location_type: locationIds[0] } // Use the first location type
       });
     }
     // Store location info for personalization in the response
     filters.forEach(filter => {
-      filter.entities.user_location = userGarden.locationIds[0];
+      filter.entities.user_location = locationIds[0];
     });
   }
   
   // Add landscape theme filter
-  if (userGarden.gardenThemeIds?.length > 0) {
+  const gardenThemeIds = userGarden.gardenThemeIds as string[] | undefined;
+  if (Array.isArray(gardenThemeIds) && gardenThemeIds.length > 0) {
     if (!hasExplicitFilters.has('landscape_theme')) {
       filters.push({
         intent: 'landscape_theme',
-        entities: { theme_type: userGarden.gardenThemeIds[0] } // Use the first theme
+        entities: { theme_type: gardenThemeIds[0] } // Use the first theme
       });
     }
     // Store theme info for personalization in the response
     filters.forEach(filter => {
-      filter.entities.user_theme = userGarden.gardenThemeIds[0];
+      filter.entities.user_theme = gardenThemeIds[0];
     });
   }
   
   // Add wildlife attraction filter
-  if (userGarden.wildlifeAttractionIds?.length > 0) {
+  const wildlifeAttractionIds = userGarden.wildlifeAttractionIds as string[] | undefined;
+  if (Array.isArray(wildlifeAttractionIds) && wildlifeAttractionIds.length > 0) {
     if (!hasExplicitFilters.has('attracts')) {
       filters.push({
         intent: 'attracts',
-        entities: { wildlife_type: userGarden.wildlifeAttractionIds[0] } // Use the first wildlife type
+        entities: { wildlife_type: wildlifeAttractionIds[0] } // Use the first wildlife type
       });
     }
     // Store wildlife info for personalization in the response
     filters.forEach(filter => {
-      filter.entities.user_wildlife = userGarden.wildlifeAttractionIds[0];
+      filter.entities.user_wildlife = wildlifeAttractionIds[0];
     });
   }
   
   // Add resistance to challenges filter
-  if (userGarden.resistanceChallengeIds?.length > 0) {
+  const resistanceChallengeIds = userGarden.resistanceChallengeIds as string[] | undefined;
+  if (Array.isArray(resistanceChallengeIds) && resistanceChallengeIds.length > 0) {
     if (!hasExplicitFilters.has('resistance_to_challenges')) {
       filters.push({
         intent: 'resistance_to_challenges',
-        entities: { challenge_type: userGarden.resistanceChallengeIds[0] } // Use the first challenge type
+        entities: { challenge_type: resistanceChallengeIds[0] } // Use the first challenge type
       });
     }
     // Store challenge info for personalization in the response
     filters.forEach(filter => {
-      filter.entities.user_challenge = userGarden.resistanceChallengeIds[0];
+      filter.entities.user_challenge = resistanceChallengeIds[0];
     });
   }
   
   // Add problems filter
-  if (userGarden.problemsToExcludeIds?.length > 0) {
+  const problemsToExcludeIds = userGarden.problemsToExcludeIds as string[] | undefined;
+  if (Array.isArray(problemsToExcludeIds) && problemsToExcludeIds.length > 0) {
     if (!hasExplicitFilters.has('problems')) {
       filters.push({
         intent: 'problems',
-        entities: { problem_type: userGarden.problemsToExcludeIds[0] } // Use the first problem type
+        entities: { problem_type: problemsToExcludeIds[0] } // Use the first problem type
       });
     }
     // Store problem info for personalization in the response
     filters.forEach(filter => {
-      filter.entities.user_problem = userGarden.problemsToExcludeIds[0];
+      filter.entities.user_problem = problemsToExcludeIds[0];
     });
   }
   
   // Add flower color filter
-  if (userGarden.flowerColorIds?.length > 0) {
+  const flowerColorIds = userGarden.flowerColorIds as string[] | undefined;
+  if (Array.isArray(flowerColorIds) && flowerColorIds.length > 0) {
     if (!hasExplicitFilters.has('flower_color')) {
       filters.push({
         intent: 'flower_color',
-        entities: { flower_color: userGarden.flowerColorIds[0] } // Use the first flower color
+        entities: { flower_color: flowerColorIds[0] } // Use the first flower color
       });
     }
     // Store flower color info for personalization in the response
     filters.forEach(filter => {
-      filter.entities.user_flower_color = userGarden.flowerColorIds[0];
+      filter.entities.user_flower_color = flowerColorIds[0];
     });
   }
   
   // Add flower bloom time filter
-  if (userGarden.flowerBloomTimeIds?.length > 0) {
+  const flowerBloomTimeIds = userGarden.flowerBloomTimeIds as string[] | undefined;
+  if (Array.isArray(flowerBloomTimeIds) && flowerBloomTimeIds.length > 0) {
     if (!hasExplicitFilters.has('flower_bloom_time')) {
       filters.push({
         intent: 'flower_bloom_time',
-        entities: { bloom_time: userGarden.flowerBloomTimeIds[0] } // Use the first bloom time
+        entities: { bloom_time: flowerBloomTimeIds[0] } // Use the first bloom time
       });
     }
     // Store bloom time info for personalization in the response
     filters.forEach(filter => {
-      filter.entities.user_bloom_time = userGarden.flowerBloomTimeIds[0];
+      filter.entities.user_bloom_time = flowerBloomTimeIds[0];
     });
   }
 }

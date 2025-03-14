@@ -451,10 +451,11 @@ Respond with a structured object that captures this information.`,
 
       // Ensure we return an array of intents for consistency
       return NextResponse.json([result]);
-    } catch (apiError: any) {
+    } catch (apiError: unknown) {
       // Check if it's an insufficient balance error
-      if (apiError.statusCode === 402 || 
-          (apiError.responseBody && apiError.responseBody.includes("Insufficient Balance"))) {
+      const error = apiError as { statusCode?: number; responseBody?: string };
+      if (error.statusCode === 402 || 
+          (error.responseBody && error.responseBody.includes("Insufficient Balance"))) {
         console.error("DeepSeek API error: Insufficient Balance");
         return NextResponse.json(
           { error: "Service temporarily unavailable. Please try again later." },

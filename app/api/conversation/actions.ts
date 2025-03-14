@@ -75,7 +75,7 @@ function generatePrompt(
       
       // Growing conditions
       sunlight: userGarden.sunlightIds || [],
-      soilType: userGarden.soilTypeIds || [],
+      soilTexture: userGarden.soilTextureIds || [],
       soilPh: userGarden.soilPhIds || [],
       soilDrainage: userGarden.soilDrainageIds || [],
       
@@ -95,9 +95,6 @@ function generatePrompt(
       flowerBloomTimes: userGarden.flowerBloomTimeIds || [],
       leafColors: userGarden.leafColorIds || [],
       yearRoundInterest: userGarden.yearRoundInterest,
-      
-      // Specific plants
-      favoriteSpecificPlants: userGarden.specificPlantIds || [],
     };
 
     userGardenSection = `
@@ -113,14 +110,13 @@ Key Garden Considerations:
 - USDA Zones: ${gardenInfo.zones.join(', ') || 'Not specified'}
 - Region: ${gardenInfo.regions.join(', ') || 'Not specified'}
 - Sunlight: ${gardenInfo.sunlight.join(', ') || 'Not specified'}
-- Soil Type: ${gardenInfo.soilType.join(', ') || 'Not specified'}
+- Soil Type: ${gardenInfo.soilTexture.join(', ') || 'Not specified'}
 - Soil pH: ${gardenInfo.soilPh.join(', ') || 'Not specified'}
 - Drainage: ${gardenInfo.soilDrainage.join(', ') || 'Not specified'}
 - Garden Themes: ${gardenInfo.gardenThemes.join(', ') || 'Not specified'}
 - Wildlife Interests: ${gardenInfo.wildlifeAttraction.join(', ') || 'Not specified'}
 - Challenges to Address: ${gardenInfo.resistanceChallenges.join(', ') || 'Not specified'}
 - Preferred Plant Types: ${gardenInfo.plantTypes.join(', ') || 'Not specified'}
-- Favorite Plants: ${gardenInfo.favoriteSpecificPlants.join(', ') || 'Not specified'}
 
 Examples of good personalization:
 - "Based on your garden's sandy soil and full sun conditions, here are some low-light plants that could work in shadier areas of your garden..."

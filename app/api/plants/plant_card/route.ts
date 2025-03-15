@@ -143,11 +143,116 @@ export async function GET(request: Request) {
       });
     }
 
-    // For dynamic queries, we need to use a dynamic route
-    // This will be handled by the dynamic API route
-    return NextResponse.json({ 
-      error: "This endpoint only supports static initial data. For filtered or paginated data, use the dynamic endpoint." 
-    }, { status: 400 });
+    // For pagination, search, or filtered requests
+    const tableName = nameType === "common" ? "plant_common_card_data" : "plant_card_data";
+    const orderColumn = nameType === "common" ? "common_name" : "scientific_name";
+    const selectColumns = nameType === "common" ? `
+      id,
+      slug,
+      common_name,
+      description,
+      scientific_name,
+      first_tag,
+      first_image,
+      first_image_alt_text
+    ` : `
+      id,
+      slug,
+      scientific_name,
+      description,
+      common_name,
+      first_tag,
+      first_image,
+      first_image_alt_text
+    `;
+
+    let queryBuilder = supabase
+      .from(tableName as "plant_card_data")
+      .select(selectColumns, { count: "exact" })
+      .order(orderColumn, { ascending: true });
+
+    // Apply search query if provided
+    if (query) {
+      const searchColumn = nameType === "common" ? "common_name" : "scientific_name";
+      queryBuilder = queryBuilder.ilike(searchColumn, `%${query}%`);
+    }
+
+    // Apply filters if provided
+    if (filtersParam) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const filters = JSON.parse(filtersParam);
+        // Apply filters logic here based on your filter structure
+        // Example: if (filters.someProperty) queryBuilder = queryBuilder.eq('someColumn', filters.someProperty);
+      } catch (e) {
+        console.error("Error parsing filters:", e);
+      }
+    }
+
+    // Apply pagination
+    const { data, error, count = 0 } = await queryBuilder.range(offset, offset + limit - 1);
+
+    if (error) {
+      console.error("Supabase query error:", error.details || error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // Process the data based on nameType
+    const processedData = (data || []).map((row) => {
+      if (nameType === "common") {
+        const commonRow = row as unknown as {
+          id: number;
+          slug: string | null;
+          common_name: string | null;
+          description: string | null;
+          scientific_name: string | null;
+          first_tag: string | null;
+          first_image: string | null;
+          first_image_alt_text: string | null;
+        };
+        return {
+          id: commonRow.id,
+          slug: commonRow.slug,
+          common_name: commonRow.common_name,
+          description: commonRow.description,
+          scientific_name: commonRow.scientific_name,
+          first_tag: commonRow.first_tag,
+          first_image: commonRow.first_image,
+          first_image_alt_text: commonRow.first_image_alt_text,
+        } satisfies PlantCardDataCommon;
+      } else {
+        const scientificRow = row as unknown as {
+          id: number;
+          slug: string | null;
+          scientific_name: string | null;
+          description: string | null;
+          common_name: string | null;
+          first_tag: string | null;
+          first_image: string | null;
+          first_image_alt_text: string | null;
+        };
+        return {
+          id: scientificRow.id,
+          slug: scientificRow.slug,
+          scientific_name: scientificRow.scientific_name,
+          description: scientificRow.description,
+          common_name: scientificRow.common_name,
+          first_tag: scientificRow.first_tag,
+          first_image: scientificRow.first_image,
+          first_image_alt_text: scientificRow.first_image_alt_text,
+        } satisfies PlantCardDataScientific;
+      }
+    });
+
+    return NextResponse.json(
+      { results: processedData, count: count ?? 0 },
+      {
+        status: 200,
+        headers: {
+          'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
+        },
+      }
+    );
   } catch (error) {
     console.error("Error in plant_card route:", error);
     return NextResponse.json(

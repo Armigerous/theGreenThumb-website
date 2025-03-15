@@ -14,14 +14,17 @@ const PaginationComponent = ({
   currentPage,
   totalPages,
   query,
+  nameType,
 }: {
   currentPage: number;
   totalPages: number;
   query?: string;
+  nameType?: string;
 }) => {
   const generateLink = (page: number) => {
     const params = new URLSearchParams();
     if (query) params.set("query", query);
+    if (nameType) params.set("nameType", nameType);
     params.set("page", page.toString());
     return `/plants/?${params.toString()}`;
   };

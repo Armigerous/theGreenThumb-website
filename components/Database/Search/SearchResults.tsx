@@ -310,6 +310,7 @@ const SearchResults = memo(
               currentPage={page}
               totalPages={totalPages}
               query={query}
+              nameType={nameType}
             />
           </div>
         )}

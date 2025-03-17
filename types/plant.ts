@@ -15,7 +15,7 @@ export interface PlantCardDataScientific {
   slug?: string | null;
   scientific_name?: string | null;
   description?: string | null;
-  first_common_name?: string | null;
+  common_name?: string | null;
   first_tag?: string | null;
   first_image?: string | null;
   first_image_alt_text?: string | null;

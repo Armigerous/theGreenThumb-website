@@ -34,7 +34,7 @@ const PlantCard = memo(
       () =>
         "common_name" in plant
           ? plant.common_name
-          : "first_common_name" in plant
+          : "common_name" in plant
             ? plant.scientific_name
             : null,
       [plant]
@@ -44,8 +44,8 @@ const PlantCard = memo(
       () =>
         "common_name" in plant
           ? plant.scientific_name
-          : "first_common_name" in plant
-            ? plant.first_common_name
+          : "common_name" in plant
+            ? plant.common_name
             : null,
       [plant]
     );

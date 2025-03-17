@@ -22,7 +22,7 @@ const TipCard = ({ tip, variant = "default" }: TipCardProps) => {
   const { slug, title, description, categories, publishedAt, mainImage } = tip;
 
   return (
-    <li className="group h-full">
+    <div className="group h-full">
       <Card
         className={`rounded-xl shadow-md transition-transform text-left h-full overflow-hidden ${
           variant === "horizontal"
@@ -34,7 +34,7 @@ const TipCard = ({ tip, variant = "default" }: TipCardProps) => {
           {variant === "horizontal" ? (
             <AspectRatio ratio={16 / 9} className="relative md:hidden">
               <Image
-                src={mainImage?.asset.url || "/no-plant-image.png"}
+                src={mainImage?.asset?.url || "/no-plant-image.png"}
                 alt={mainImage?.alt || "Tip Image"}
                 fill
                 className="object-cover"
@@ -44,7 +44,7 @@ const TipCard = ({ tip, variant = "default" }: TipCardProps) => {
           ) : (
             <AspectRatio ratio={16 / 9} className="bg-muted relative">
               <Image
-                src={mainImage?.asset.url || "/no-plant-image.png"}
+                src={mainImage?.asset?.url || "/no-plant-image.png"}
                 alt={mainImage?.alt || "Tip Image"}
                 fill
                 className="object-cover rounded-t-lg"
@@ -107,7 +107,7 @@ const TipCard = ({ tip, variant = "default" }: TipCardProps) => {
           </CardFooter>
         </div>
       </Card>
-    </li>
+    </div>
   );
 };
 

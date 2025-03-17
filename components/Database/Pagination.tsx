@@ -14,14 +14,17 @@ const PaginationComponent = ({
   currentPage,
   totalPages,
   query,
+  nameType,
 }: {
   currentPage: number;
   totalPages: number;
   query?: string;
+  nameType?: string;
 }) => {
   const generateLink = (page: number) => {
     const params = new URLSearchParams();
     if (query) params.set("query", query);
+    if (nameType) params.set("nameType", nameType);
     params.set("page", page.toString());
     return `/plants/?${params.toString()}`;
   };
@@ -36,7 +39,7 @@ const PaginationComponent = ({
 
   return (
     <Pagination className="py-10">
-      <PaginationContent className="flex items-center space-x-2">
+      <PaginationContent className="flex items-center space-x-1 px-4 md:px-0">
         {/* Previous Page Button */}
         <PaginationItem>
           <PaginationPrevious

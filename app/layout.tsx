@@ -6,6 +6,8 @@ import "./globals.css";
 import NavBar from "@/components/NavBar/NavBar";
 import Footer from "@/components/Footer";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -84,17 +86,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-cream-50`}
-      >
-        <NavBar />
-        {children}
-        <Analytics />
-        <SpeedInsights />
-        <Footer />
-      </body>
-      <GoogleAnalytics gaId="G-25E3VTSFMZ" />
-    </html>
+    <ClerkProvider>
+      <html lang="en" className="scroll-smooth">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-cream-50`}
+        >
+          <NavBar />
+          {children}
+          <Analytics />
+          <SpeedInsights />
+          <Footer />
+          <Toaster />
+        </body>
+        <GoogleAnalytics gaId="G-25E3VTSFMZ" />
+      </html>
+    </ClerkProvider>
   );
 }

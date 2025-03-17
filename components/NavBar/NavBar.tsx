@@ -1,5 +1,13 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 import {
   Link,
   NavbarBrand,
@@ -13,6 +21,7 @@ import {
 import NextLink from "next/link";
 
 import siteMetaData from "@/lib/siteMetaData";
+import { usePathname } from "next/navigation";
 import {
   FacebookIconBlack,
   InstagramIconBlack,
@@ -21,7 +30,7 @@ import {
 import { MaxWidthWrapper } from "../maxWidthWrapper";
 import DropdownFeatures from "./DropdownFeatures";
 import { navMenuItems } from "./nav";
-import { usePathname } from "next/navigation";
+import { Leaf } from "lucide-react";
 
 const NavBar = () => {
   const pathname = usePathname(); // Get the current pathname
@@ -96,7 +105,7 @@ const NavBar = () => {
           </NavbarItem>
         </NavbarContent>
 
-        {/* Icons on the Right */}
+        {/* Icons and Auth on the Right */}
         <NavbarContent className="hidden lg:flex" justify="end">
           <NavbarItem>
             <Link
@@ -128,6 +137,49 @@ const NavBar = () => {
               <YoutubeIconBlack />
             </Link>
           </NavbarItem>
+
+          <NavbarItem className="ml-4">
+            <SignedOut>
+              <div className="flex gap-2">
+                <SignInButton mode="modal">
+                  <Button
+                    variant="ghost"
+                    className="text-black hover:text-primary transition"
+                  >
+                    Sign In
+                  </Button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <Button
+                    variant="default"
+                    className="bg-primary text-cream-50 hover:bg-primary/90 transition"
+                  >
+                    Sign Up
+                  </Button>
+                </SignUpButton>
+              </div>
+            </SignedOut>
+            <SignedIn>
+              <UserButton
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "",
+                    userButtonTrigger: "w-10 h-10",
+                  },
+                }}
+              >
+                <UserButton.MenuItems>
+                  <UserButton.Link
+                    label="My Garden"
+                    labelIcon={<Leaf className="w-4 h-4" />}
+                    href="/my-garden"
+                  />
+                  <UserButton.Action label="manageAccount" />
+                  <UserButton.Action label="signOut" />
+                </UserButton.MenuItems>
+              </UserButton>
+            </SignedIn>
+          </NavbarItem>
         </NavbarContent>
       </MaxWidthWrapper>
 
@@ -148,6 +200,50 @@ const NavBar = () => {
             </Link>
           </NavbarMenuItem>
         ))}
+
+        {/* Mobile Auth - Updated */}
+        <NavbarMenuItem className="flex justify-center mt-4">
+          <SignedOut>
+            <div className="flex gap-4">
+              <SignInButton mode="modal">
+                <Button
+                  variant="ghost"
+                  className="text-black hover:text-primary transition"
+                >
+                  Sign In
+                </Button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <Button
+                  variant="default"
+                  className="bg-primary text-cream-50 hover:bg-primary/90 transition"
+                >
+                  Sign Up
+                </Button>
+              </SignUpButton>
+            </div>
+          </SignedOut>
+          <SignedIn>
+            <UserButton
+              appearance={{
+                elements: {
+                  userButtonAvatarBox: "",
+                  userButtonTrigger: "w-10 h-10",
+                },
+              }}
+            >
+              <UserButton.MenuItems>
+                <UserButton.Link
+                  label="My Garden"
+                  labelIcon={<Leaf className="w-4 h-4" />}
+                  href="/my-garden"
+                />
+                <UserButton.Action label="manageAccount" />
+                <UserButton.Action label="signOut" />
+              </UserButton.MenuItems>
+            </UserButton>
+          </SignedIn>
+        </NavbarMenuItem>
       </NavbarMenu>
     </NextUINavbar>
   );

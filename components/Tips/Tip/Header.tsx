@@ -12,11 +12,10 @@ const Header = ({ tip }: { tip: Tip }) => {
       {/* Blurred Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src={mainImage?.asset.url || "/no-plant-image.png"}
+          src={mainImage?.asset?.url || "/no-plant-image.png"}
           alt={title}
           fill
-          objectFit="cover"
-          className="blur-sm rounded-lg"
+          className="blur-sm rounded-lg object-cover"
           priority
         />
         <div className="absolute inset-0 bg-black/50 rounded-lg"></div>

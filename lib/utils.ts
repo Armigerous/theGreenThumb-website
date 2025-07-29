@@ -144,3 +144,23 @@ export const fetchCategoryBySlug = cache(
     }
   }
 );
+
+/**
+ * Utility function to get the appropriate logo based on context
+ * @param context - The context where the logo will be used
+ * @returns The path to the appropriate logo
+ */
+export function getLogoPath(context: 'default' | 'transparent' | 'social' | 'avatar' = 'default'): string {
+  switch (context) {
+    case 'transparent':
+      return '/logo-transparent.png';
+    case 'social':
+      // Use regular logo for social media as it typically has better contrast
+      return '/logo.png';
+    case 'avatar':
+      // Use transparent logo for avatars where background might vary
+      return '/logo-transparent.png';
+    default:
+      return '/logo.png';
+  }
+}

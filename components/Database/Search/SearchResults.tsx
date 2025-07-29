@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { memo, useState, useEffect, useCallback, useMemo, useRef } from "react";
@@ -8,10 +7,16 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { PlantCardData, PlantData } from "@/types/plant";
 import { Skeleton } from "@/components/ui/skeleton";
 import useSWR from "swr";
+import { OptimizedImage } from "@/components/ui/smart-image";
+import {
+  FadeInWrapper,
+  StaggeredList,
+  LoadingTransition,
+} from "@/components/ui/loading-animation";
 
 // Dynamically import components
 const PaginationComponent = dynamic(() => import("../Pagination"), {
-  loading: () => <div className="h-10 bg-gray-200 animate-pulse rounded" />,
+  loading: () => <div className="h-10 bg-muted animate-pulse rounded" />,
 });
 
 const PlantCard = dynamic(() => import("@/components/Database/PlantCard"), {
@@ -44,79 +49,85 @@ const fetcher = async (url: string) => {
 
 // Separate PlantCardSkeleton into its own component for reuse
 const PlantCardSkeleton = memo(() => (
-  <div className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left h-[430px] w-full">
+  <div className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left h-[430px] w-full flex flex-col">
     <div className="relative w-full h-48">
-      <Skeleton className="absolute inset-0 w-full h-full" />
+      <Skeleton className="absolute inset-0 w-full h-full bg-muted" />
     </div>
 
     <div className="px-5 py-4 space-y-2">
       <div className="space-y-1">
-        <Skeleton className="h-6 w-3/4" /> {/* Title */}
-        <Skeleton className="h-4 w-1/2" /> {/* Scientific name */}
+        <Skeleton className="h-6 w-3/4 bg-muted" /> {/* Title */}
+        <Skeleton className="h-4 w-1/2 bg-muted" /> {/* Scientific name */}
       </div>
-      <Skeleton className="h-5 w-24 rounded-full" /> {/* Badge */}
+      <Skeleton className="h-5 w-24 rounded-full bg-muted" /> {/* Badge */}
     </div>
 
-    <div className="px-5">
+    <div className="px-5 flex-grow">
       <div className="space-y-1">
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-5/6" />
-        <Skeleton className="h-4 w-4/6" />
+        <Skeleton className="h-4 w-full bg-muted" />
+        <Skeleton className="h-4 w-5/6 bg-muted" />
+        <Skeleton className="h-4 w-4/6 bg-muted" />
       </div>
     </div>
 
     <div className="px-5 py-4 mt-auto">
-      <Skeleton className="h-4 w-20" /> {/* Learn more */}
+      <Skeleton className="h-4 w-20 bg-muted" /> {/* Learn more */}
     </div>
   </div>
 ));
 
 PlantCardSkeleton.displayName = "PlantCardSkeleton";
 
-// Update the ErrorState component to accept and display error messages
+// Error state component
 const ErrorState = memo(({ message }: { message?: string }) => (
-  <div className="container mx-auto py-8 text-center">
-    <Image
-      src="/sad-plant.png"
-      alt="Error"
-      width={300}
-      height={300}
-      className="mx-auto rounded-md"
-      priority
-    />
-    <h2 className="text-2xl sm:text-3xl font-heading font-semibold tracking-tight text-red-600">
-      Oops! Something went wrong 🌱
-    </h2>
-    <p className="text-sm text-muted-foreground mt-2">
-      {message ||
-        "We couldn't load the plants. Maybe take a break and try again in a few minutes?"}
-    </p>
-    <Link href="/" className="text-primary mt-4 inline-block underline">
-      Go back to Home
-    </Link>
-  </div>
+  <FadeInWrapper>
+    <div className="text-center">
+      <OptimizedImage
+        src="/sad-plant.png"
+        alt="Error"
+        context="static_asset"
+        width={300}
+        height={300}
+        className="mx-auto rounded-md"
+        priority
+      />
+      <h2 className="text-2xl sm:text-3xl font-heading font-semibold tracking-tight text-red-600">
+        Oops! Something went wrong 🌱
+      </h2>
+      <p className="text-sm text-muted-foreground mt-2">
+        {message ||
+          "We couldn't load the plants. Maybe take a break and try again in a few minutes?"}
+      </p>
+      <Link href="/" className="text-primary mt-4 inline-block underline">
+        Go back to Home
+      </Link>
+    </div>
+  </FadeInWrapper>
 ));
 
 ErrorState.displayName = "ErrorState";
 
 // No results component
 const NoResults = memo(() => (
-  <div className="text-center">
-    <Image
-      src="/sad-plant.png"
-      alt="No results found"
-      width={300}
-      height={300}
-      className="mx-auto rounded-2xl border-4 border-black"
-      priority
-    />
-    <h2 className="text-2xl sm:text-3xl font-heading font-semibold tracking-tight text-zinc-800 mt-4">
-      No results found 🌱
-    </h2>
-    <p className="text-sm text-muted-foreground mt-2">
-      Try searching with different keywords.
-    </p>
-  </div>
+  <FadeInWrapper>
+    <div className="text-center">
+      <OptimizedImage
+        src="/sad-plant.png"
+        alt="No results found"
+        context="static_asset"
+        width={300}
+        height={300}
+        className="mx-auto rounded-2xl border-4 border-black"
+        priority
+      />
+      <h2 className="text-2xl sm:text-3xl font-heading font-semibold tracking-tight text-zinc-800 mt-4">
+        No results found 🌱
+      </h2>
+      <p className="text-sm text-muted-foreground mt-2">
+        Try searching with different keywords.
+      </p>
+    </div>
+  </FadeInWrapper>
 ));
 
 NoResults.displayName = "NoResults";
@@ -163,12 +174,14 @@ const SearchResults = memo(
       return baseUrl;
     }, [query, filters, nameType, limit, offset]);
 
-    // Use SWR for data fetching
+    // Use SWR for data fetching with improved caching
     const { data, error, isLoading } = useSWR<ApiResponse>(url, fetcher, {
       revalidateOnFocus: false,
       revalidateOnReconnect: true,
       dedupingInterval: CACHE_DURATION,
       keepPreviousData: true,
+      // Add suspense mode for better streaming
+      suspense: false,
     });
 
     // Setup virtualizer
@@ -203,41 +216,33 @@ const SearchResults = memo(
       };
     }, [handleScroll]);
 
-    if (isLoading) {
-      return (
-        <div className="container mx-auto py-4">
-          <div className="mb-4">
-            <Skeleton className="h-10 w-48 md:w-64 mb-2" />{" "}
-            {/* Heading skeleton */}
-            <Skeleton className="h-4 w-32" /> {/* Results count skeleton */}
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {Array.from({ length: limit }).map((_, index) => (
-              <PlantCardSkeleton key={index} />
-            ))}
-          </div>
+    // Loading skeleton content
+    const loadingContent = (
+      <div className="container mx-auto py-4">
+        <div className="mb-4">
+          <Skeleton className="h-10 w-48 md:w-64 mb-2 bg-muted" />
+          <Skeleton className="h-4 w-32 bg-muted" />
         </div>
-      );
-    }
+        <StaggeredList
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+          staggerDelay={50}
+        >
+          {Array.from({ length: limit }).map((_, index) => (
+            <PlantCardSkeleton key={index} />
+          ))}
+        </StaggeredList>
+      </div>
+    );
 
-    if (error) {
-      return <ErrorState message={error.message} />;
-    }
-
-    if (!data || data.results.length === 0) {
-      return <NoResults />;
-    }
-
-    const totalPages = Math.ceil(data.count / limit);
-
-    return (
+    // Main content
+    const mainContent = (
       <div className="w-full py-4">
         <div className="text-left mb-4">
           <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-cream-800">
             {query ? `Search results for "${query}"` : "All Plants"}
           </h2>
           <p className="text-sm text-muted-foreground">
-            {data.count} result{data.count !== 1 ? "s" : ""} found
+            {data?.count} result{data?.count !== 1 ? "s" : ""} found
           </p>
         </div>
 
@@ -265,9 +270,9 @@ const SearchResults = memo(
                 const fromIndex = virtualRow.index * columnCount;
                 const toIndex = Math.min(
                   fromIndex + columnCount,
-                  data.results.length
+                  data!.results.length
                 );
-                const rowItems = data.results.slice(fromIndex, toIndex);
+                const rowItems = data!.results.slice(fromIndex, toIndex);
 
                 return (
                   <div
@@ -304,17 +309,35 @@ const SearchResults = memo(
         </div>
 
         {/* Pagination Component */}
-        {data.results.length > 0 && (
-          <div>
-            <PaginationComponent
-              currentPage={page}
-              totalPages={totalPages}
-              query={query}
-              nameType={nameType}
-            />
-          </div>
+        {data && data.results.length > 0 && (
+          <FadeInWrapper delay={300}>
+            <div>
+              <PaginationComponent
+                currentPage={page}
+                totalPages={Math.ceil(data.count / limit)}
+                query={query}
+                nameType={nameType}
+              />
+            </div>
+          </FadeInWrapper>
         )}
       </div>
+    );
+
+    if (error) {
+      return <ErrorState message={error.message} />;
+    }
+
+    if (!data || data.results.length === 0) {
+      return <NoResults />;
+    }
+
+    return (
+      <LoadingTransition
+        isLoading={isLoading && !data}
+        loadingContent={loadingContent}
+        content={mainContent}
+      />
     );
   }
 );

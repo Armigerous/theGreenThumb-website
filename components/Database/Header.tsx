@@ -1,16 +1,17 @@
 import React from "react";
 import { Heading } from "../heading";
-import Image from "next/image";
+import { OptimizedImage } from "@/components/ui/smart-image";
 
 const Header = () => {
   return (
     <div className="relative">
-      <Image
+      <OptimizedImage
         src="/plant-search.png"
         alt="Plant Database"
-        width={800}
-        height={400}
-        className="w-full"
+        context="hero"
+        isCritical={true}
+        sizes="100vw"
+        className="rounded-lg w-full h-auto"
         priority
       />
 

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { Metadata } from "next";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -8,6 +8,9 @@ import Footer from "@/components/Footer";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/sonner";
+import { getLogoPath } from "@/lib/utils";
+import FeatureUnavailableMessage from "@/components/FeatureUnavailableMessage";
+import { Suspense } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -49,7 +52,7 @@ export const metadata: Metadata = {
     url: process.env.NEXT_PUBLIC_BASE_URL,
     images: [
       {
-        url: "/logo.png",
+        url: getLogoPath("social"),
         width: 1200,
         height: 630,
         alt: "GreenThumb banner - Gardening and horticulture insights",
@@ -63,7 +66,7 @@ export const metadata: Metadata = {
       "Discover expert gardening tips and insights on local plants in North Carolina. Join The GreenThumb community for all things horticulture and agriculture.",
     images: [
       {
-        url: "/logo.png",
+        url: getLogoPath("social"),
         width: 1200,
         height: 630,
         alt: "GreenThumb banner - Gardening and horticulture insights",
@@ -91,6 +94,9 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-cream-50`}
         >
+          <Suspense fallback={null}>
+            <FeatureUnavailableMessage />
+          </Suspense>
           <NavBar />
           {children}
           <Analytics />

@@ -3,9 +3,8 @@ import { Suspense } from "react";
 import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import Header from "@/components/Database/Header";
 import Search from "@/components/Database/Search/Search";
-import SearchSkeleton from "@/components/Database/SearchSkeleton";
 
-// Add route segment config
+// Add route segment config for optimal streaming
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-cache";
 
@@ -23,15 +22,18 @@ export default function Page({
 }) {
   return (
     <MaxWidthWrapper className="text-center">
+      {/* Header renders immediately - no Suspense needed */}
       <Header />
-      <Suspense fallback={<SearchSkeleton />}>
+
+      {/* Search component with Suspense for streaming */}
+      <Suspense>
         <SearchWrapper searchParams={searchParams} />
       </Suspense>
     </MaxWidthWrapper>
   );
 }
 
-// A separate component to handle the async searchParams resolution
+// Separate component to handle async searchParams resolution
 async function SearchWrapper({
   searchParams,
 }: {

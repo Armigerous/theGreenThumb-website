@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import {
   Dialog,
@@ -10,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { OptimizedImage } from "@/components/ui/smart-image";
 
 type PlantImageGalleryProps = {
   images: {
@@ -37,12 +37,12 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
       <Dialog>
         <DialogTrigger asChild>
           <div className="relative w-full max-w-3xl h-[500px] bg-cream-100 rounded-lg overflow-hidden cursor-pointer">
-            <Image
+            <OptimizedImage
               src={selectedImage}
               alt={currentImage?.altText || "Plant image"}
+              context="gallery"
               className="object-cover rounded-lg"
               fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         </DialogTrigger>
@@ -51,12 +51,12 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
             <DialogTitle>{currentImage?.altText || "Image View"}</DialogTitle>
           </DialogHeader>
           <div className="relative w-full h-[80vh]">
-            <Image
+            <OptimizedImage
               src={selectedImage}
               alt={currentImage?.altText || "Plant image"}
+              context="detail"
               className="object-contain rounded-lg"
               fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
           {currentImage?.caption && (
@@ -84,12 +84,12 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
                 : "border-cream-300"
             } hover:shadow focus:outline-none focus:ring-2 focus:ring-brand-700`}
           >
-            <Image
+            <OptimizedImage
               src={image.thumbnail_med || image.img}
               alt={image.altText || `Thumbnail ${index + 1}`}
+              context="thumbnail"
               className="object-cover w-full h-full"
               fill
-              sizes="100px"
             />
           </Button>
         ))}
@@ -107,12 +107,12 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
               <div className="flex gap-4 h-[80vh]">
                 {/* Large Main Image */}
                 <div className="flex-1 relative bg-cream-100 rounded-lg">
-                  <Image
+                  <OptimizedImage
                     src={selectedImage}
                     alt={currentImage?.altText || "Main image"}
+                    context="detail"
                     className="object-contain rounded-lg"
                     fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
                   />
                 </div>
@@ -128,12 +128,12 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
                           : "border-cream-300"
                       } hover:shadow focus:outline-none focus:ring-2 focus:ring-brand-500`}
                     >
-                      <Image
+                      <OptimizedImage
                         src={image.thumbnail_med || image.img}
                         alt={image.altText || `Thumbnail ${index + 1}`}
+                        context="thumbnail"
                         className="object-cover w-full h-full"
                         fill
-                        sizes="100px"
                       />
                     </Button>
                   ))}

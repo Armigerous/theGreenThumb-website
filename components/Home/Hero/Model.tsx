@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { getLogoPath } from "@/lib/utils";
 
 const imageAnimation = {
   hidden: { opacity: 0, scale: 0.8 },
@@ -26,7 +27,7 @@ const Model = () => {
         variants={imageAnimation}
       >
         <Image
-          src={"/logo.png"}
+          src={getLogoPath("transparent")}
           alt="The GreenThumb logo"
           priority
           height={500}

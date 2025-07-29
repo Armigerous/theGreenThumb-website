@@ -185,7 +185,7 @@ export async function GET(request: Request) {
       } else {
         orFilter = `scientific_name.ilike.%${query}%,common_name.ilike.%${query}%,description.ilike.%${query}%`;
       }
-      supabaseQuery = supabaseQuery.or(orFilter);
+      queryBuilder = queryBuilder.or(orFilter);
     }
 
     // Apply pagination

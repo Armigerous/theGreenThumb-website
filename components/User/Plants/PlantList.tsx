@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import Image from "next/image";
+import { OptimizedImage } from "@/components/ui/smart-image";
 
 interface PlantListProps {
   plants: userPlants[];
@@ -75,9 +75,10 @@ const PlantList = ({ plants, onUpdate }: PlantListProps) => {
               <div className="flex flex-row gap-4">
                 {plant.images && plant.images.length > 0 ? (
                   <div className="relative w-20 h-20 overflow-hidden rounded-md">
-                    <Image
+                    <OptimizedImage
                       src={plant.images[0].url}
                       alt={plant.customName}
+                      context="thumbnail"
                       fill
                       className="object-cover"
                     />

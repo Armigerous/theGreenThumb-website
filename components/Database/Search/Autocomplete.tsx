@@ -16,8 +16,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Switch } from "@nextui-org/react";
-import { Search, SlidersHorizontalIcon, Atom, Users } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Search, SlidersHorizontalIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -98,10 +98,10 @@ export function Autocomplete() {
   };
 
   // Handler to update the naming mode and update the URL accordingly.
-  const handleToggle = (value: boolean) => {
-    setUseCommonNames(value);
+  const handleToggle = (checked: boolean) => {
+    setUseCommonNames(checked);
     const params = new URLSearchParams(window.location.search);
-    params.set("nameType", value ? "common" : "scientific");
+    params.set("nameType", checked ? "common" : "scientific");
     router.replace(`/plants?${params.toString()}`);
   };
 
@@ -194,22 +194,8 @@ export function Autocomplete() {
       <div className="flex items-center space-x-2">
         <Switch
           id="use-common-names"
-          isSelected={useCommonNames}
-          onValueChange={handleToggle}
-          size="lg"
-          thumbIcon={({ isSelected, className }) =>
-            isSelected ? (
-              <Users
-                className={`${className} rounded-full bg-cream-100 text-primary font-bold`}
-                fill="none"
-              />
-            ) : (
-              <Atom
-                className={`${className} rounded-full bg-cream-100 text-primary font-bold`}
-                fill="none"
-              />
-            )
-          }
+          checked={useCommonNames}
+          onCheckedChange={handleToggle}
         />
         <Label htmlFor="use-common-names" className="text-base">
           {useCommonNames ? "Using Common Names" : "Using Scientific Names"}

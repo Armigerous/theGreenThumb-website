@@ -3,7 +3,7 @@
 export interface ProductFeature {
   id: number;
   title: string;
-  animationData: string;
+  animationData: string; // Path to the JSON file
   desc: string;
   url: string;
 }
@@ -19,28 +19,28 @@ export const FeaturesProduct: ProductFeature[] = [
   {
     id: 1,
     title: "Advanced Sensor Technology",
-    animationData: require("/public/ProductFeatures/sensor.json"),
+    animationData: "/ProductFeatures/sensor.json",
     desc: "The GreenThumb utilizes cutting-edge sensor technology to gather crucial data on your garden's environment. This includes light, pH levels, conductivity, temperature, moisture, and connectivity, ensuring precise data collection for optimal plant health.",
     url: "tip/advanced-sensor-technology-revolutionizing-gardening-with-greenthumb",
   },
   {
     id: 2,
     title: "Intelligent Data Analysis",
-    animationData: require("/public/ProductFeatures/analysis.json"),
+    animationData: "/ProductFeatures/analysis.json",
     desc: "The GreenThumb analyzes collected data using advanced AI algorithms, providing actionable insights and personalized gardening recommendations. This intelligent analysis helps prevent plant deaths and improves overall gardening efficiency.",
     url: "tip/intelligent-data-analysis-with-greenthumb-revolutionizing-your-gardening-experience",
   },
   {
     id: 3,
     title: "Plant Ranking",
-    animationData: require("/public/ProductFeatures/ranking.json"),
+    animationData: "/ProductFeatures/ranking.json",
     desc: "The GreenThumb ranks plants based on their likelihood to thrive in current conditions, considering symbiotic relationships with nearby plants. This feature promotes the creation of food forests and enhances plant compatibility in your garden.",
     url: "tip/plant-ranking-a-greenthumb-game-changer-for-your-garden",
   },
   {
     id: 4,
     title: "Comprehensive Gardening Solution",
-    animationData: require("/public/ProductFeatures/plant.json"),
+    animationData: "/ProductFeatures/plant.json",
     desc: "The GreenThumb combines a user-friendly sensor stick and an intuitive app to provide a complete gardening solution. From real-time data collection to intelligent recommendations, it simplifies and enhances the gardening experience.",
     url: "tip/comprehensive-gardening-solution-transform-your-gardening-with-greenthumb",
   },

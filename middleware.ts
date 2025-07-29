@@ -3,7 +3,10 @@ import { supabase } from "@/lib/supabaseClient";
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from "next/server";
 
-const isProtectedRoute = createRouteMatcher(['/chat(.*)', '/chat/(.*)'])
+// TEMPORARY: Feature flag to disable authentication protection
+const AUTH_ENABLED = false;
+
+const isProtectedRoute = createRouteMatcher(['/chat(.*)', '/chat/(.*)', '/my-garden(.*)', '/my-garden/(.*)'])
 
 export default clerkMiddleware(async (auth, req) => {
   // Handle plant URL rewrites
@@ -26,8 +29,17 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
-  // Protect chat routes
-  if (isProtectedRoute(req)) {
+  // TEMPORARY: Handle protected routes when auth is disabled
+  if (!AUTH_ENABLED && isProtectedRoute(req)) {
+    // Redirect to home page with a message
+    const url = req.nextUrl.clone();
+    url.pathname = '/';
+    url.searchParams.set('message', 'feature-unavailable');
+    return NextResponse.redirect(url);
+  }
+
+  // Protect chat routes (only when auth is enabled)
+  if (AUTH_ENABLED && isProtectedRoute(req)) {
     await auth.protect();
   }
 })

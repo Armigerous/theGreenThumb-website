@@ -32,6 +32,9 @@ import DropdownFeatures from "./DropdownFeatures";
 import { navMenuItems } from "./nav";
 import { Leaf } from "lucide-react";
 
+// TEMPORARY: Feature flag to disable authentication UI
+const AUTH_ENABLED = false;
+
 const NavBar = () => {
   const pathname = usePathname(); // Get the current pathname
 
@@ -138,9 +141,77 @@ const NavBar = () => {
             </Link>
           </NavbarItem>
 
-          <NavbarItem className="ml-4">
+          {/* TEMPORARY: Authentication UI - Disabled */}
+          {AUTH_ENABLED && (
+            <NavbarItem className="ml-4">
+              <SignedOut>
+                <div className="flex gap-2">
+                  <SignInButton mode="modal">
+                    <Button
+                      variant="ghost"
+                      className="text-black hover:text-primary transition"
+                    >
+                      Sign In
+                    </Button>
+                  </SignInButton>
+                  <SignUpButton mode="modal">
+                    <Button
+                      variant="default"
+                      className="bg-primary text-cream-50 hover:bg-primary/90 transition"
+                    >
+                      Sign Up
+                    </Button>
+                  </SignUpButton>
+                </div>
+              </SignedOut>
+              <SignedIn>
+                <UserButton
+                  appearance={{
+                    elements: {
+                      userButtonAvatarBox: "",
+                      userButtonTrigger: "w-10 h-10",
+                    },
+                  }}
+                >
+                  <UserButton.MenuItems>
+                    <UserButton.Link
+                      label="My Garden"
+                      labelIcon={<Leaf className="w-4 h-4" />}
+                      href="/my-garden"
+                    />
+                    <UserButton.Action label="manageAccount" />
+                    <UserButton.Action label="signOut" />
+                  </UserButton.MenuItems>
+                </UserButton>
+              </SignedIn>
+            </NavbarItem>
+          )}
+        </NavbarContent>
+      </MaxWidthWrapper>
+
+      {/* Mobile Menu Toggle */}
+      <NavbarContent className="lg:hidden pl-4">
+        <NavbarMenuToggle />
+      </NavbarContent>
+
+      <NavbarMenu className="items-center gap-6 h-full justify-center">
+        {navMenuItems.map((item, index) => (
+          <NavbarMenuItem key={`${item}-${index}`}>
+            <Link
+              className="w-full text-4xl font-semibold transition hover:text-primary"
+              href={item.href}
+              size="lg"
+            >
+              {item.label}
+            </Link>
+          </NavbarMenuItem>
+        ))}
+
+        {/* TEMPORARY: Mobile Auth - Disabled */}
+        {AUTH_ENABLED && (
+          <NavbarMenuItem className="flex justify-center mt-4">
             <SignedOut>
-              <div className="flex gap-2">
+              <div className="flex gap-4">
                 <SignInButton mode="modal">
                   <Button
                     variant="ghost"
@@ -179,71 +250,8 @@ const NavBar = () => {
                 </UserButton.MenuItems>
               </UserButton>
             </SignedIn>
-          </NavbarItem>
-        </NavbarContent>
-      </MaxWidthWrapper>
-
-      {/* Mobile Menu Toggle */}
-      <NavbarContent className="lg:hidden pl-4">
-        <NavbarMenuToggle />
-      </NavbarContent>
-
-      <NavbarMenu className="items-center gap-6 h-full justify-center">
-        {navMenuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              className="w-full text-4xl font-semibold transition hover:text-primary"
-              href={item.href}
-              size="lg"
-            >
-              {item.label}
-            </Link>
           </NavbarMenuItem>
-        ))}
-
-        {/* Mobile Auth - Updated */}
-        <NavbarMenuItem className="flex justify-center mt-4">
-          <SignedOut>
-            <div className="flex gap-4">
-              <SignInButton mode="modal">
-                <Button
-                  variant="ghost"
-                  className="text-black hover:text-primary transition"
-                >
-                  Sign In
-                </Button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <Button
-                  variant="default"
-                  className="bg-primary text-cream-50 hover:bg-primary/90 transition"
-                >
-                  Sign Up
-                </Button>
-              </SignUpButton>
-            </div>
-          </SignedOut>
-          <SignedIn>
-            <UserButton
-              appearance={{
-                elements: {
-                  userButtonAvatarBox: "",
-                  userButtonTrigger: "w-10 h-10",
-                },
-              }}
-            >
-              <UserButton.MenuItems>
-                <UserButton.Link
-                  label="My Garden"
-                  labelIcon={<Leaf className="w-4 h-4" />}
-                  href="/my-garden"
-                />
-                <UserButton.Action label="manageAccount" />
-                <UserButton.Action label="signOut" />
-              </UserButton.MenuItems>
-            </UserButton>
-          </SignedIn>
-        </NavbarMenuItem>
+        )}
       </NavbarMenu>
     </NextUINavbar>
   );

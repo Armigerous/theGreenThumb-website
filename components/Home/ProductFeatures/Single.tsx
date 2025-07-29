@@ -3,10 +3,30 @@ import { ProductFeature } from "@/types/features";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useLottie } from "lottie-react";
 import Link from "next/link";
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 const Single: React.FC<{ item: ProductFeature }> = ({ item }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [animationData, setAnimationData] = useState<object | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch animation data dynamically
+  useEffect(() => {
+    const fetchAnimationData = async () => {
+      try {
+        const response = await fetch(item.animationData);
+        const data = await response.json();
+        setAnimationData(data);
+      } catch (error) {
+        console.error("Failed to load animation data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAnimationData();
+  }, [item.animationData]);
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "center start"],
@@ -19,7 +39,7 @@ const Single: React.FC<{ item: ProductFeature }> = ({ item }) => {
   );
 
   const options = {
-    animationData: item.animationData,
+    animationData: animationData,
     loop: true,
     autoplay: true,
   };
@@ -35,7 +55,13 @@ const Single: React.FC<{ item: ProductFeature }> = ({ item }) => {
         {/* Animation Block */}
         <div className="flex-1 flex justify-center w-full">
           <div className="bg-cream-800 border-black rounded-3xl w-full max-w-[400px] shadow-xl">
-            {lottie.View}
+            {isLoading ? (
+              <div className="w-full h-64 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            ) : (
+              lottie.View
+            )}
           </div>
         </div>
 

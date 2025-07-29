@@ -1,86 +1,60 @@
 import { db } from "@/lib/db";
 import { userPlants } from "@/lib/db/migrations/schema";
-import { auth } from "@clerk/nextjs/server";
-import { eq, and } from "drizzle-orm";
+import { getUserId, handleUnauthorizedResponse } from "@/lib/auth-utils";
+import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { userPlantsSchema } from "@/lib/validations/user-plants";
 
 // Route Segment Config
-export const dynamic = 'force-dynamic'; // Always fetch fresh data for user-specific content
-export const revalidate = 0; // Disable static caching
-
-// Validation schema for plant tracking
-const userPlantsSchema = z.object({
-  id: z.string().optional(), // Optional for creation, required for updates
-  gardenId: z.number(),
-  customName: z.string().min(1, "Custom name is required"),
-  botanicalName: z.string().min(1, "Botanical name is required"),
-  status: z.enum(["healthy", "warning", "critical", "dormant"]),
-  careLogs: z.array(z.object({
-    date: z.string(),
-    type: z.enum(["water", "fertilize", "prune", "treatment"]),
-    notes: z.string(),
-    images: z.array(z.string()).optional()
-  })).optional().default([]),
-  images: z.array(z.object({
-    url: z.string(),
-    isPrimary: z.boolean(),
-    uploadedAt: z.string()
-  })).optional().default([]),
-  locationTags: z.array(z.string()).optional().default([])
-});
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const userId = await getUserId();
     
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return handleUnauthorizedResponse();
     }
     
-    const url = new URL(request.url);
-    const gardenId = url.searchParams.get("gardenId");
-    const limit = parseInt(url.searchParams.get("limit") || "50");
-    const offset = parseInt(url.searchParams.get("offset") || "0");
+    const { searchParams } = new URL(request.url);
+    const gardenId = searchParams.get('gardenId');
+    
+    if (!gardenId) {
+      return NextResponse.json(
+        { error: "Garden ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    // Convert gardenId to number for database query
+    const gardenIdNum = parseInt(gardenId, 10);
+    if (isNaN(gardenIdNum)) {
+      return NextResponse.json(
+        { error: "Invalid garden ID format" },
+        { status: 400 }
+      );
+    }
     
     // Verify the garden belongs to the user
     const garden = await db.query.userGardens.findFirst({
       where: (gardens, { eq, and }) => 
         and(
           eq(gardens.userId, userId),
-          gardenId ? eq(gardens.id, parseInt(gardenId)) : undefined
+          eq(gardens.id, gardenIdNum)
         )
     });
     
-    if (gardenId && !garden) {
+    if (!garden) {
       return NextResponse.json({ error: "Garden not found" }, { status: 404 });
     }
     
-    // Fetch plants for this garden
-    let plants = [];
-    if (gardenId) {
-      // If gardenId is provided, find all plants for that garden
-      plants = await db.query.userPlants.findMany({
-        where: (plant, { eq }) => eq(plant.gardenId, parseInt(gardenId)),
-        limit: limit,
-        offset: offset
-      });
-    } else {
-      // Otherwise find all plants from all gardens owned by the user
-      const userGardensData = await db.query.userGardens.findMany({
-        where: (garden, { eq }) => eq(garden.userId, userId),
-        with: {
-          plants: {
-            limit: limit,
-            offset: offset
-          }
-        }
-      });
-      
-      // Flatten the plants from all gardens
-      plants = userGardensData.flatMap(garden => garden.plants || []);
-    }
+    // Fetch all plants for this garden
+    const plants = await db.query.userPlants.findMany({
+      where: (plants, { eq }) => eq(plants.gardenId, gardenIdNum),
+      orderBy: (plants, { desc }) => [desc(plants.createdAt)]
+    });
     
     return NextResponse.json({ plants }, {
       headers: {
@@ -100,10 +74,10 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const userId = await getUserId();
     
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return handleUnauthorizedResponse();
     }
     
     const data = await request.json();
@@ -121,7 +95,7 @@ export async function POST(request: NextRequest) {
     
     // Verify the garden belongs to the user
     const garden = await db.query.userGardens.findFirst({
-      where: (gardens, { eq }) => 
+      where: (gardens, { eq, and }) => 
         and(
           eq(gardens.userId, userId),
           eq(gardens.id, plantData.gardenId)
@@ -137,11 +111,11 @@ export async function POST(request: NextRequest) {
       id: plantData.id || crypto.randomUUID(),
       gardenId: plantData.gardenId,
       customName: plantData.customName,
-      botanicalName: plantData.botanicalName,
-      status: plantData.status,
-      careLogs: plantData.careLogs,
-      images: plantData.images,
-      locationTags: plantData.locationTags,
+      botanicalName: plantData.botanicalName || plantData.scientificName || '',
+      status: plantData.status || 'active',
+      careLogs: plantData.careLogs || [],
+      images: plantData.images || [],
+      locationTags: plantData.locationTags || [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }).returning();
@@ -166,10 +140,10 @@ export async function POST(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const userId = await getUserId();
     
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return handleUnauthorizedResponse();
     }
     
     const data = await request.json();
@@ -185,13 +159,17 @@ export async function PATCH(request: NextRequest) {
     
     const plantData = validationResult.data;
     
+    // Ensure plant ID exists for updates
     if (!plantData.id) {
-      return NextResponse.json({ error: "Plant ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Plant ID is required for updates" },
+        { status: 400 }
+      );
     }
     
     // Verify the garden belongs to the user
     const garden = await db.query.userGardens.findFirst({
-      where: (gardens, { eq }) => 
+      where: (gardens, { eq, and }) => 
         and(
           eq(gardens.userId, userId),
           eq(gardens.id, plantData.gardenId)
@@ -202,32 +180,36 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: "Garden not found" }, { status: 404 });
     }
     
-    // Verify the plant exists and belongs to this garden
-    const existingPlant = await db.query.userPlants.findFirst({
-      where: (plants, { eq, and }) => 
-        and(
-          eq(plants.id, plantData.id as string),
-          eq(plants.gardenId, plantData.gardenId)
-        )
-    });
+    // Update plant tracking entry
+    const updateData: Partial<{
+      customName: string;
+      botanicalName: string;
+      status: string;
+      careLogs: unknown[];
+      images: unknown[];
+      locationTags: unknown[];
+      updatedAt: string;
+    }> = {
+      updatedAt: new Date().toISOString()
+    };
     
-    if (!existingPlant) {
-      return NextResponse.json({ error: "Plant not found" }, { status: 404 });
+    if (plantData.customName) updateData.customName = plantData.customName;
+    if (plantData.status) updateData.status = plantData.status;
+    if (plantData.careLogs) updateData.careLogs = plantData.careLogs;
+    if (plantData.images) updateData.images = plantData.images;
+    if (plantData.locationTags) updateData.locationTags = plantData.locationTags;
+    if (plantData.botanicalName || plantData.scientificName) {
+      updateData.botanicalName = plantData.botanicalName || plantData.scientificName;
     }
     
-    // Update plant tracking entry
     const updatedPlant = await db.update(userPlants)
-      .set({
-        customName: plantData.customName,
-        botanicalName: plantData.botanicalName,
-        status: plantData.status,
-        careLogs: plantData.careLogs,
-        images: plantData.images,
-        locationTags: plantData.locationTags,
-        updatedAt: new Date().toISOString()
-      })
-      .where(eq(userPlants.id, plantData.id as string))
+      .set(updateData)
+      .where(eq(userPlants.id, plantData.id))
       .returning();
+    
+    if (updatedPlant.length === 0) {
+      return NextResponse.json({ error: "Plant not found" }, { status: 404 });
+    }
     
     revalidatePath('/api/plant-tracking');
     

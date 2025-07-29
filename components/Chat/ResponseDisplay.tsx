@@ -13,6 +13,7 @@ import Markdown from "react-markdown";
 import PlantResultsDisplay from "./RelatedPlantsDisplay";
 import RelatedTipsDisplay from "./RelatedTipsDisplay";
 import LoadingEntertainment from "./LoadingEntertainment";
+import { getLogoPath } from "@/lib/utils";
 
 // Export the ParsedIntent type so it can be imported in other files
 export type ParsedIntent = {
@@ -194,7 +195,10 @@ export default function ResponseDisplay({
             >
               <div className="flex items-start gap-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="/logo.png" alt="GreenThumb Logo" />
+                  <AvatarImage
+                    src={getLogoPath("avatar")}
+                    alt="GreenThumb Logo"
+                  />
                   <AvatarFallback className="bg-brand-100 text-brand-800 dark:bg-brand-900 dark:text-brand-200">
                     <Leaf className="h-4 w-4" />
                   </AvatarFallback>

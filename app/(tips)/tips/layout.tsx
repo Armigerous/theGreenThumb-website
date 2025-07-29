@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import Header from "@/components/Tips/Header";
 import SearchBar from "@/components/Tips/SearchBar";
+import { getLogoPath } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Expert Gardening Tips - Boost Your Skills with the Best Advice",
@@ -87,7 +88,7 @@ export default function TipsLayout({
       name: "GreenThumb",
       logo: {
         "@type": "ImageObject",
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/images/logo.png`,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}${getLogoPath("social")}`,
       },
     },
   };

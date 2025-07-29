@@ -3,7 +3,7 @@ import Header from "@/components/Tips/Tip/Header";
 import Tip from "@/components/Tips/Tip/Tip";
 import TipDetails from "@/components/Tips/Tip/TipDetails";
 import { Skeleton } from "@/components/ui/skeleton";
-import { fetchAllTipSlugs, fetchTipBySlug } from "@/lib/utils";
+import { fetchAllTipSlugs, fetchTipBySlug, getLogoPath } from "@/lib/utils";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -180,7 +180,7 @@ const TipStructuredData = ({ tip }: { tip: TipData }) => {
       name: "The GreenThumb",
       logo: {
         "@type": "ImageObject",
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/logo.png`,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}${getLogoPath("social")}`,
       },
     },
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/tips/${tip.slug}`,

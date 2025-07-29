@@ -1,6 +1,7 @@
 import React from "react";
 import { Heading } from "../heading";
 import Image from "next/image";
+import { getLogoPath } from "@/lib/utils";
 
 const CoverSection: React.FC = () => {
   return (
@@ -8,7 +9,7 @@ const CoverSection: React.FC = () => {
       {/* Logo Section */}
 
       <Image
-        src={"/logo.png"}
+        src={getLogoPath("transparent")}
         alt="The GreenThumb logo"
         priority
         height={500}

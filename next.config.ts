@@ -2,6 +2,20 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Enable experimental features for Next.js 15
+  experimental: {
+    // Partial Prerendering for better performance
+    ppr: "incremental",
+    // Enable React 19 features
+    reactCompiler: true,
+    // Optimize bundle size
+    optimizePackageImports: ["@radix-ui/react-icons", "lucide-react"],
+  },
+  
+  // Transpile packages that need it
+  transpilePackages: ["next-mdx-remote"],
+  
+  // Configure headers for API routes
   async headers() {
     return [
       {
@@ -35,12 +49,13 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  experimental: {
-    ppr: "incremental",
-  },
-  transpilePackages: ["next-mdx-remote"],
+  
+  // Image optimization configuration for Vercel limit management
   images: {
+    // Allow SVG images
     dangerouslyAllowSVG: true,
+    
+    // Configure remote image sources
     remotePatterns: [
       {
         protocol: "https",
@@ -55,10 +70,52 @@ const nextConfig: NextConfig = {
         hostname: "s3.amazonaws.com",
       },
     ],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    
+    // Conservative device sizes to reduce optimization overhead
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    
+    // Minimal image sizes to preserve Vercel limit
+    imageSizes: [16, 32, 48, 64, 96, 128],
+    
+    // Modern formats for better compression
     formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 60,
+    
+    // Extended cache TTL to reduce repeated optimizations
+    minimumCacheTTL: 7200, // 2 hours
+    
+    // Disable unoptimized for control
+    unoptimized: false,
+    
+    // Add content security policy for images
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+  
+  // Performance optimizations
+  swcMinify: true,
+  
+  // Enable compression
+  compress: true,
+  
+  // Configure webpack for better performance
+  webpack: (config, { dev, isServer }) => {
+    // Optimize bundle size in production
+    if (!dev && !isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+            },
+          },
+        },
+      };
+    }
+    
+    return config;
   },
 };
 

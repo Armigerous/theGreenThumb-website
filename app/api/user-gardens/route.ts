@@ -4,10 +4,10 @@ import {
   leafValueToGardenerLookup, lightLookup, ncRegionLookup, plantTypesLookup, problemsLookup, resistanceToChallengesLookup, soilDrainageLookup,
   soilPhLookup, soilTextureLookup, leafFeelLookup, usdaZoneLookup, userGardens
 } from "@/lib/db/migrations/schema"; // Import the table schema
-import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { getUserId, handleUnauthorizedResponse } from "@/lib/auth-utils";
 
 // Route Segment Config
 export const dynamic = 'force-dynamic'; // Always fetch fresh data for user-specific content
@@ -15,10 +15,10 @@ export const revalidate = 0; // Disable static caching
 
 export async function GET() {
   try {
-    const { userId } = await auth();
+    const userId = await getUserId();
     
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return handleUnauthorizedResponse();
     }
     
     const settings = await db.query.userGardens.findFirst({
@@ -109,10 +109,10 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const userId = await getUserId();
     
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return handleUnauthorizedResponse();
     }
     
     const data = await request.json();
@@ -148,79 +148,63 @@ export async function POST(request: NextRequest) {
     const leafValueLookups = await db.select().from(leafValueToGardenerLookup);
     const fallColorLookups = await db.select().from(leafFallColorLookup);
     const designFeatureLookups = await db.select().from(designFeatureLookup);
-    
+
     // Helper function to map string values to IDs
     const mapToIds = (values: string[], lookupTable: { id: number, name: string | null }[]) => {
-      if (!Array.isArray(values)) return [];
+      if (!values || !Array.isArray(values) || values.length === 0) return [];
       
       return values.map(value => {
-        // If the value is already a number (ID), return it directly
-        if (!isNaN(Number(value))) {
-          return Number(value);
-        }
-        
-        // Otherwise, look up the ID by name
         const match = lookupTable.find(item => item.name === value);
-        return match ? match.id : null;
+        return match?.id || null;
       }).filter(id => id !== null) as number[];
     };
-    
-    // Map frontend field names to database column names based on the Drizzle schema
-    const gardenData = {
-      userId: userId,
+
+    // Prepare the data for database insertion
+    const dbData = {
+      userId,
       name: data.name || "Default Garden",
-      
-      // Convert string values to IDs
-      locationIds: mapToIds(data.locationIds, locationLookups),
-      spaceAvailableIds: mapToIds(data.spaceAvailableIds, spaceAvailableLookups),
-      soilPhIds: mapToIds(data.soilPhIds, soilPhLookups),
-      soilTextureIds: mapToIds(data.soilTextureIds, soilTextureLookups),
-      soilDrainageIds: mapToIds(data.soilDrainageIds, soilDrainageLookups),
-      usdaZonesIds: mapToIds(data.usda_zones_ids, usdaZonesLookups),
-      ncRegionsIds: mapToIds(data.ncRegionsIds, ncRegionsLookups),
-      sunlightIds: mapToIds(data.sunlightIds, sunlightLookups),
-      gardenThemeIds: mapToIds(data.gardenThemeIds, gardenThemeLookups),
-      wildlifeAttractionIds: mapToIds(data.wildlifeAttractionIds, wildlifeAttractionLookups),
-      resistanceChallengeIds: mapToIds(data.resistanceChallengeIds, resistanceChallengeLookups),
-      problemsToExcludeIds: mapToIds(data.problemsToExcludeIds, problemsToExcludeLookups),
-      growthRateId: data.growthRateId || null,
-      maintenanceLevelId: data.maintenanceLevelId || null,
-      texturePreferenceId: data.texturePreferenceId || null,
-      specificPlantIds: data.specificPlantIds || [],
-      wantsRecommendations: data.wantsRecommendations ?? true,
-      // Additional fields
-      habitFormIds: mapToIds(data.habitFormIds, habitFormLookups),
-      plantTypeIds: mapToIds(data.plantTypeIds, plantTypeLookups),
-      yearRoundInterest: data.yearRoundInterest ?? false,
-      flowerColorIds: mapToIds(data.flowerColorIds, flowerColorLookups),
-      flowerBloomTimeIds: mapToIds(data.flowerBloomTimeIds, flowerBloomTimeLookups),
-      flowerValueIds: mapToIds(data.flowerValueIds, flowerValueLookups),
-      leafFeelIds: mapToIds(data.leafFeelIds, leafFeelLookups),
-      leafColorIds: mapToIds(data.leafColorIds, leafColorLookups),
-      leafValueIds: mapToIds(data.leafValueIds, leafValueLookups),
-      fallColorIds: mapToIds(data.fallColorIds, fallColorLookups),
-      designFeatureIds: mapToIds(data.designFeatureIds, designFeatureLookups),
-      updatedAt: new Date().toISOString(),
+      locationIds: mapToIds(data.locationIds || [], locationLookups),
+      spaceAvailableIds: mapToIds(data.spaceAvailableIds || [], spaceAvailableLookups),
+      soilPhIds: mapToIds(data.soilPhIds || [], soilPhLookups),
+      soilTextureIds: mapToIds(data.soilTextureIds || [], soilTextureLookups),
+      soilDrainageIds: mapToIds(data.soilDrainageIds || [], soilDrainageLookups),
+      sunlightIds: mapToIds(data.sunlightIds || [], sunlightLookups),
+      usdaZonesIds: mapToIds(data.usda_zones_ids || [], usdaZonesLookups),
+      ncRegionsIds: mapToIds(data.ncRegionsIds || [], ncRegionsLookups),
+      gardenThemeIds: mapToIds(data.gardenThemeIds || [], gardenThemeLookups),
+      wildlifeAttractionIds: mapToIds(data.wildlifeAttractionIds || [], wildlifeAttractionLookups),
+      resistanceChallengeIds: mapToIds(data.resistanceChallengeIds || [], resistanceChallengeLookups),
+      problemsToExcludeIds: mapToIds(data.problemsToExcludeIds || [], problemsToExcludeLookups),
+      habitFormIds: mapToIds(data.habitFormIds || [], habitFormLookups),
+      plantTypeIds: mapToIds(data.plantTypeIds || [], plantTypeLookups),
+      flowerColorIds: mapToIds(data.flowerColorIds || [], flowerColorLookups),
+      flowerBloomTimeIds: mapToIds(data.flowerBloomTimeIds || [], flowerBloomTimeLookups),
+      flowerValueIds: mapToIds(data.flowerValueIds || [], flowerValueLookups),
+      leafFeelIds: mapToIds(data.leafFeelIds || [], leafFeelLookups),
+      leafColorIds: mapToIds(data.leafColorIds || [], leafColorLookups),
+      leafValueIds: mapToIds(data.leafValueIds || [], leafValueLookups),
+      fallColorIds: mapToIds(data.fallColorIds || [], fallColorLookups),
+      designFeatureIds: mapToIds(data.designFeatureIds || [], designFeatureLookups),
     };
-    
+
     if (existingSettings) {
       // Update existing settings
-      await db.update(userGardens)
-        .set(gardenData)
+      await db
+        .update(userGardens)
+        .set({
+          ...dbData,
+          updatedAt: new Date().toISOString(),
+        })
         .where(eq(userGardens.userId, userId));
-      
-      console.log("Updated user gardens for user:", userId);
     } else {
       // Create new settings
       await db.insert(userGardens).values({
-        ...gardenData,
+        ...dbData,
         createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       });
-      
-      console.log("Created new user gardens for user:", userId);
     }
-    
-    // Revalidate the user gardens path
+
     revalidatePath('/api/user-gardens');
     
     return NextResponse.json({ success: true }, {

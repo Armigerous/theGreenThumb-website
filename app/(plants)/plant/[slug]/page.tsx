@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { unstable_cache } from "next/cache";
 import { PlantData } from "@/types/plant";
 import { Metadata } from "next";
+import { getLogoPath } from "@/lib/utils";
 
 // Enable partial prerendering
 export const experimental_ppr = true;
@@ -223,7 +224,7 @@ const StructuredData = ({ plant }: { plant: PlantData }) => {
       name: "The GreenThumb",
       logo: {
         "@type": "ImageObject",
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/logo.png`,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}${getLogoPath("social")}`,
       },
     },
     mainEntity: {

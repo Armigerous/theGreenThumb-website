@@ -25,7 +25,10 @@ export async function generateStaticParams() {
   return [{}]; // Generate a single static route with no params
 }
 
-// Use a static handler for the initial data
+// Reason: Make route dynamic to support search params properly
+export const dynamic = "force-dynamic";
+
+// Use a dynamic handler for the initial data
 export async function GET(request: Request) {
   try {
     // Use searchParams from context instead of request.url

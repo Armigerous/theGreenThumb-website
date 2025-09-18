@@ -1,252 +1,171 @@
 "use client";
 
+import NextLink from "next/link";
 import { Button } from "@/components/ui/button";
 import {
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
-import {
-  Link,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  NavbarMenu,
-  NavbarMenuItem,
-  NavbarMenuToggle,
-  Navbar as NextUINavbar,
-} from "@nextui-org/react";
-import NextLink from "next/link";
+	NavigationMenu,
+	NavigationMenuContent,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList,
+	NavigationMenuTrigger,
+	navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 
 import siteMetaData from "@/lib/siteMetaData";
-import { usePathname } from "next/navigation";
-import {
-  FacebookIconBlack,
-  InstagramIconBlack,
-  YoutubeIconBlack,
-} from "../Icons";
+import { FaFacebookSquare, FaInstagram } from "react-icons/fa";
 import { MaxWidthWrapper } from "../maxWidthWrapper";
-import DropdownFeatures from "./DropdownFeatures";
-import { navMenuItems } from "./nav";
-import { Leaf } from "lucide-react";
+import DynamicDropdownFeatures from "./DynamicDropdownFeatures";
+import StableAuthSection from "../StableAuthSection";
+import MobileNavMenu from "./MobileNavMenu";
+import { memo } from "react";
+import { cn } from "@/lib/utils";
 
-const NavBar = () => {
-  const pathname = usePathname(); // Get the current pathname
+// Reason: Client component for navigation bar to properly handle auth state and prevent hydration mismatches
+const NavBar = memo(() => {
+	return (
+		<nav className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+			<div className="h-20 min-h-20 max-h-20">
+				<MaxWidthWrapper className="flex h-full items-center justify-between px-6">
+					{/* Logo - Left Side */}
+					<div className="flex-shrink-0">
+						<NextLink href="/" className="flex items-center h-full">
+							<p className="font-bold text-3xl text-foreground hover:text-primary transition-colors duration-200">
+								GreenThumb
+							</p>
+						</NextLink>
+					</div>
 
-  return (
-    <NextUINavbar
-      shouldHideOnScroll
-      isBordered
-      maxWidth="full"
-      className="bg-white"
-      classNames={{
-        item: [
-          "flex",
-          "relative",
-          "h-full",
-          "items-center",
-          "data-[active=true]:after:content-['']",
-          "data-[active=true]:after:absolute",
-          "data-[active=true]:after:bottom-0",
-          "data-[active=true]:after:left-0",
-          "data-[active=true]:after:right-0",
-          "data-[active=true]:after:h-[2px]",
-          "data-[active=true]:after:rounded-[2px]",
-          "data-[active=true]:after:bg-primary",
-        ],
-      }}
-    >
-      <MaxWidthWrapper className="flex">
-        {/* Logo */}
-        <NavbarBrand>
-          <NextLink href="/">
-            <p className="font-bold text-3xl">The GreenThumb</p>
-          </NextLink>
-        </NavbarBrand>
+					{/* Centered Navigation */}
+					<div className="hidden lg:flex flex-1 justify-center px-8">
+						<NavigationMenu>
+							<NavigationMenuList className="gap-2">
+								<DynamicDropdownFeatures />
+								<NavigationMenuItem>
+									<NavigationMenuLink asChild>
+										<NextLink
+											href="/plants"
+											className={cn(
+												navigationMenuTriggerStyle(),
+												"text-lg font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+											)}
+										>
+											Plants
+										</NextLink>
+									</NavigationMenuLink>
+								</NavigationMenuItem>
+								<NavigationMenuItem>
+									<NavigationMenuLink asChild>
+										<NextLink
+											href="/tips"
+											className={cn(
+												navigationMenuTriggerStyle(),
+												"text-lg font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+											)}
+										>
+											Tips
+										</NextLink>
+									</NavigationMenuLink>
+								</NavigationMenuItem>
+								<NavigationMenuItem>
+									<NavigationMenuLink asChild>
+										<NextLink
+											href="/contact"
+											className={cn(
+												navigationMenuTriggerStyle(),
+												"text-lg font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+											)}
+										>
+											Contact
+										</NextLink>
+									</NavigationMenuLink>
+								</NavigationMenuItem>
+								<NavigationMenuItem>
+									<NavigationMenuLink asChild>
+										<NextLink
+											href="/about"
+											className={cn(
+												navigationMenuTriggerStyle(),
+												"text-lg font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+											)}
+										>
+											About
+										</NextLink>
+									</NavigationMenuLink>
+								</NavigationMenuItem>
+							</NavigationMenuList>
+						</NavigationMenu>
+					</div>
 
-        {/* Centered Navigation */}
-        <NavbarContent className="hidden lg:flex" justify="center">
-          <NavbarItem className="transition hover:text-primary">
-            <DropdownFeatures />
-          </NavbarItem>
-          <NavbarItem isActive={pathname === "/plants"}>
-            <Link
-              href="/plants"
-              className="text-black text-lg transition hover:text-primary"
-            >
-              Plants
-            </Link>
-          </NavbarItem>
-          <NavbarItem isActive={pathname === "/tips"}>
-            <Link
-              href="/tips"
-              className="text-black text-lg transition hover:text-primary"
-            >
-              Tips
-            </Link>
-          </NavbarItem>
-          <NavbarItem isActive={pathname === "/contact"}>
-            <Link
-              href="/contact"
-              className="text-black text-lg transition hover:text-primary"
-            >
-              Contact
-            </Link>
-          </NavbarItem>
-          <NavbarItem isActive={pathname === "/about"}>
-            <Link
-              href="/about"
-              className="text-black text-lg transition hover:text-primary"
-            >
-              About
-            </Link>
-          </NavbarItem>
-        </NavbarContent>
+					{/* Right Side - Desktop: Social Icons and Auth, Mobile: Mobile Menu */}
+					<div className="flex items-center gap-3">
+						{/* Desktop: Social Icons and Auth */}
+						<div className="hidden lg:flex items-center gap-3">
+							{/* Social Media Icons */}
+							<div className="flex items-center gap-3">
+								<Button
+									variant="ghost"
+									asChild
+									className="h-12 w-12 p-0 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+								>
+									<NextLink
+										href={siteMetaData.facebook}
+										target="_blank"
+										rel="noopener noreferrer"
+										aria-label="Facebook"
+										className="flex items-center justify-center w-full h-full"
+									>
+										<FaFacebookSquare
+											className="rounded-lg"
+											style={{
+												fontSize: "28px",
+												width: "28px",
+												height: "28px",
+											}}
+										/>
+									</NextLink>
+								</Button>
+								<Button
+									variant="ghost"
+									asChild
+									className="h-12 w-12 p-0 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+								>
+									<NextLink
+										href={siteMetaData.instagram}
+										target="_blank"
+										rel="noopener noreferrer"
+										aria-label="Instagram"
+										className="flex items-center justify-center w-full h-full"
+									>
+										<FaInstagram
+											style={{
+												fontSize: "28px",
+												width: "28px",
+												height: "28px",
+											}}
+										/>
+									</NextLink>
+								</Button>
+							</div>
 
-        {/* Icons and Auth on the Right */}
-        <NavbarContent className="hidden lg:flex" justify="end">
-          <NavbarItem>
-            <Link
-              isExternal
-              aria-label="Facebook"
-              href={siteMetaData.facebook}
-              className="hover:scale-125 transition-all ease-in"
-            >
-              <FacebookIconBlack />
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link
-              isExternal
-              aria-label="Instagram"
-              href={siteMetaData.instagram}
-              className="hover:scale-125 transition-all ease-in"
-            >
-              <InstagramIconBlack />
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link
-              isExternal
-              aria-label="Youtube"
-              href={siteMetaData.youtube}
-              className="hover:scale-125 transition-all ease-in"
-            >
-              <YoutubeIconBlack />
-            </Link>
-          </NavbarItem>
+							{/* Separator */}
+							<div className="h-6 w-px bg-gray-300 mx-2" />
 
-          <NavbarItem className="ml-4">
-            <SignedOut>
-              <div className="flex gap-2">
-                <SignInButton mode="modal">
-                  <Button
-                    variant="ghost"
-                    className="text-black hover:text-primary transition"
-                  >
-                    Sign In
-                  </Button>
-                </SignInButton>
-                <SignUpButton mode="modal">
-                  <Button
-                    variant="default"
-                    className="bg-primary text-cream-50 hover:bg-primary/90 transition"
-                  >
-                    Sign Up
-                  </Button>
-                </SignUpButton>
-              </div>
-            </SignedOut>
-            <SignedIn>
-              <UserButton
-                appearance={{
-                  elements: {
-                    userButtonAvatarBox: "",
-                    userButtonTrigger: "w-10 h-10",
-                  },
-                }}
-              >
-                <UserButton.MenuItems>
-                  <UserButton.Link
-                    label="My Garden"
-                    labelIcon={<Leaf className="w-4 h-4" />}
-                    href="/my-garden"
-                  />
-                  <UserButton.Action label="manageAccount" />
-                  <UserButton.Action label="signOut" />
-                </UserButton.MenuItems>
-              </UserButton>
-            </SignedIn>
-          </NavbarItem>
-        </NavbarContent>
-      </MaxWidthWrapper>
+							{/* Auth Section */}
+							<div className="flex items-center">
+								<StableAuthSection />
+							</div>
+						</div>
 
-      {/* Mobile Menu Toggle */}
-      <NavbarContent className="lg:hidden pl-4">
-        <NavbarMenuToggle />
-      </NavbarContent>
+						{/* Mobile Navigation */}
+						<MobileNavMenu />
+					</div>
+				</MaxWidthWrapper>
+			</div>
+		</nav>
+	);
+});
 
-      <NavbarMenu className="items-center gap-6 h-full justify-center">
-        {navMenuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              className="w-full text-4xl font-semibold transition hover:text-primary"
-              href={item.href}
-              size="lg"
-            >
-              {item.label}
-            </Link>
-          </NavbarMenuItem>
-        ))}
-
-        {/* Mobile Auth - Updated */}
-        <NavbarMenuItem className="flex justify-center mt-4">
-          <SignedOut>
-            <div className="flex gap-4">
-              <SignInButton mode="modal">
-                <Button
-                  variant="ghost"
-                  className="text-black hover:text-primary transition"
-                >
-                  Sign In
-                </Button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <Button
-                  variant="default"
-                  className="bg-primary text-cream-50 hover:bg-primary/90 transition"
-                >
-                  Sign Up
-                </Button>
-              </SignUpButton>
-            </div>
-          </SignedOut>
-          <SignedIn>
-            <UserButton
-              appearance={{
-                elements: {
-                  userButtonAvatarBox: "",
-                  userButtonTrigger: "w-10 h-10",
-                },
-              }}
-            >
-              <UserButton.MenuItems>
-                <UserButton.Link
-                  label="My Garden"
-                  labelIcon={<Leaf className="w-4 h-4" />}
-                  href="/my-garden"
-                />
-                <UserButton.Action label="manageAccount" />
-                <UserButton.Action label="signOut" />
-              </UserButton.MenuItems>
-            </UserButton>
-          </SignedIn>
-        </NavbarMenuItem>
-      </NavbarMenu>
-    </NextUINavbar>
-  );
-};
+NavBar.displayName = "NavBar";
 
 export default NavBar;

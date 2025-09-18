@@ -109,14 +109,22 @@ export const fetchPaginatedPosts = unstable_cache(
   }
 );
 
-export async function fetchLastSixPosts() {
-  try {
-    return await client.fetch(LATEST_SIX_POSTS_QUERY);
-  } catch (error) {
-    console.error("Error fetching last six posts:", error);
-    throw new Error("Failed to fetch last six posts");
+// Reason: Add caching to reduce API calls and improve tab switching performance
+export const fetchLastSixPosts = unstable_cache(
+  async () => {
+    try {
+      return await client.fetch(LATEST_SIX_POSTS_QUERY);
+    } catch (error) {
+      console.error("Error fetching last six posts:", error);
+      throw new Error("Failed to fetch last six posts");
+    }
+  },
+  ["latest-six-posts"],
+  {
+    revalidate: 3600, // 1 hour cache
+    tags: ["posts"],
   }
-}
+);
 
 export async function fetchTipBySlug(slug: string) {
   try {

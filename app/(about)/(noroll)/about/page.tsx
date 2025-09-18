@@ -11,24 +11,28 @@ import JourneyTimeline from "@/components/About/JourneyTimeline";
 import FutureVision from "@/components/About/FutureVision";
 import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 
+// Reason: Enable static generation for faster about page loading
+export const revalidate = false; // Static generation
+export const dynamic = "force-static";
+
 // Define and export metadata for the About page
 export const metadata: Metadata = {
-  title: "About The Official GreenThumb", // The title of the page
-  description: `Learn more about the team working behind The GreenThumb`, // The description of the page
+	title: "About The Official GreenThumb", // The title of the page
+	description: `Learn more about the team working behind GreenThumb`, // The description of the page
 };
 
 // Define the About functional component using React
 const About: React.FC = () => {
-  return (
-    <MaxWidthWrapper className="flex flex-col gap-6 sm:gap-8 lg:gap-12 px-4 sm:px-8 lg:px-16 xl:px-24">
-      <CoverSection />
-      <MeetTeam />
-      <TechOverview />
-      <JourneyTimeline />
-      <FutureVision />
-      <Conclusion />
-    </MaxWidthWrapper>
-  );
+	return (
+		<MaxWidthWrapper className="flex flex-col gap-6 sm:gap-8 lg:gap-12 px-4 sm:px-8 lg:px-16 xl:px-24">
+			<CoverSection />
+			<MeetTeam />
+			<TechOverview />
+			<JourneyTimeline />
+			<FutureVision />
+			<Conclusion />
+		</MaxWidthWrapper>
+	);
 };
 
 // Export the About component as the default export

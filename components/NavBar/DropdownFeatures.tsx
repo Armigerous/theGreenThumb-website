@@ -1,72 +1,51 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDown, ListChecks, Smartphone } from "lucide-react";
+	NavigationMenuContent,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { ListChecks, Smartphone } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { memo } from "react";
 
-const DropdownFeatures = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const DropdownFeatures = memo(() => {
+	return (
+		<>
+			<NavigationMenuTrigger className="text-lg font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200">
+				Features
+			</NavigationMenuTrigger>
+			<NavigationMenuContent>
+				<ul className="grid w-[240px] gap-3 p-4">
+					<li>
+						<NavigationMenuLink asChild>
+							<Link
+								href="/#ProductFeatures"
+								className="flex items-center gap-3 w-full px-3 py-2 text-lg font-medium rounded-md transition-colors duration-200 hover:bg-brand-25 hover:text-primary"
+							>
+								<ListChecks className="h-5 w-5" />
+								Product Features
+							</Link>
+						</NavigationMenuLink>
+					</li>
+					<li>
+						<NavigationMenuLink asChild>
+							<Link
+								href="/#AppFeatures"
+								className="flex items-center gap-3 w-full px-3 py-2 text-lg font-medium rounded-md transition-colors duration-200 hover:bg-brand-25 hover:text-primary"
+							>
+								<Smartphone className="h-5 w-5" />
+								App Features
+							</Link>
+						</NavigationMenuLink>
+					</li>
+				</ul>
+			</NavigationMenuContent>
+		</>
+	);
+});
 
-  const handleMouseEnter = () => {
-    setIsOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsOpen(false);
-  };
-
-  return (
-    <div
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className="relative"
-    >
-      <DropdownMenu open={isOpen}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="flex items-center text-lg p-0 hover:bg-transparent ring-offset-transparent focus-visible:ring-transparent"
-            onClick={() => setIsOpen((prev) => !prev)} // Toggle dropdown on click
-          >
-            Features
-            <ChevronDown
-              className={`h-4 w-4 transition-transform duration-200 ${
-                isOpen ? "rotate-180" : ""
-              }`}
-            />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56">
-          <DropdownMenuGroup>
-            <DropdownMenuItem asChild>
-              <Link
-                href="/#ProductFeatures"
-                className="flex items-center gap-2 w-full text-lg transition hover:text-primary"
-              >
-                <ListChecks className="h-4 w-4" />
-                Product Features
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
-                href="/#AppFeatures"
-                className="flex items-center gap-2 w-full text-lg transition hover:text-primary"
-              >
-                <Smartphone className="h-4 w-4" />
-                App Features
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-  );
-};
+DropdownFeatures.displayName = "DropdownFeatures";
 
 export default DropdownFeatures;

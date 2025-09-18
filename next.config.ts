@@ -37,7 +37,19 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     ppr: "incremental",
+    optimizePackageImports: ["lucide-react", "@tanstack/react-virtual"],
+    turbo: {
+      rules: {
+        "*.svg": {
+          loaders: ["@svgr/webpack"],
+          as: "*.js",
+        },
+      },
+    },
   },
+  // Reason: Optimize build performance and enable better caching
+  compress: true,
+  poweredByHeader: false,
   transpilePackages: ["next-mdx-remote"],
   images: {
     dangerouslyAllowSVG: true,

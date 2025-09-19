@@ -76,20 +76,18 @@ const PlantCard = memo(
         className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left h-[430px] mx-auto max-w-sm flex flex-col"
       >
         <Link href={`/plant/${plant.slug}`}>
-          <div className="relative w-full h-48">
+          <div className="relative w-full h-48 bg-cream-100">
             <Image
               alt={`Photo of ${plant.scientific_name}`}
-              className="object-cover"
+              className="object-cover transition-opacity duration-300"
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               src={imageUrl}
               priority={getPriority(index)}
               loading={getLoadingStrategy(index)}
               unoptimized={!shouldOptimizeImage(index)} // Only optimize first 4 images to reduce Vercel usage
-              placeholder="blur"
-              blurDataURL={
-                blurDataUrl || "data:image/jpeg;base64,/9j/4AAQSkZJRg=="
-              } // Fallback blur
+              placeholder={blurDataUrl ? "blur" : "empty"}
+              blurDataURL={blurDataUrl}
             />
           </div>
         </Link>

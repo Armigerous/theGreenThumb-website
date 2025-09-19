@@ -144,7 +144,7 @@ const Text = () => {
           <Button
             variant={"outline"}
             className="flex justify-center items-center mt-6 w-full text-primary text-base sm:text-lg md:text-xl lg:text-2xl py-4 sm:py-6 border-2 border-primary transition-all transform hover:scale-105 focus:ring focus:ring-brand-600 shadow-lg"
-            aria-label="Explore Plants Database"
+            aria-label="Explore Plants"
           >
             <span className="mr-2">Explore Plants</span>
           </Button>

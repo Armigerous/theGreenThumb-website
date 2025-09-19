@@ -2,9 +2,8 @@
 
 import { PlantCardData } from "@/types/plant";
 import DOMPurify from "isomorphic-dompurify";
-import Image from "next/image";
 import Link from "next/link";
-import { memo, useEffect, useState, useMemo } from "react";
+import { memo, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -14,33 +13,16 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { dynamicBlurDataUrl } from "@/lib/dynamicBlurDataUrl";
-import {
-  shouldOptimizeImage,
-  getLoadingStrategy,
-  getPriority,
-} from "@/lib/image-config";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import { useImageOptimization } from "@/hooks/use-image-optimization";
 
 const PlantCard = memo(
   ({ plant, index }: { plant: PlantCardData; index: number }) => {
-    const [blurDataUrl, setBlurDataUrl] = useState<string | undefined>(
-      undefined
-    );
-
-    const imageUrl = useMemo(
-      () => plant.first_image || "/no-plant-image.png",
-      [plant.first_image]
-    );
-
-    useEffect(() => {
-      const fetchBlurDataUrl = async () => {
-        if (imageUrl) {
-          const blurUrl = await dynamicBlurDataUrl(imageUrl);
-          setBlurDataUrl(blurUrl);
-        }
-      };
-      fetchBlurDataUrl();
-    }, [imageUrl]);
+    const { imageUrl, blurDataUrl, shouldOptimize, loadingStrategy, priority } =
+      useImageOptimization({
+        src: plant.first_image || "",
+        index,
+      });
 
     const sanitizedDescription = useMemo(
       () =>
@@ -76,18 +58,18 @@ const PlantCard = memo(
         className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left h-[430px] mx-auto max-w-sm flex flex-col"
       >
         <Link href={`/plant/${plant.slug}`}>
-          <div className="relative w-full h-48 bg-cream-100">
-            <Image
+          <div className="relative w-full h-48">
+            <OptimizedImage
+              src={imageUrl}
               alt={`Photo of ${plant.scientific_name}`}
-              className="object-cover transition-opacity duration-300"
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              src={imageUrl}
-              priority={getPriority(index)}
-              loading={getLoadingStrategy(index)}
-              unoptimized={!shouldOptimizeImage(index)} // Only optimize first 4 images to reduce Vercel usage
+              priority={priority}
+              loading={loadingStrategy}
+              unoptimized={!shouldOptimize}
               placeholder={blurDataUrl ? "blur" : "empty"}
               blurDataURL={blurDataUrl}
+              showSkeleton={true}
             />
           </div>
         </Link>

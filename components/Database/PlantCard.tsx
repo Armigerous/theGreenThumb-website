@@ -15,6 +15,11 @@ import {
   CardTitle,
 } from "../ui/card";
 import { dynamicBlurDataUrl } from "@/lib/dynamicBlurDataUrl";
+import {
+  shouldOptimizeImage,
+  getLoadingStrategy,
+  getPriority,
+} from "@/lib/image-config";
 
 const PlantCard = memo(
   ({ plant, index }: { plant: PlantCardData; index: number }) => {
@@ -50,8 +55,8 @@ const PlantCard = memo(
         "common_name" in plant
           ? plant.common_name
           : "scientific_name" in plant
-            ? plant.scientific_name
-            : null,
+          ? plant.scientific_name
+          : null,
       [plant]
     );
 
@@ -60,8 +65,8 @@ const PlantCard = memo(
         "common_name" in plant
           ? plant.scientific_name
           : "scientific_name" in plant
-            ? plant.common_name
-            : null,
+          ? plant.common_name
+          : null,
       [plant]
     );
 
@@ -78,8 +83,9 @@ const PlantCard = memo(
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               src={imageUrl}
-              priority={index < 4}
-              loading={index < 4 ? "eager" : "lazy"}
+              priority={getPriority(index)}
+              loading={getLoadingStrategy(index)}
+              unoptimized={!shouldOptimizeImage(index)} // Only optimize first 4 images to reduce Vercel usage
               placeholder="blur"
               blurDataURL={
                 blurDataUrl || "data:image/jpeg;base64,/9j/4AAQSkZJRg=="

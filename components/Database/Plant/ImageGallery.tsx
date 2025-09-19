@@ -90,6 +90,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
               className="object-cover w-full h-full"
               fill
               sizes="100px"
+              unoptimized // Thumbnails don't need optimization
             />
           </Button>
         ))}
@@ -134,6 +135,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
                         className="object-cover w-full h-full"
                         fill
                         sizes="100px"
+                        unoptimized // Thumbnails don't need optimization
                       />
                     </Button>
                   ))}

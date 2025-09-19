@@ -20,6 +20,9 @@ interface Intent {
   entities: Entity;
 }
 
+// Reason: Use Node.js runtime to avoid Edge Runtime compatibility issues with Supabase
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
   try {
     const { intents } = await request.json();

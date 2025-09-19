@@ -7,7 +7,6 @@ import {
   PlantCardDataScientific,
 } from "@/types/plant";
 
-export const fetchCache = 'force-cache';
 export const revalidate = 3600;
 
 // Cache the initial data query results
@@ -25,8 +24,11 @@ export async function generateStaticParams() {
   return [{}]; // Generate a single static route with no params
 }
 
-// Reason: Make route dynamic to support search params properly
+// Reason: Use dynamic rendering for PPR compatibility - static shell, dynamic data
 export const dynamic = "force-dynamic";
+
+// Reason: Use Node.js runtime to avoid Edge Runtime compatibility issues with Supabase
+export const runtime = "nodejs";
 
 // Use a dynamic handler for the initial data
 export async function GET(request: Request) {

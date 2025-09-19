@@ -40,7 +40,7 @@ const Text = () => {
 			setCurrentWordIndex((prevIndex) =>
 				prevIndex === words.length - 1 ? 0 : prevIndex + 1
 			);
-		}, 5000); // Change word every 5 seconds
+		}, 3000); // Reduced from 5 to 3 seconds for better engagement
 
 		return () => clearInterval(interval);
 	}, []); // Empty dependency array ensures this only runs once
@@ -127,14 +127,23 @@ const Text = () => {
 					</motion.li>
 				))}
 			</motion.ul>
-			<motion.div variants={fadeInUp}>
-				<Link href="/tips" passHref>
+			<motion.div variants={fadeInUp} className="flex gap-4">
+				<Link href="/tips">
 					<Button
 						variant={"default"}
 						className="flex justify-center items-center mt-6 w-full text-cream-50 text-lg md:text-xl lg:text-2xl py-6 bg-primary transition-all transform hover:scale-105 focus:ring focus:ring-brand-600 shadow-lg"
 						aria-label="Start Growing Smarter - Navigate to gardening tips"
 					>
 						<span className="mr-2">Start Growing Smarter</span>
+					</Button>
+				</Link>
+				<Link href="/plants" prefetch={true}>
+					<Button
+						variant={"outline"}
+						className="flex justify-center items-center mt-6 w-full text-primary text-lg md:text-xl lg:text-2xl py-6 border-2 border-primary transition-all transform hover:scale-105 focus:ring focus:ring-brand-600 shadow-lg"
+						aria-label="Explore Plants Database"
+					>
+						<span className="mr-2">Explore Plants</span>
 					</Button>
 				</Link>
 			</motion.div>

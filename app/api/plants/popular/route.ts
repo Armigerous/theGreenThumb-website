@@ -5,6 +5,9 @@ import { unstable_cache } from "next/cache";
 // Revalidate cache every 24 hours
 export const revalidate = 86400;
 
+// Reason: Use Node.js runtime to avoid Edge Runtime compatibility issues with Supabase
+export const runtime = "nodejs";
+
 const getPopularPlants = unstable_cache(
   async (nameType: string, limit: number) => {
     // Set table and columns based on the name type

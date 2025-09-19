@@ -7,7 +7,7 @@ import { fetchAllTipSlugs, fetchTipBySlug } from "@/lib/utils";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { unstable_cache } from "next/cache";
+import { unstable_cache, unstable_noStore } from "next/cache";
 
 // Revalidate every 24 hours for ISR
 export const revalidate = 86400;
@@ -40,6 +40,7 @@ export async function generateMetadata({
 }: {
 	params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
+	unstable_noStore(); // Opt out of static generation for dynamic metadata
 	try {
 		const slug = (await params).slug;
 		const tip = await getTipData(slug);
@@ -199,6 +200,7 @@ const TipStructuredData = ({ tip }: { tip: TipData }) => {
 
 // Tip page content – fetches the tip and renders its components
 const TipPageContent = async ({ slug }: { slug: string }) => {
+	unstable_noStore(); // Opt out of static generation before try/catch
 	let tip;
 	try {
 		tip = await getTipData(slug);

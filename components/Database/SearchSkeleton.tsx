@@ -1,56 +1,50 @@
-// app/components/Database/Search/SearchSkeleton.tsx
-"use client";
-
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function SearchSkeleton() {
-  // Use the same limit as in your SearchResults loading skeleton
-  const limit = 28;
+// Reason: Provide a loading skeleton for the search component to improve perceived performance
+export function SearchSkeleton() {
+	return (
+		<div className="text-left mx-auto px-8 md:px-0 sm:px-4">
+			{/* Search bar skeleton */}
+			<div className="mb-6">
+				<Skeleton className="h-14 w-full max-w-screen-sm rounded-lg" />
+			</div>
 
-  return (
-    <div className="text-left">
-      {/* Skeleton for the Autocomplete/Search Input */}
-      <div className="px-4 pl-0">
-        <Skeleton className="w-full max-w-screen-sm h-10 my-2 rounded-lg" />
-      </div>
+			{/* Results header skeleton */}
+			<div className="mb-4">
+				<Skeleton className="h-8 w-48 md:w-64 mb-2" />
+				<Skeleton className="h-4 w-32" />
+			</div>
 
-      {/* Skeleton for Search Results */}
-      <div className="container mx-auto py-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {Array.from({ length: limit }).map((_, index) => (
-            <div
-              key={index}
-              className="group/card overflow-hidden rounded-xl shadow-md transition-transform text-left h-[430px] mx-auto max-w-sm flex flex-col"
-            >
-              {/* Image Skeleton */}
-              <Skeleton className="w-full h-48 object-cover rounded-t-xl" />
-
-              {/* Header Section */}
-              <div className="p-4 space-y-2">
-                <Skeleton className="h-5 w-3/4 rounded-md" /> {/* Title */}
-                <Skeleton className="h-4 w-1/2 rounded-md" /> {/* Subtitle */}
-              </div>
-
-              {/* Badge Skeleton */}
-              <div className="px-4 pb-2">
-                <Skeleton className="h-6 w-20 rounded-md" />
-              </div>
-
-              {/* Content Section */}
-              <div className="px-4 space-y-2">
-                <Skeleton className="h-4 w-full rounded-md" />
-                <Skeleton className="h-4 w-5/6 rounded-md" />
-                <Skeleton className="h-4 w-4/6 rounded-md" />
-              </div>
-
-              {/* Footer Section */}
-              <div className="p-4">
-                <Skeleton className="h-4 w-24 rounded-md" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+			{/* Plant cards grid skeleton */}
+			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+				{Array.from({ length: 8 }).map((_, index) => (
+					<div
+						key={index}
+						className="group/card overflow-hidden rounded-xl shadow-md h-[430px] w-full"
+					>
+						<div className="relative w-full h-48">
+							<Skeleton className="absolute inset-0 w-full h-full" />
+						</div>
+						<div className="px-5 py-4 space-y-2">
+							<div className="space-y-1">
+								<Skeleton className="h-6 w-3/4" />
+								<Skeleton className="h-4 w-1/2" />
+							</div>
+							<Skeleton className="h-5 w-24 rounded-full" />
+						</div>
+						<div className="px-5">
+							<div className="space-y-1">
+								<Skeleton className="h-4 w-full" />
+								<Skeleton className="h-4 w-5/6" />
+								<Skeleton className="h-4 w-4/6" />
+							</div>
+						</div>
+						<div className="px-5 py-4 mt-auto">
+							<Skeleton className="h-4 w-20" />
+						</div>
+					</div>
+				))}
+			</div>
+		</div>
+	);
 }

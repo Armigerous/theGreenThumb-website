@@ -5,7 +5,7 @@ import PlantDetails from "@/components/Database/Plant/PlantDetails";
 import PlantDetailsSkeleton from "@/components/Database/Plant/PlantDetailsSkeleton";
 import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import { supabase } from "@/lib/supabaseClient";
-import { unstable_cache } from "next/cache";
+import { unstable_cache, unstable_noStore } from "next/cache";
 import { PlantData } from "@/types/plant";
 import { Metadata } from "next";
 
@@ -50,7 +50,7 @@ const getMetadataKeywords = (plant: PlantData) => {
 		"plant care",
 		"gardening guide",
 		"North Carolina plants",
-		"GreenThumb",
+		"The GreenThumb",
 	].filter(Boolean);
 };
 
@@ -97,6 +97,7 @@ export async function generateMetadata({
 }: {
 	params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
+	unstable_noStore(); // Opt out of static generation for dynamic metadata
 	try {
 		const slug = (await params).slug;
 		const { plant, scientificSlug } = await getPlantDataWithSlug(slug);
@@ -145,7 +146,7 @@ export async function generateMetadata({
 				url: `${baseUrl}/plant/${scientificSlug}`,
 				type: "article",
 				images: [ogImage],
-				siteName: "GreenThumb",
+				siteName: "The GreenThumb",
 				locale: "en_US",
 			},
 			twitter: {
@@ -162,7 +163,7 @@ export async function generateMetadata({
 	} catch (error) {
 		console.error("Error generating metadata:", error);
 		return {
-			title: "Plant Not Found | GreenThumb",
+			title: "Plant Not Found | The GreenThumb",
 			description: "The requested plant information could not be found.",
 		};
 	}
@@ -170,6 +171,7 @@ export async function generateMetadata({
 
 // Create a separate component for the plant content to enable suspense boundary
 async function PlantContent({ slug }: { slug: string }) {
+	unstable_noStore(); // Opt out of static generation before try/catch
 	try {
 		const { plant } = await getPlantDataWithSlug(slug);
 		return (
@@ -220,12 +222,12 @@ const StructuredData = ({ plant }: { plant: PlantData }) => {
 		dateModified: new Date().toISOString(),
 		author: {
 			"@type": "Organization",
-			name: "GreenThumb",
+			name: "The GreenThumb",
 			url: process.env.NEXT_PUBLIC_BASE_URL,
 		},
 		publisher: {
 			"@type": "Organization",
-			name: "GreenThumb",
+			name: "The GreenThumb",
 			logo: {
 				"@type": "ImageObject",
 				url: `${process.env.NEXT_PUBLIC_BASE_URL}/logo.png`,
@@ -238,7 +240,7 @@ const StructuredData = ({ plant }: { plant: PlantData }) => {
 			category: "Plants",
 			brand: {
 				"@type": "Brand",
-				name: "GreenThumb",
+				name: "The GreenThumb",
 			},
 			additionalProperty: [
 				{

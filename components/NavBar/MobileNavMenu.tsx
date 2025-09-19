@@ -20,18 +20,23 @@ const MobileNavMenu = memo(() => {
 						variant="ghost"
 						size="icon"
 						className="h-10 w-10 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+						suppressHydrationWarning
 					>
 						<Menu className="h-5 w-5" />
 						<span className="sr-only">Toggle menu</span>
 					</Button>
 				</SheetTrigger>
-				<SheetContent side="right" className="w-[300px] sm:w-[400px]">
+				<SheetContent
+					side="right"
+					className="w-[300px] sm:w-[400px]"
+					suppressHydrationWarning
+				>
 					<div className="flex flex-col gap-6 h-full py-8">
 						{/* Mobile Logo */}
 						<div className="pb-6 border-b border-muted">
 							<NextLink
 								href="/"
-								className="text-3xl font-bold text-foreground hover:text-primary transition-colors duration-200"
+								className="text-4xl font-bold text-foreground hover:text-primary transition-colors duration-200"
 								onClick={() => setOpen(false)}
 							>
 								GreenThumb
@@ -44,7 +49,8 @@ const MobileNavMenu = memo(() => {
 								<NextLink
 									key={`${item.label}-${index}`}
 									href={item.href}
-									className="text-xl font-medium px-4 py-3 rounded-md transition-colors duration-200 hover:bg-brand-25 hover:text-primary"
+									prefetch={item.href === "/plants" ? true : undefined}
+									className="text-2xl font-medium px-4 py-3 rounded-md transition-colors duration-200 hover:bg-brand-25 hover:text-primary"
 									onClick={() => setOpen(false)}
 								>
 									{item.label}

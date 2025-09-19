@@ -1,14 +1,13 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
+import Footer from "@/components/Footer";
+import NavBar from "@/components/NavBar/NavBar";
+import { Toaster } from "@/components/ui/sonner";
+import { ClerkProvider } from "@clerk/nextjs";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
-import NavBar from "@/components/NavBar/NavBar";
-import Footer from "@/components/Footer";
-import { GoogleAnalytics } from "@next/third-parties/google";
-import { ClerkProvider } from "@clerk/nextjs";
-import { Toaster } from "@/components/ui/sonner";
-import { Providers } from "@/components/providers";
 
 // Reason: Enable Partial Prerendering for optimal NavBar performance across navigation
 export const experimental_ppr = true;
@@ -100,14 +99,12 @@ export default function RootLayout({
 				<body
 					className={`${geistSans.variable} ${geistMono.variable} antialiased bg-cream-50`}
 				>
-					<Providers>
-						<NavBar />
-						{children}
-						<Analytics />
-						<SpeedInsights />
-						<Footer />
-						<Toaster />
-					</Providers>
+					<NavBar />
+					{children}
+					<Analytics />
+					<SpeedInsights />
+					<Footer />
+					<Toaster />
 				</body>
 				<GoogleAnalytics gaId="G-25E3VTSFMZ" />
 			</html>

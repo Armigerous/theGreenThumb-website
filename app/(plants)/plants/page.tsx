@@ -1,9 +1,12 @@
 import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
 import Header from "@/components/Database/Header";
 import Search from "@/components/Database/Search/Search";
+import { Suspense } from "react";
+import { SearchSkeleton } from "@/components/Database/SearchSkeleton";
 
-// Reason: Enable static generation and caching at route level for faster navigation
-export const dynamic = "force-static";
+// Reason: Enable Partial Prerendering for this route to prerender static shell and stream dynamic content
+export const experimental_ppr = true;
+export const dynamic = "force-dynamic";
 export const revalidate = 3600; // 1 hour
 
 interface SearchParams {
@@ -27,7 +30,14 @@ export default async function Page({
 	return (
 		<MaxWidthWrapper className="text-center">
 			<Header />
-			<Search query={query} page={page} filters={filters} nameType={nameType} />
+			<Suspense fallback={<SearchSkeleton />}>
+				<Search
+					query={query}
+					page={page}
+					filters={filters}
+					nameType={nameType}
+				/>
+			</Suspense>
 		</MaxWidthWrapper>
 	);
 }

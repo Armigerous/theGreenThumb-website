@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-
 export interface ProductFeature {
   id: number;
   title: string;
-  animationData: string;
+  animationPath: string;
   desc: string;
   url: string;
 }
@@ -15,32 +13,34 @@ export interface AppFeature {
   url: string;
 }
 
+// Reason: Remove synchronous require() calls that block initial page load
+// Lazy load animation data when components are actually rendered
 export const FeaturesProduct: ProductFeature[] = [
   {
     id: 1,
     title: "Advanced Sensor Technology",
-    animationData: require("/public/ProductFeatures/sensor.json"),
+    animationPath: "/ProductFeatures/sensor.json",
     desc: "GreenThumb utilizes cutting-edge sensor technology to gather crucial data on your garden's environment. This includes light, pH levels, conductivity, temperature, moisture, and connectivity, ensuring precise data collection for optimal plant health.",
     url: "tip/advanced-sensor-technology-revolutionizing-gardening-with-greenthumb",
   },
   {
     id: 2,
     title: "Intelligent Data Analysis",
-    animationData: require("/public/ProductFeatures/analysis.json"),
+    animationPath: "/ProductFeatures/analysis.json",
     desc: "GreenThumb analyzes collected data using advanced AI algorithms, providing actionable insights and personalized gardening recommendations. This intelligent analysis helps prevent plant deaths and improves overall gardening efficiency.",
     url: "tip/intelligent-data-analysis-with-greenthumb-revolutionizing-your-gardening-experience",
   },
   {
     id: 3,
     title: "Plant Ranking",
-    animationData: require("/public/ProductFeatures/ranking.json"),
+    animationPath: "/ProductFeatures/ranking.json",
     desc: "GreenThumb ranks plants based on their likelihood to thrive in current conditions, considering symbiotic relationships with nearby plants. This feature promotes the creation of food forests and enhances plant compatibility in your garden.",
     url: "tip/plant-ranking-a-greenthumb-game-changer-for-your-garden",
   },
   {
     id: 4,
     title: "Comprehensive Gardening Solution",
-    animationData: require("/public/ProductFeatures/plant.json"),
+    animationPath: "/ProductFeatures/plant.json",
     desc: "GreenThumb combines a user-friendly sensor stick and an intuitive app to provide a complete gardening solution. From real-time data collection to intelligent recommendations, it simplifies and enhances the gardening experience.",
     url: "tip/comprehensive-gardening-solution-transform-your-gardening-with-greenthumb",
   },

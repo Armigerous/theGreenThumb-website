@@ -37,13 +37,21 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     ppr: "incremental",
-    optimizePackageImports: ["lucide-react", "@tanstack/react-virtual"],
-    turbo: {
-      rules: {
-        "*.svg": {
-          loaders: ["@svgr/webpack"],
-          as: "*.js",
-        },
+    optimizePackageImports: [
+      "lucide-react", 
+      "@tanstack/react-virtual", 
+      "framer-motion",
+      "lottie-react",
+      "react-icons"
+    ],
+    optimizeCss: true, // Enable CSS optimization
+  },
+  // Reason: Moved from deprecated experimental.turbo to new turbopack config
+  turbopack: {
+    rules: {
+      "*.svg": {
+        loaders: ["@svgr/webpack"],
+        as: "*.js",
       },
     },
   },
@@ -66,11 +74,16 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "s3.amazonaws.com",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+      },
     ],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 31536000, // 1 year cache for better performance
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 };
 

@@ -44,6 +44,9 @@ const PremadeFilters = dynamic(
 );
 import { allFilters, FilterSection } from "@/types/filterData";
 
+// Reason: Memoize filter data processing to prevent unnecessary recalculations
+const memoizedAllFilters = allFilters;
+
 export function FilterPanel() {
 	const [showAdvancedFilters, setShowAdvancedFilters] = React.useState(false);
 	const [searchTerm, setSearchTerm] = React.useState("");
@@ -75,7 +78,7 @@ export function FilterPanel() {
 	// Determine which sections to display
 	const visibleSections = React.useMemo<FilterSection[]>(() => {
 		return (
-			allFilters
+			memoizedAllFilters
 				// Show advanced sections only if showAdvancedFilters = true
 				.filter((section) => (showAdvancedFilters ? true : !section.isAdvanced))
 				// Filter category options by searchTerm

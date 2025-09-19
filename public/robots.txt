@@ -5,7 +5,7 @@ Disallow: /api/*
 Disallow: /admin/*
 
 # Host
-Host: https://localhost:3000
+Host: https://www.theofficialgreenthumb.com
 
 # Sitemaps
-Sitemap: https://localhost:3000/sitemap.xml
+Sitemap: https://www.theofficialgreenthumb.com/sitemap.xml

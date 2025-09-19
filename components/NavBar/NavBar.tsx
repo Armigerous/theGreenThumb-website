@@ -4,11 +4,9 @@ import NextLink from "next/link";
 import { Button } from "@/components/ui/button";
 import {
 	NavigationMenu,
-	NavigationMenuContent,
 	NavigationMenuItem,
 	NavigationMenuLink,
 	NavigationMenuList,
-	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
@@ -45,9 +43,10 @@ const NavBar = memo(() => {
 									<NavigationMenuLink asChild>
 										<NextLink
 											href="/plants"
+											prefetch={true}
 											className={cn(
 												navigationMenuTriggerStyle(),
-												"text-lg font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+												"text-xl font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
 											)}
 										>
 											Plants
@@ -60,7 +59,7 @@ const NavBar = memo(() => {
 											href="/tips"
 											className={cn(
 												navigationMenuTriggerStyle(),
-												"text-lg font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+												"text-xl font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
 											)}
 										>
 											Tips
@@ -73,7 +72,7 @@ const NavBar = memo(() => {
 											href="/contact"
 											className={cn(
 												navigationMenuTriggerStyle(),
-												"text-lg font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+												"text-xl font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
 											)}
 										>
 											Contact
@@ -86,7 +85,7 @@ const NavBar = memo(() => {
 											href="/about"
 											className={cn(
 												navigationMenuTriggerStyle(),
-												"text-lg font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+												"text-xl font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
 											)}
 										>
 											About

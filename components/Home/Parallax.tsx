@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, Suspense } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 interface ParallaxProps {
@@ -31,18 +31,20 @@ const Parallax: React.FC<ParallaxProps> = ({ type }) => {
         {type === "product" ? "Product Features" : "App Features"}
       </motion.h2>
 
-      {/* Background Layers */}
-      <motion.div className="absolute z-30 w-full h-full bg-cover bg-bottom bg-[url('/Parallax/grass.svg')]" />
+      {/* Background Layers - Lazy loaded for better performance */}
+      <Suspense fallback={<div className="absolute z-30 w-full h-full bg-cream-100" />}>
+        <motion.div className="absolute z-30 w-full h-full bg-cover bg-bottom bg-[url('/Parallax/grass.svg')]" />
 
-      <motion.div
-        className="absolute z-30 w-full h-full bg-cover bg-bottom bg-[url('/Parallax/vines.svg')]"
-        style={{ y: yBg }}
-      />
+        <motion.div
+          className="absolute z-30 w-full h-full bg-cover bg-bottom bg-[url('/Parallax/vines.svg')]"
+          style={{ y: yBg }}
+        />
 
-      <motion.div
-        className="absolute z-30 w-full h-full bg-cover bg-bottom bg-[url('/Parallax/butterflies.svg')]"
-        style={{ x: yBg }}
-      />
+        <motion.div
+          className="absolute z-30 w-full h-full bg-cover bg-bottom bg-[url('/Parallax/butterflies.svg')]"
+          style={{ x: yBg }}
+        />
+      </Suspense>
     </div>
   );
 };

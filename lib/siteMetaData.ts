@@ -1,7 +1,25 @@
 /**
  * Site metadata configuration.
  */
-const siteMetaData = {
+export interface SiteMetaData {
+	title: string;
+	author: string;
+	headerTitle: string;
+	description: string;
+	language: string;
+	theme: string;
+	siteUrl: string;
+	siteLogo: string;
+	socialBanner: string;
+	email: string;
+	facebook: string;
+	instagram: string;
+	youtube: string;
+	tiktok: string;
+	locale: string;
+}
+
+const siteMetaData: SiteMetaData = {
 	title: "GreenThumb helping North Carolina gardeners", // Site title
 	author: "Eren Kahveci", // Author name
 	headerTitle: "GreenThumb Official Website", // Header title
@@ -18,4 +36,5 @@ const siteMetaData = {
 	tiktok: "https://www.tiktok.com/@theofficialgreenthumb", // TikTok URL
 	locale: "en-US", // Site locale
 };
-module.exports = siteMetaData;
+
+export default siteMetaData;

@@ -1,6 +1,5 @@
 "use client";
 
-import React, { memo, Suspense } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -9,9 +8,10 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatInchesToFeetAndInches } from "@/lib/utils";
-import DOMPurify from "isomorphic-dompurify";
+import { PlantData, PlantImage } from "@/types/plant";
 import {
   AlertTriangle,
   Flower,
@@ -25,8 +25,7 @@ import {
   TreesIcon as TreeIcon,
 } from "lucide-react";
 import dynamic from "next/dynamic";
-import { PlantData, PlantImage } from "@/types/plant";
-import { Skeleton } from "@/components/ui/skeleton";
+import React, { memo, Suspense, useEffect, useState } from "react";
 
 // Dynamically import heavy components
 const AudioPlayerButton = dynamic(() => import("./AudioButton"), {
@@ -75,27 +74,61 @@ const PlantFact = memo(
 
 PlantFact.displayName = "PlantFact";
 
-// Separate the image section into its own component for better code splitting
+// Reason: Optimize image loading for better LCP performance with priority loading
 const PlantImages = memo(({ images }: { images: PlantImage[] }) => {
   if (!images || images.length === 0) {
     return <p className="text-muted-foreground">No images available.</p>;
   }
 
+  const validImages = images
+    .filter((img: PlantImage) => img.img !== null)
+    .map(({ img, alt_text, caption, attribution }: PlantImage) => ({
+      img: img as string,
+      altText: alt_text || "No description available",
+      caption: caption || "",
+      attribution: attribution || "",
+    }));
+
   return (
     <ImageGallery
-      images={images
-        .filter((img: PlantImage) => img.img !== null)
-        .map(({ img, alt_text, caption, attribution }: PlantImage) => ({
-          img: img as string,
-          altText: alt_text || "No description available",
-          caption: caption || "",
-          attribution: attribution || "",
-        }))}
+      images={validImages}
+      priority={true} // Reason: Set priority for LCP optimization
     />
   );
 });
 
 PlantImages.displayName = "PlantImages";
+
+// Reason: Safe HTML sanitization component that works with SSR
+const SafeHTMLRenderer = ({ content }: { content: string }) => {
+  const [sanitizedContent, setSanitizedContent] = useState<string>("");
+
+  useEffect(() => {
+    // Reason: Only sanitize on client-side to avoid SSR issues
+    const sanitizeContent = async () => {
+      try {
+        // Dynamic import to avoid SSR issues
+        const DOMPurify = (await import("isomorphic-dompurify")).default;
+        const sanitized = DOMPurify.sanitize(content, {
+          ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
+        });
+        setSanitizedContent(sanitized);
+      } catch {
+        // Reason: Fallback to plain text if sanitization fails
+        setSanitizedContent(content.replace(/<[^>]*>/g, ""));
+      }
+    };
+
+    sanitizeContent();
+  }, [content]);
+
+  return (
+    <div
+      className="prose prose-sm mb-4 text-lg"
+      dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+    />
+  );
+};
 
 // Separate the basic info section into its own component
 const BasicInfo = memo(
@@ -119,10 +152,6 @@ const BasicInfo = memo(
     description?: string | null;
   }) => {
     if (!scientificName) return null;
-
-    const sanitizedDescription = DOMPurify.sanitize(description || "", {
-      ALLOWED_TAGS: ["p", "strong", "em", "br", "ul", "li"],
-    });
 
     return (
       <>
@@ -150,10 +179,7 @@ const BasicInfo = memo(
             </ul>
           </div>
         )}
-        <div
-          className="prose prose-sm mb-4 text-lg"
-          dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
-        />
+        {description && <SafeHTMLRenderer content={description} />}
       </>
     );
   }

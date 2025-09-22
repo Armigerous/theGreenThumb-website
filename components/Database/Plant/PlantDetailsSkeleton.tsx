@@ -1,18 +1,19 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+// Reason: Optimize skeleton loading for better perceived performance
 export default function PlantDetailsSkeleton() {
   return (
     <section className="my-12">
       <div className="flex flex-col md:flex-row gap-6 mb-8">
-        {/* Left Column: Image Gallery Skeleton */}
+        {/* Left Column: Image Gallery Skeleton - Optimized for LCP */}
         <div className="md:w-1/2">
-          <div className="relative aspect-square w-full overflow-hidden rounded-lg">
+          <div className="relative w-full max-w-3xl h-[500px] bg-cream-100 rounded-lg overflow-hidden">
             <Skeleton className="h-full w-full" />
           </div>
-          <div className="mt-4 grid grid-cols-4 gap-2">
+          <div className="mt-4 flex gap-4">
             {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="aspect-square rounded-lg" />
+              <Skeleton key={i} className="w-24 h-24 rounded-lg" />
             ))}
           </div>
         </div>

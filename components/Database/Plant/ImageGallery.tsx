@@ -1,15 +1,15 @@
 "use client";
 
-import { OptimizedImage } from "@/components/ui/optimized-image";
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import { useState } from "react";
 
 type PlantImageGalleryProps = {
   images: {
@@ -19,9 +19,13 @@ type PlantImageGalleryProps = {
     caption?: string;
     attribution?: string;
   }[];
+  priority?: boolean; // Reason: Add priority prop for LCP optimization
 };
 
-const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
+const ImageGallery: React.FC<PlantImageGalleryProps> = ({
+  images,
+  priority = false,
+}) => {
   const validImages = images?.filter((img) => img?.img) || [];
   const [selectedImage, setSelectedImage] = useState(validImages[0]?.img);
 
@@ -43,6 +47,7 @@ const ImageGallery: React.FC<PlantImageGalleryProps> = ({ images }) => {
               className="object-cover rounded-lg"
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority={priority} // Reason: Set priority for LCP optimization
               showSkeleton={false}
             />
           </div>

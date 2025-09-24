@@ -49,10 +49,10 @@ export const FeaturesProduct: ProductFeature[] = [
 export const FeaturesApp: AppFeature[] = [
   {
     id: 1,
-    title: "Assistant and Daily Summary",
+    title: "Garden Monitoring Dashboard",
     content:
-      "GreenThumb app includes an AI Chat feature that enhances user interaction and garden management. Each day, the AI Chat provides a summary of your garden's status, detailing the health of your plants and any immediate actions required. This feature ensures that you are always informed about the state of your garden, making it easier to manage and maintain.",
-    url: "tip/assistant-and-daily-summary-your-ai-chat-assistant-for-garden-updates-and-daily-summaries",
+      "GreenThumb app provides a comprehensive monitoring dashboard that tracks your garden's health and environmental conditions. The dashboard displays real-time sensor data, plant health status, and provides actionable insights to help you maintain optimal growing conditions for your plants.",
+    url: "tip/garden-monitoring-dashboard-comprehensive-garden-health-tracking",
   },
   {
     id: 2,

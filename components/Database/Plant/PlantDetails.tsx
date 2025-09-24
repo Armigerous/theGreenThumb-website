@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import React, { memo, Suspense, useEffect, useState } from "react";
+import { BackToResultsButton } from "@/components/PlantIdentification/BackToResultsButton";
 
 // Dynamically import heavy components
 const AudioPlayerButton = dynamic(() => import("./AudioButton"), {
@@ -314,6 +315,9 @@ const PlantDetails: React.FC<{ plant: PlantData }> = ({ plant }) => {
 
   return (
     <section className="my-12">
+      {/* Reason: Show back to results button if user came from plant identification */}
+      <BackToResultsButton />
+
       <div className="flex flex-col md:flex-row gap-6 mb-8">
         {/* Left Column: Images */}
         <div className="md:w-1/2">

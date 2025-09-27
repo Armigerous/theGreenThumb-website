@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from "next/server";
 
-const isProtectedRoute = createRouteMatcher(['/chat(.*)', '/chat/(.*)'])
+const isProtectedRoute = createRouteMatcher(['/identify', '/my-garden(.*)'])
 
 export default clerkMiddleware(async (auth, req) => {
   // Handle plant URL rewrites
@@ -26,7 +26,7 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
-  // Protect chat routes
+  // Protect user routes
   if (isProtectedRoute(req)) {
     await auth.protect();
   }

@@ -2,9 +2,8 @@
 
 import { PlantCardData } from "@/types/plant";
 import DOMPurify from "isomorphic-dompurify";
-import Image from "next/image";
 import Link from "next/link";
-import { memo, useEffect, useState, useMemo } from "react";
+import { memo, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -14,28 +13,16 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { dynamicBlurDataUrl } from "@/lib/dynamicBlurDataUrl";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import { useImageOptimization } from "@/hooks/use-image-optimization";
 
 const PlantCard = memo(
   ({ plant, index }: { plant: PlantCardData; index: number }) => {
-    const [blurDataUrl, setBlurDataUrl] = useState<string | undefined>(
-      undefined
-    );
-
-    const imageUrl = useMemo(
-      () => plant.first_image || "/no-plant-image.png",
-      [plant.first_image]
-    );
-
-    useEffect(() => {
-      const fetchBlurDataUrl = async () => {
-        if (imageUrl) {
-          const blurUrl = await dynamicBlurDataUrl(imageUrl);
-          setBlurDataUrl(blurUrl);
-        }
-      };
-      fetchBlurDataUrl();
-    }, [imageUrl]);
+    const { imageUrl, blurDataUrl, shouldOptimize, loadingStrategy, priority } =
+      useImageOptimization({
+        src: plant.first_image || "",
+        index,
+      });
 
     const sanitizedDescription = useMemo(
       () =>
@@ -50,8 +37,8 @@ const PlantCard = memo(
         "common_name" in plant
           ? plant.common_name
           : "scientific_name" in plant
-            ? plant.scientific_name
-            : null,
+          ? plant.scientific_name
+          : null,
       [plant]
     );
 
@@ -60,8 +47,8 @@ const PlantCard = memo(
         "common_name" in plant
           ? plant.scientific_name
           : "scientific_name" in plant
-            ? plant.common_name
-            : null,
+          ? plant.common_name
+          : null,
       [plant]
     );
 
@@ -72,18 +59,17 @@ const PlantCard = memo(
       >
         <Link href={`/plant/${plant.slug}`}>
           <div className="relative w-full h-48">
-            <Image
+            <OptimizedImage
+              src={imageUrl}
               alt={`Photo of ${plant.scientific_name}`}
-              className="object-cover"
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              src={imageUrl}
-              priority={index < 4}
-              loading={index < 4 ? "eager" : "lazy"}
-              placeholder="blur"
-              blurDataURL={
-                blurDataUrl || "data:image/jpeg;base64,/9j/4AAQSkZJRg=="
-              } // Fallback blur
+              priority={priority}
+              loading={loadingStrategy}
+              unoptimized={!shouldOptimize}
+              placeholder={blurDataUrl ? "blur" : "empty"}
+              blurDataURL={blurDataUrl}
+              showSkeleton={true}
             />
           </div>
         </Link>

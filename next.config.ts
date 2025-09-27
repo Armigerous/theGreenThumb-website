@@ -84,6 +84,9 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000, // 1 year cache for better performance
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Reason: Optimize image loading for better LCP performance
+    loader: "default",
+    unoptimized: false, // Reason: Enable optimization for better performance
   },
 };
 

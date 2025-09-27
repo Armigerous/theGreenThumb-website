@@ -7,7 +7,7 @@ const Hero = () => {
     <main>
       <MaxWidthWrapper
         className="flex flex-col md:flex-row w-full h-auto md:h-screen justify-between 
-      items-center md:pb-20 pb-0"
+      items-center md:pb-20 pb-8 sm:pb-12"
       >
         {/* Hero Section Text + 3D Model */}
         <Text />

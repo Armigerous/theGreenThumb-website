@@ -4,8 +4,14 @@ import { navMenuItems } from "./nav";
 import StableMobileAuthSection from "../StableMobileAuthSection";
 import { memo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+	Sheet,
+	SheetContent,
+	SheetTrigger,
+	SheetTitle,
+} from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { Menu, ListChecks, Smartphone } from "lucide-react";
 import NextLink from "next/link";
 
@@ -20,10 +26,10 @@ const MobileNavMenu = memo(() => {
 					<Button
 						variant="ghost"
 						size="icon"
-						className="h-8 w-8 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+						className="h-10 w-10 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
 						suppressHydrationWarning
 					>
-						<Menu className="h-4 w-4" />
+						<Menu className="h-5 w-5" />
 						<span className="sr-only">Toggle menu</span>
 					</Button>
 				</SheetTrigger>
@@ -32,6 +38,9 @@ const MobileNavMenu = memo(() => {
 					className="w-[300px] sm:w-[400px] p-0 h-full"
 					suppressHydrationWarning
 				>
+					<VisuallyHidden>
+						<SheetTitle>Navigation Menu</SheetTitle>
+					</VisuallyHidden>
 					<div className="flex flex-col h-full max-h-screen">
 						{/* Mobile Logo - Fixed at top */}
 						<div className="px-6 py-8 border-b border-muted flex-shrink-0">

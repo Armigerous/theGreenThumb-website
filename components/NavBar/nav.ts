@@ -16,6 +16,10 @@ export const navMenuItems = [
     href: "/plants",
   },
   {
+    label: "Plant ID",
+    href: "/identify",
+  },
+  {
     label: "Tips",
     href: "/tips",
   },

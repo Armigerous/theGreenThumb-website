@@ -29,10 +29,10 @@ const MobileNavMenu = memo(() => {
 				</SheetTrigger>
 				<SheetContent
 					side="right"
-					className="w-[300px] sm:w-[400px] p-0"
+					className="w-[300px] sm:w-[400px] p-0 h-full"
 					suppressHydrationWarning
 				>
-					<div className="flex flex-col h-full">
+					<div className="flex flex-col h-full max-h-screen">
 						{/* Mobile Logo - Fixed at top */}
 						<div className="px-6 py-8 border-b border-muted flex-shrink-0">
 							<NextLink
@@ -45,10 +45,10 @@ const MobileNavMenu = memo(() => {
 						</div>
 
 						{/* Scrollable Navigation Content */}
-						<ScrollArea className="flex-1 px-6">
-							<div className="py-6 space-y-4">
+						<ScrollArea className="flex-1 px-6 min-h-0">
+							<div className="py-6 space-y-6">
 								{/* Features Section */}
-								<div className="space-y-2">
+								<div className="space-y-3">
 									<h3 className="text-lg font-semibold text-muted-foreground px-4">
 										Features
 									</h3>
@@ -71,7 +71,7 @@ const MobileNavMenu = memo(() => {
 								</div>
 
 								{/* Main Navigation Items */}
-								<div className="space-y-2">
+								<div className="space-y-3">
 									<h3 className="text-lg font-semibold text-muted-foreground px-4">
 										Navigation
 									</h3>
@@ -89,6 +89,9 @@ const MobileNavMenu = memo(() => {
 											</NextLink>
 										))}
 								</div>
+
+								{/* Additional spacing at bottom for better scrolling experience */}
+								<div className="h-6"></div>
 							</div>
 						</ScrollArea>
 

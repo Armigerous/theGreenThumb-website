@@ -23,12 +23,12 @@ import { cn } from "@/lib/utils";
 const NavBar = memo(() => {
 	return (
 		<nav className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
-			<div className="h-20 min-h-20 max-h-20">
-				<MaxWidthWrapper className="flex h-full items-center justify-between px-6">
+			<div className="h-16 min-h-16 max-h-16 lg:h-20 lg:min-h-20 lg:max-h-20">
+				<MaxWidthWrapper className="flex h-full items-center justify-between px-4 lg:px-6">
 					{/* Logo - Left Side */}
 					<div className="flex-shrink-0">
 						<NextLink href="/" className="flex items-center h-full">
-							<p className="font-bold text-3xl text-foreground hover:text-primary transition-colors duration-200">
+							<p className="font-bold text-2xl lg:text-3xl text-foreground hover:text-primary transition-colors duration-200">
 								GreenThumb
 							</p>
 						</NextLink>

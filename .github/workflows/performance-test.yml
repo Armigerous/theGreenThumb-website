@@ -144,19 +144,3 @@ jobs:
               body: body,
               labels: ['performance', 'regression', 'priority:high']
             });
-
-      - name: Notify on performance regression
-        if: failure()
-        uses: 8398a7/action-slack@v3
-        with:
-          status: failure
-          channel: "#performance"
-          text: |
-            🚨 Performance regression detected in ${context.repo.owner}/${context.repo.repo}
-
-            Branch: ${context.ref}
-            Commit: ${context.sha}
-
-            Please review the Lighthouse CI results and investigate the performance issues.
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

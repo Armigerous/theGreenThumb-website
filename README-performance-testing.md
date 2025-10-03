@@ -201,7 +201,6 @@ The system includes real-time Core Web Vitals monitoring:
 
 - Budget violations are logged to console in development
 - CI/CD failures trigger GitHub issues
-- Slack notifications for critical regressions
 
 ## Best Practices
 

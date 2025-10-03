@@ -1,0 +1,162 @@
+name: Performance Testing
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+  schedule:
+    # Run performance tests daily at 2 AM UTC
+    - cron: "0 2 * * *"
+
+jobs:
+  performance-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build application
+        run: pnpm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' }}
+
+      - name: Install Lighthouse CI
+        run: pnpm add -D @lhci/cli lighthouse
+
+      - name: Run Lighthouse CI
+        run: pnpm run perf:test
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' }}
+
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-results
+          path: |
+            .lighthouseci/
+            lighthouse-report.json
+          retention-days: 30
+
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Read Lighthouse results if they exist
+            let results = '';
+            try {
+              const resultsPath = path.join('.lighthouseci', 'manifest.json');
+              if (fs.existsSync(resultsPath)) {
+                const manifest = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
+                results = `## 🚀 Performance Test Results\n\n`;
+                
+                if (manifest.summary) {
+                  results += `**Overall Score**: ${manifest.summary.score}/100\n\n`;
+                }
+                
+                results += `**Test Status**: ${manifest.summary?.passed ? '✅ PASSED' : '❌ FAILED'}\n\n`;
+                
+                if (manifest.summary?.assertions) {
+                  results += `### Core Web Vitals\n\n`;
+                  results += `| Metric | Result |\n`;
+                  results += `|--------|--------|\n`;
+                  
+                  manifest.summary.assertions.forEach(assertion => {
+                    const status = assertion.passed ? '✅' : '❌';
+                    results += `| ${assertion.title} | ${status} |\n`;
+                  });
+                }
+                
+                results += `\n**Full Report**: Check the uploaded artifacts for detailed results.`;
+              } else {
+                results = `## 🚀 Performance Test Results\n\n**Status**: ⚠️ Tests completed but results not found.`;
+              }
+            } catch (error) {
+              results = `## 🚀 Performance Test Results\n\n**Status**: ⚠️ Error reading results: ${error.message}`;
+            }
+
+            // Comment on PR
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: results
+            });
+
+      - name: Create performance issue on failure
+        if: failure() && github.event_name == 'push'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `🚨 Performance Regression Detected - ${new Date().toISOString().split('T')[0]}`;
+            const body = `
+            ## Performance Regression Alert
+
+            Performance tests have failed on commit ${context.sha}.
+
+            **Branch**: ${context.ref}
+            **Commit**: ${context.sha}
+            **Author**: ${context.actor}
+
+            ### Next Steps
+
+            1. Review the Lighthouse CI results in the artifacts
+            2. Check the performance budgets in \`lighthouse-ci.config.js\`
+            3. Investigate any Core Web Vitals regressions
+            4. Consider reverting if critical performance issues are detected
+
+            ### Resources
+
+            - [Performance Testing Documentation](docs/performance-testing.md)
+            - [Lighthouse CI Results](.lighthouseci/)
+            - [Core Web Vitals Guide](https://web.dev/vitals/)
+            `;
+
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['performance', 'regression', 'priority:high']
+            });
+
+      - name: Notify on performance regression
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          channel: "#performance"
+          text: |
+            🚨 Performance regression detected in ${context.repo.owner}/${context.repo.repo}
+
+            Branch: ${context.ref}
+            Commit: ${context.sha}
+
+            Please review the Lighthouse CI results and investigate the performance issues.
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

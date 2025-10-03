@@ -44,3 +44,7 @@ next-env.d.ts
 /.clerk/
 .cursor/*
 docs/*
+ai/*
+.cursor
+tasks/*
+.plan.md

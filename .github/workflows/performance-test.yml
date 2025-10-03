@@ -35,6 +35,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Debug environment variables
+        run: |
+          echo "Checking environment variables..."
+          echo "RESEND_API_KEY: ${RESEND_API_KEY:+SET}" 
+          echo "POSTGRES_URL: ${POSTGRES_URL:+SET}"
+          echo "OPENAI_API_KEY: ${OPENAI_API_KEY:+SET}"
+          echo "SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY:+SET}"
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+
       - name: Build application
         run: pnpm run build
         env:

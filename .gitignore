@@ -48,3 +48,4 @@ ai/*
 .cursor
 tasks/*
 .plan.md
+.cursorignore

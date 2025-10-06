@@ -20,6 +20,7 @@ import { Switch } from "@/components/ui/switch";
 import { Search, SlidersHorizontalIcon, Atom, Users } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import * as React from "react";
 
 interface PlantSearchResult {
 	slug: string;
@@ -31,21 +32,17 @@ export function Autocomplete() {
 	const [open, setOpen] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [plants, setPlants] = useState<PlantSearchResult[]>([]);
-
-	// Get the current search parameters from the URL.
-	const searchParams = useSearchParams();
-	// Determine the initial state of the switch:
-	// If "nameType" equals "common", set useCommonNames to true;
-	// otherwise, default to "scientific" (false).
-	const initialUseCommonNames = searchParams?.get("nameType") === "common";
-	const [useCommonNames, setUseCommonNames] = useState(initialUseCommonNames);
+	const [useCommonNames, setUseCommonNames] = useState(false); // Default to scientific names
+	const [isClient, setIsClient] = useState(false);
 
 	const triggerRef = useRef<HTMLButtonElement>(null);
 	const router = useRouter();
+	const searchParams = useSearchParams();
 
-	// Optional: if you expect the URL to change externally and want to keep the switch in sync,
-	// you can update the state when the searchParams change.
+	// Reason: Ensure client-side hydration before accessing search params to prevent hydration mismatch
 	useEffect(() => {
+		setIsClient(true);
+		// Set initial state from URL params after client hydration
 		const urlNameType = searchParams?.get("nameType") === "common";
 		setUseCommonNames(urlNameType);
 	}, [searchParams]);
@@ -74,7 +71,7 @@ export function Autocomplete() {
 	}, [searchQuery, useCommonNames]);
 
 	const navigateToSearch = () => {
-		if (searchQuery.trim()) {
+		if (searchQuery.trim() && isClient) {
 			const params = new URLSearchParams(window.location.search);
 			params.set("query", searchQuery.trim());
 			params.set("nameType", useCommonNames ? "common" : "scientific");
@@ -102,10 +99,49 @@ export function Autocomplete() {
 	// Handler to update the naming mode and update the URL accordingly.
 	const handleToggle = (value: boolean) => {
 		setUseCommonNames(value);
-		const params = new URLSearchParams(window.location.search);
-		params.set("nameType", value ? "common" : "scientific");
-		router.replace(`/plants?${params.toString()}`);
+		if (isClient) {
+			const params = new URLSearchParams(window.location.search);
+			params.set("nameType", value ? "common" : "scientific");
+			router.replace(`/plants?${params.toString()}`);
+		}
 	};
+
+	// Reason: Prevent hydration mismatch by only rendering Popover after client hydration
+	if (!isClient) {
+		return (
+			<div className="flex w-full flex-col items-start gap-2">
+				<div className="flex w-full items-center gap-2">
+					<Button
+						variant="outline"
+						role="combobox"
+						aria-expanded={false}
+						className="justify-start w-full max-w-screen-sm relative flex items-center gap-2 my-2 px-4 py-2 border-2 border-cream-800 rounded-lg bg-white shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-cream-800 focus:ring-offset-2 transition-all duration-200"
+					>
+						<Search className="w-4 h-4 text-cream-800" />
+						Search for plants
+					</Button>
+					<SidebarTrigger className="bg-primary text-cream-50 rounded-lg text-lg">
+						<SlidersHorizontalIcon className="h-4 w-4" />
+						<span>Filters</span>
+					</SidebarTrigger>
+				</div>
+				<div className="flex items-center space-x-2">
+					<Switch
+						id="use-common-names"
+						checked={false}
+						onCheckedChange={() => {}}
+					/>
+					<Label
+						htmlFor="use-common-names"
+						className="text-base flex items-center gap-2"
+					>
+						<Atom className="h-4 w-4 text-primary" />
+						Using Scientific Names
+					</Label>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="flex w-full flex-col items-start gap-2">

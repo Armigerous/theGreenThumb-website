@@ -1,6 +1,7 @@
 import Footer from "@/components/Footer";
 import NavBar from "@/components/NavBar/NavBar";
 import { Toaster } from "@/components/ui/sonner";
+import CoreWebVitalsMonitor from "@/components/Performance/CoreWebVitalsMonitor";
 import { ClerkProvider } from "@clerk/nextjs";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
@@ -103,6 +104,7 @@ export default function RootLayout({
 					{children}
 					<Analytics />
 					<SpeedInsights />
+					<CoreWebVitalsMonitor />
 					<Footer />
 					<Toaster />
 				</body>

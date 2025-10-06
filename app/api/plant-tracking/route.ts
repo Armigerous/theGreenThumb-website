@@ -1,14 +1,12 @@
-import { db } from "@/lib/db";
-import { userPlants } from "@/lib/db/migrations/schema";
-import { auth } from "@clerk/nextjs/server";
-import { eq, and } from "drizzle-orm";
-import { NextRequest, NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { prisma } from "@/lib/db/prisma"
+import { auth } from "@clerk/nextjs/server"
+import { NextRequest, NextResponse } from "next/server"
+import { revalidatePath } from "next/cache"
+import { z } from "zod"
 
 // Route Segment Config
-export const dynamic = 'force-dynamic'; // Always fetch fresh data for user-specific content
-export const revalidate = 0; // Disable static caching
+export const dynamic = 'force-dynamic' // Always fetch fresh data for user-specific content
+export const revalidate = 0 // Disable static caching
 
 // Validation schema for plant tracking
 const userPlantsSchema = z.object({
@@ -29,57 +27,58 @@ const userPlantsSchema = z.object({
     uploadedAt: z.string()
   })).optional().default([]),
   locationTags: z.array(z.string()).optional().default([])
-});
+})
 
 export async function GET(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const { userId } = await auth()
     
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     
-    const url = new URL(request.url);
-    const gardenId = url.searchParams.get("gardenId");
-    const limit = parseInt(url.searchParams.get("limit") || "50");
-    const offset = parseInt(url.searchParams.get("offset") || "0");
+    const url = new URL(request.url)
+    const gardenId = url.searchParams.get("gardenId")
+    const limit = parseInt(url.searchParams.get("limit") || "50")
+    const offset = parseInt(url.searchParams.get("offset") || "0")
     
     // Verify the garden belongs to the user
-    const garden = await db.query.userGardens.findFirst({
-      where: (gardens, { eq, and }) => 
-        and(
-          eq(gardens.userId, userId),
-          gardenId ? eq(gardens.id, parseInt(gardenId)) : undefined
-        )
-    });
+    const garden = await prisma.userGardens.findFirst({
+      where: {
+        userId,
+        ...(gardenId ? { id: parseInt(gardenId) } : {})
+      }
+    })
     
     if (gardenId && !garden) {
-      return NextResponse.json({ error: "Garden not found" }, { status: 404 });
+      return NextResponse.json({ error: "Garden not found" }, { status: 404 })
     }
     
     // Fetch plants for this garden
-    let plants = [];
+    let plants = []
     if (gardenId) {
       // If gardenId is provided, find all plants for that garden
-      plants = await db.query.userPlants.findMany({
-        where: (plant, { eq }) => eq(plant.gardenId, parseInt(gardenId)),
-        limit: limit,
-        offset: offset
-      });
+      plants = await prisma.userPlants.findMany({
+        where: { gardenId: parseInt(gardenId) },
+        take: limit,
+        skip: offset,
+        orderBy: { createdAt: 'desc' }
+      })
     } else {
       // Otherwise find all plants from all gardens owned by the user
-      const userGardensData = await db.query.userGardens.findMany({
-        where: (garden, { eq }) => eq(garden.userId, userId),
-        with: {
-          plants: {
-            limit: limit,
-            offset: offset
+      const userGardensData = await prisma.userGardens.findMany({
+        where: { userId },
+        include: {
+          userPlants: {
+            take: limit,
+            skip: offset,
+            orderBy: { createdAt: 'desc' }
           }
         }
-      });
+      })
       
       // Flatten the plants from all gardens
-      plants = userGardensData.flatMap(garden => garden.plants || []);
+      plants = userGardensData.flatMap(garden => garden.userPlants || [])
     }
     
     return NextResponse.json({ plants }, {
@@ -88,161 +87,157 @@ export async function GET(request: NextRequest) {
         'Pragma': 'no-cache',
         'Expires': '0'
       }
-    });
+    })
   } catch (error) {
-    console.error("Error fetching plant tracking:", error);
+    console.error("Error fetching plant tracking:", error)
     return NextResponse.json(
       { error: "Failed to fetch plant tracking data" },
       { status: 500 }
-    );
+    )
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const { userId } = await auth()
     
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     
-    const data = await request.json();
+    const data = await request.json()
     
     // Validate data schema
-    const validationResult = userPlantsSchema.safeParse(data);
+    const validationResult = userPlantsSchema.safeParse(data)
     if (!validationResult.success) {
       return NextResponse.json(
         { error: "Invalid data", details: validationResult.error.format() },
         { status: 400 }
-      );
+      )
     }
     
-    const plantData = validationResult.data;
+    const plantData = validationResult.data
     
     // Verify the garden belongs to the user
-    const garden = await db.query.userGardens.findFirst({
-      where: (gardens, { eq }) => 
-        and(
-          eq(gardens.userId, userId),
-          eq(gardens.id, plantData.gardenId)
-        )
-    });
+    const garden = await prisma.userGardens.findFirst({
+      where: {
+        userId,
+        id: plantData.gardenId
+      }
+    })
     
     if (!garden) {
-      return NextResponse.json({ error: "Garden not found" }, { status: 404 });
+      return NextResponse.json({ error: "Garden not found" }, { status: 404 })
     }
     
     // Create new plant tracking entry
-    const newPlant = await db.insert(userPlants).values({
-      id: plantData.id || crypto.randomUUID(),
-      gardenId: plantData.gardenId,
-      customName: plantData.customName,
-      botanicalName: plantData.botanicalName,
-      status: plantData.status,
-      careLogs: plantData.careLogs,
-      images: plantData.images,
-      locationTags: plantData.locationTags,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }).returning();
-    
-    revalidatePath('/api/plant-tracking');
-    
-    return NextResponse.json({ plant: newPlant[0] }, {
-      headers: {
-        'Cache-Control': 'private, no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0'
-      }
-    });
-  } catch (error) {
-    console.error("Error creating plant tracking:", error);
-    return NextResponse.json(
-      { error: "Failed to create plant tracking data" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function PATCH(request: NextRequest) {
-  try {
-    const { userId } = await auth();
-    
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-    
-    const data = await request.json();
-    
-    // Validate data schema
-    const validationResult = userPlantsSchema.safeParse(data);
-    if (!validationResult.success) {
-      return NextResponse.json(
-        { error: "Invalid data", details: validationResult.error.format() },
-        { status: 400 }
-      );
-    }
-    
-    const plantData = validationResult.data;
-    
-    if (!plantData.id) {
-      return NextResponse.json({ error: "Plant ID is required" }, { status: 400 });
-    }
-    
-    // Verify the garden belongs to the user
-    const garden = await db.query.userGardens.findFirst({
-      where: (gardens, { eq }) => 
-        and(
-          eq(gardens.userId, userId),
-          eq(gardens.id, plantData.gardenId)
-        )
-    });
-    
-    if (!garden) {
-      return NextResponse.json({ error: "Garden not found" }, { status: 404 });
-    }
-    
-    // Verify the plant exists and belongs to this garden
-    const existingPlant = await db.query.userPlants.findFirst({
-      where: (plants, { eq, and }) => 
-        and(
-          eq(plants.id, plantData.id as string),
-          eq(plants.gardenId, plantData.gardenId)
-        )
-    });
-    
-    if (!existingPlant) {
-      return NextResponse.json({ error: "Plant not found" }, { status: 404 });
-    }
-    
-    // Update plant tracking entry
-    const updatedPlant = await db.update(userPlants)
-      .set({
+    const newPlant = await prisma.userPlants.create({
+      data: {
+        id: plantData.id || crypto.randomUUID(),
+        gardenId: plantData.gardenId,
         customName: plantData.customName,
         botanicalName: plantData.botanicalName,
         status: plantData.status,
         careLogs: plantData.careLogs,
         images: plantData.images,
         locationTags: plantData.locationTags,
-        updatedAt: new Date().toISOString()
-      })
-      .where(eq(userPlants.id, plantData.id as string))
-      .returning();
+      }
+    })
     
-    revalidatePath('/api/plant-tracking');
+    revalidatePath('/api/plant-tracking')
     
-    return NextResponse.json({ plant: updatedPlant[0] }, {
+    return NextResponse.json({ plant: newPlant }, {
       headers: {
         'Cache-Control': 'private, no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
         'Expires': '0'
       }
-    });
+    })
   } catch (error) {
-    console.error("Error updating plant tracking:", error);
+    console.error("Error creating plant tracking:", error)
+    return NextResponse.json(
+      { error: "Failed to create plant tracking data" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const { userId } = await auth()
+    
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    
+    const data = await request.json()
+    
+    // Validate data schema
+    const validationResult = userPlantsSchema.safeParse(data)
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: "Invalid data", details: validationResult.error.format() },
+        { status: 400 }
+      )
+    }
+    
+    const plantData = validationResult.data
+    
+    if (!plantData.id) {
+      return NextResponse.json({ error: "Plant ID is required" }, { status: 400 })
+    }
+    
+    // Verify the garden belongs to the user
+    const garden = await prisma.userGardens.findFirst({
+      where: {
+        userId,
+        id: plantData.gardenId
+      }
+    })
+    
+    if (!garden) {
+      return NextResponse.json({ error: "Garden not found" }, { status: 404 })
+    }
+    
+    // Verify the plant exists and belongs to this garden
+    const existingPlant = await prisma.userPlants.findFirst({
+      where: {
+        id: plantData.id,
+        gardenId: plantData.gardenId
+      }
+    })
+    
+    if (!existingPlant) {
+      return NextResponse.json({ error: "Plant not found" }, { status: 404 })
+    }
+    
+    // Update plant tracking entry
+    const updatedPlant = await prisma.userPlants.update({
+      where: { id: plantData.id },
+      data: {
+        customName: plantData.customName,
+        botanicalName: plantData.botanicalName,
+        status: plantData.status,
+        careLogs: plantData.careLogs,
+        images: plantData.images,
+        locationTags: plantData.locationTags,
+      }
+    })
+    
+    revalidatePath('/api/plant-tracking')
+    
+    return NextResponse.json({ plant: updatedPlant }, {
+      headers: {
+        'Cache-Control': 'private, no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    })
+  } catch (error) {
+    console.error("Error updating plant tracking:", error)
     return NextResponse.json(
       { error: "Failed to update plant tracking data" },
       { status: 500 }
-    );
+    )
   }
-} 
+}

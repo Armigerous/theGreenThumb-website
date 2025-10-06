@@ -1,0 +1,709 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+// Lookup Tables
+model LandscapeLocationLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("landscape_location_lookup")
+}
+
+model StemSurfaceLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("stem_surface_lookup")
+}
+
+model StemBudScalesLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("stem_bud_scales_lookup")
+}
+
+model FlowerInflorescenceLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("flower_inflorescence_lookup")
+}
+
+model PlantTypesLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("plant_types_lookup")
+}
+
+model TagsLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("tags_lookup")
+}
+
+model Emails {
+  email String @id
+
+  @@map("emails")
+}
+
+model LeafColorLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("leaf_color_lookup")
+}
+
+model SoilPhLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("soil_ph_lookup")
+}
+
+model LeafMarginLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("leaf_margin_lookup")
+}
+
+model FruitLengthLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("fruit_length_lookup")
+}
+
+model LeafFeelLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("leaf_feel_lookup")
+}
+
+model LandscapeThemeLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("landscape_theme_lookup")
+}
+
+model BarkColorLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("bark_color_lookup")
+}
+
+model GrowthRateLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("growth_rate_lookup")
+}
+
+model SoilDrainageLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("soil_drainage_lookup")
+}
+
+model FlowerValueToGardenerLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("flower_value_to_gardener_lookup")
+}
+
+model PropagationLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("propagation_lookup")
+}
+
+model Posts {
+  id          BigInt  @id @default(autoincrement())
+  title       String
+  slug        String?
+  category    String?
+  description String?
+  body        String?
+
+  @@map("posts")
+}
+
+model LeafValueToGardenerLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("leaf_value_to_gardener_lookup")
+}
+
+model StemCrossSectionLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("stem_cross_section_lookup")
+}
+
+model FruitColorLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("fruit_color_lookup")
+}
+
+model FruitWidthLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("fruit_width_lookup")
+}
+
+model PoisonSeverityLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("poison_severity_lookup")
+}
+
+model TextureLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("texture_lookup")
+}
+
+model DesignFeatureLookup {
+  id   Int    @id
+  name String?
+
+  @@map("design_feature_lookup")
+}
+
+model BarkAttachmentLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("bark_attachment_lookup")
+}
+
+model TipsTricks {
+  id            BigInt    @id @default(autoincrement())
+  title         String
+  slug          String    @unique
+  views         Int       @default(0)
+  authorId      String    @map("author_id")
+  mainImageUrl  String?   @map("main_image_url")
+  publishedAt   DateTime? @map("published_at")
+  description   String?
+  body          Json?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@map("tips_tricks")
+}
+
+model LeafCharacteristicsLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("leaf_characteristics_lookup")
+}
+
+model FlowerBloomTimeLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("flower_bloom_time_lookup")
+}
+
+model LeafFallColorLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("leaf_fall_color_lookup")
+}
+
+model StemFormLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("stem_form_lookup")
+}
+
+model FruitValueToGardenerLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("fruit_value_to_gardener_lookup")
+}
+
+model FireRiskLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("fire_risk_lookup")
+}
+
+model PoisonDermatitisLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("poison_dermatitis_lookup")
+}
+
+model FlowerSizeLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("flower_size_lookup")
+}
+
+model AvailableSpaceToPlantLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("available_space_to_plant_lookup")
+}
+
+model BarkPlateShapeLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("bark_plate_shape_lookup")
+}
+
+model FlowerShapeLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("flower_shape_lookup")
+}
+
+model HabitLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("habit_lookup")
+}
+
+model AttractsLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("attracts_lookup")
+}
+
+model LeafTypeLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("leaf_type_lookup")
+}
+
+model FruitDisplayHarvestTimeLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("fruit_display_harvest_time_lookup")
+}
+
+model StemLeafScarShapeLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("stem_leaf_scar_shape_lookup")
+}
+
+model StemAromaticLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("stem_aromatic_lookup")
+}
+
+model NcRegionLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("nc_region_lookup")
+}
+
+model LeafHairsPresentLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("leaf_hairs_present_lookup")
+}
+
+model GardenSpacesLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("garden_spaces_lookup")
+}
+
+model FlowerPetalsLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("flower_petals_lookup")
+}
+
+model ResistanceToChallengesLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("resistance_to_challenges_lookup")
+}
+
+model MaintenanceLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("maintenance_lookup")
+}
+
+model FruitTypeLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("fruit_type_lookup")
+}
+
+model StemLenticelsLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("stem_lenticels_lookup")
+}
+
+model StemBudsLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("stem_buds_lookup")
+}
+
+model UsdaZoneLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("usda_zone_lookup")
+}
+
+model LeafArrangementLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("leaf_arrangement_lookup")
+}
+
+model LeafLengthLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("leaf_length_lookup")
+}
+
+model LifeCycleLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("life_cycle_lookup")
+}
+
+model CachedResponses {
+  id        Int      @id @default(autoincrement())
+  query     String
+  response  String
+  context   String?
+  embedding Unsupported("vector(1536)")?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("cached_responses")
+}
+
+model StemPithLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("stem_pith_lookup")
+}
+
+model ProblemsLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("problems_lookup")
+}
+
+model LightLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("light_lookup")
+}
+
+model Embeddings {
+  id        String  @id @db.VarChar(191)
+  resourceId String? @map("resource_id") @db.VarChar(191)
+  content   String
+  embedding Unsupported("vector(1536)")
+
+  @@map("embeddings")
+}
+
+model StemBudTerminalLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("stem_bud_terminal_lookup")
+}
+
+model LeafWidthLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("leaf_width_lookup")
+}
+
+model LeafShapeLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("leaf_shape_lookup")
+}
+
+model FlowerColorLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("flower_color_lookup")
+}
+
+model PoisonPartLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("poison_part_lookup")
+}
+
+model StemColorLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("stem_color_lookup")
+}
+
+model SoilTextureLookup {
+  id   BigInt @id @default(autoincrement())
+  name String?
+
+  @@map("soil_texture_lookup")
+}
+
+// Main Plant Data Table
+model MainPlantData {
+  id                        Int      @id @default(autoincrement())
+  slug                      String   @unique
+  scientificName            String   @map("scientific_name")
+  genus                     String?
+  species                   String?
+  family                    String?
+  soundFile                 String?  @map("sound_file")
+  phoneticSpelling          String?  @map("phonetic_spelling")
+  profileVideo              String?  @map("profile_video")
+  description               String?
+  origin                    String?
+  distribution              String?
+  uses                      String?
+  wildlifeValue             String?  @map("wildlife_value")
+  edibility                 String?
+  flowerDescription         String?  @map("flower_description")
+  leafDescription           String?  @map("leaf_description")
+  fruitDescription          String?  @map("fruit_description")
+  stemDescription           String?  @map("stem_description")
+  barkDescription           String?  @map("bark_description")
+  poisonSymptoms            String?  @map("poison_symptoms")
+  poisonToxicPrinciple      String?  @map("poison_toxic_principle")
+  heightMax                 Int?     @map("height_max")
+  heightMin                 Int?     @map("height_min")
+  widthMax                  Int?     @map("width_max")
+  widthMin                  Int?     @map("width_min")
+  fireRiskId                BigInt?  @map("fire_risk_id")
+  flowerSizeId              BigInt?  @map("flower_size_id")
+  fruitLengthId             BigInt?  @map("fruit_length_id")
+  fruitWidthId              BigInt?  @map("fruit_width_id")
+  gardenSpacesId            BigInt?  @map("garden_spaces_id")
+  growthRateId              BigInt?  @map("growth_rate_id")
+  leafHairsPresentId        BigInt?  @map("leaf_hairs_present_id")
+  leafLengthId              BigInt?  @map("leaf_length_id")
+  leafWidthId               BigInt?  @map("leaf_width_id")
+  poisonDermatitisId        BigInt?  @map("poison_dermatitis_id")
+  poisonSeverityId          BigInt?  @map("poison_severity_id")
+  stemAromaticId            BigInt?  @map("stem_aromatic_id")
+  stemBudScaleId            BigInt?  @map("stem_bud_scale_id")
+  stemBudTerminalId         BigInt?  @map("stem_bud_terminal_id")
+  stemBudsId                BigInt?  @map("stem_buds_id")
+  stemCrossSectionId        BigInt?  @map("stem_cross_section_id")
+  stemFormId                BigInt?  @map("stem_form_id")
+  stemLeafScarShapeId       BigInt?  @map("stem_leaf_scar_shape_id")
+  stemLenticelsId           BigInt?  @map("stem_lenticels_id")
+  stemPithId                BigInt?  @map("stem_pith_id")
+  stemSurfaceId             BigInt?  @map("stem_surface_id")
+  textureId                 BigInt?  @map("texture_id")
+  attractsIds               Json     @default("[]") @map("attracts_ids")
+  availableSpaceToPlantIds  Json     @default("[]") @map("available_space_to_plant_ids")
+  barkAttachmentIds         Json     @default("[]") @map("bark_attachment_ids")
+  barkColorIds              Json     @default("[]") @map("bark_color_ids")
+  barkPlateShapeIds         Json     @default("[]") @map("bark_plate_shape_ids")
+  designFeatureIds          Json     @default("[]") @map("design_feature_ids")
+  flowerBloomTimeIds        Json     @default("[]") @map("flower_bloom_time_ids")
+  flowerColorIds            Json     @default("[]") @map("flower_color_ids")
+  flowerInflorescenceIds    Json     @default("[]") @map("flower_inflorescence_ids")
+  flowerPetalsIds           Json     @default("[]") @map("flower_petals_ids")
+  flowerShapeIds            Json     @default("[]") @map("flower_shape_ids")
+  flowerValueToGardenerIds  Json     @default("[]") @map("flower_value_to_gardener_ids")
+  fruitColorIds             Json     @default("[]") @map("fruit_color_ids")
+  fruitDisplayHarvestTimeIds Json    @default("[]") @map("fruit_display_harvest_time_ids")
+  fruitTypeIds              Json     @default("[]") @map("fruit_type_ids")
+  fruitValueToGardenerIds   Json     @default("[]") @map("fruit_value_to_gardener_ids")
+  habitIds                  Json     @default("[]") @map("habit_ids")
+  landscapeLocationIds      Json     @default("[]") @map("landscape_location_ids")
+  landscapeThemeIds         Json     @default("[]") @map("landscape_theme_ids")
+  leafArrangementIds        Json     @default("[]") @map("leaf_arrangement_ids")
+  leafCharacteristicsIds    Json     @default("[]") @map("leaf_characteristics_ids")
+  leafColorIds              Json     @default("[]") @map("leaf_color_ids")
+  leafFallColorIds          Json     @default("[]") @map("leaf_fall_color_ids")
+  leafFeelIds               Json     @default("[]") @map("leaf_feel_ids")
+  leafMarginIds             Json     @default("[]") @map("leaf_margin_ids")
+  leafShapeIds              Json     @default("[]") @map("leaf_shape_ids")
+  leafTypeIds               Json     @default("[]") @map("leaf_type_ids")
+  leafValueToGardenerIds    Json     @default("[]") @map("leaf_value_to_gardener_ids")
+  lifeCycleIds              Json     @default("[]") @map("life_cycle_ids")
+  lightIds                  Json     @default("[]") @map("light_ids")
+  maintenanceIds            Json     @default("[]") @map("maintenance_ids")
+  ncRegionIds               Json     @default("[]") @map("nc_region_ids")
+  plantTypesIds             Json     @default("[]") @map("plant_types_ids")
+  poisonPartIds             Json     @default("[]") @map("poison_part_ids")
+  problemsIds               Json     @default("[]") @map("problems_ids")
+  propagationIds            Json     @default("[]") @map("propagation_ids")
+  resistanceToChallengesIds Json     @default("[]") @map("resistance_to_challenges_ids")
+  soilDrainageIds           Json     @default("[]") @map("soil_drainage_ids")
+  soilPhIds                 Json     @default("[]") @map("soil_ph_ids")
+  soilTextureIds            Json     @default("[]") @map("soil_texture_ids")
+  stemColorIds              Json     @default("[]") @map("stem_color_ids")
+  tagsIds                   Json     @default("[]") @map("tags_ids")
+  usdaZoneIds               Json     @default("[]") @map("usda_zone_ids")
+  commonNames               Json     @default("[]") @map("common_names")
+  synonyms                  Json     @default("[]")
+
+  // Relations
+  plantImages PlantImages[]
+  cultivars   Cultivars[]
+
+  @@map("main_plant_data")
+}
+
+model PlantImages {
+  id        Int     @id @default(autoincrement())
+  plantId   Int?    @map("plant_id")
+  img       String?
+  altText   String? @map("alt_text")
+  caption   String?
+  attribution String?
+
+  // Relations
+  plant MainPlantData? @relation(fields: [plantId], references: [id])
+
+  @@map("plant_images")
+}
+
+model Cultivars {
+  id          Int     @id @default(autoincrement())
+  plantId     Int?    @map("plant_id")
+  name        String?
+  description String?
+
+  // Relations
+  plant MainPlantData? @relation(fields: [plantId], references: [id])
+
+  @@map("cultivars")
+}
+
+model UserGardens {
+  id                      Int      @id @default(autoincrement())
+  userId                  String   @map("user_id")
+  name                    String
+  locationIds             Json     @default("[]") @map("location_ids")
+  spaceAvailableIds       Json     @default("[]") @map("space_available_ids")
+  sunlightIds             Json     @default("[]") @map("sunlight_ids")
+  soilTextureIds          Json     @default("[]") @map("soil_texture_ids")
+  soilDrainageIds         Json     @default("[]") @map("soil_drainage_ids")
+  soilPhIds               Json     @default("[]") @map("soil_ph_ids")
+  gardenThemeIds          Json     @default("[]") @map("garden_theme_ids")
+  wildlifeAttractionIds   Json     @default("[]") @map("wildlife_attraction_ids")
+  resistanceChallengeIds  Json     @default("[]") @map("resistance_challenge_ids")
+  problemsToExcludeIds    Json     @default("[]") @map("problems_to_exclude_ids")
+  growthRateId            BigInt?  @map("growth_rate_id")
+  maintenanceLevelId      BigInt?  @map("maintenance_level_id")
+  texturePreferenceId     BigInt?  @map("texture_preference_id")
+  userPlantsId            Json     @default("[]") @map("user_plants_id")
+  wantsRecommendations    Boolean  @default(true) @map("wants_recommendations")
+  ncRegionsIds            Json     @default("[]") @map("nc_regions_ids")
+  usdaZonesIds            Json     @default("[]") @map("usda_zones_ids")
+  flowerColorIds          Json     @default("[]") @map("flower_color_ids")
+  flowerBloomTimeIds      Json     @default("[]") @map("flower_bloom_time_ids")
+  flowerValueIds          Json     @default("[]") @map("flower_value_ids")
+  leafColorIds            Json     @default("[]") @map("leaf_color_ids")
+  leafFeelIds             Json     @default("[]") @map("leaf_feel_ids")
+  leafValueIds            Json     @default("[]") @map("leaf_value_ids")
+  fallColorIds            Json     @default("[]") @map("fall_color_ids")
+  habitFormIds            Json     @default("[]") @map("habit_form_ids")
+  plantTypeIds            Json     @default("[]") @map("plant_type_ids")
+  yearRoundInterest       Boolean  @default(false) @map("year_round_interest")
+  designFeatureIds        Json     @default("[]") @map("design_feature_ids")
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  userPlants UserPlants[]
+
+  @@map("user_gardens")
+}
+
+model UserPlants {
+  id           String   @id
+  gardenId     Int      @map("garden_id")
+  customName   String   @map("custom_name")
+  botanicalName String  @map("botanical_name")
+  status       String
+  careLogs     Json     @default("[]") @map("care_logs")
+  images       Json     @default("[]")
+  locationTags Json     @default("[]") @map("location_tags")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  garden UserGardens @relation(fields: [gardenId], references: [id])
+
+  @@map("user_plants")
+}

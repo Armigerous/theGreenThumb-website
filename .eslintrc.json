@@ -1,11 +1,12 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"],
-  "overrides": [
-    {
-      "files": ["next-sitemap.config.js"],
-      "rules": {
-        "@typescript-eslint/no-var-requires": "off"
-      }
-    }
-  ]
+	"extends": ["next/core-web-vitals", "next/typescript"],
+	"ignorePatterns": ["lib/generated/**/*", "node_modules/**/*"],
+	"overrides": [
+		{
+			"files": ["next-sitemap.config.js"],
+			"rules": {
+				"@typescript-eslint/no-var-requires": "off"
+			}
+		}
+	]
 }

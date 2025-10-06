@@ -49,3 +49,4 @@ ai/*
 tasks/*
 .plan.md
 .cursorignore
+/lib/generated/prisma

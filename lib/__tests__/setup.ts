@@ -1,7 +1,7 @@
 /**
- * Vitest setup file for performance monitoring tests
+ * Vitest setup file for comprehensive testing
  * 
- * Provides global test configuration and mocks for browser APIs
+ * Provides global test configuration and mocks for browser APIs, database, and external services
  */
 
 import { vi } from 'vitest';
@@ -49,3 +49,32 @@ Object.defineProperty(global, 'performance', {
 const mockDate = new Date('2023-01-01T00:00:00Z')
 vi.useFakeTimers()
 vi.setSystemTime(mockDate)
+
+// Mock console methods to reduce test output noise
+global.console = {
+  ...console,
+  log: vi.fn(),
+  debug: vi.fn(),
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
+}
+
+// Mock Next.js specific globals
+global.NextRequest = class NextRequest {
+  constructor(public url: string, public init?: RequestInit) {}
+}
+
+global.NextResponse = {
+  json: vi.fn((data: any, init?: ResponseInit) => ({
+    status: init?.status || 200,
+    json: vi.fn().mockResolvedValue(data),
+    headers: new Headers(init?.headers),
+  })),
+}
+
+// Mock environment variables
+process.env.NODE_ENV = 'test'
+process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test'
+process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = 'test-key'
+process.env.CLERK_SECRET_KEY = 'test-secret'

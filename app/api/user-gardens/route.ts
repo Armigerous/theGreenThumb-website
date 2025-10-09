@@ -1,7 +1,6 @@
-import { prisma } from "@/lib/db/prisma"
 import { auth } from "@clerk/nextjs/server"
 import { NextRequest, NextResponse } from "next/server"
-import { revalidatePath } from "next/cache"
+import { UserGardenService } from "@/lib/services"
 
 // Route Segment Config
 export const dynamic = 'force-dynamic' // Always fetch fresh data for user-specific content
@@ -15,12 +14,8 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
     
-    const settings = await prisma.userGardens.findFirst({
-      where: { userId },
-      include: {
-        userPlants: true,
-      }
-    })
+    // Reason: Use service layer to get user garden settings
+    const settings = await UserGardenService.getUserGardenSettings(userId)
 
     if (!settings) {
       return NextResponse.json({ settings: null })
@@ -54,72 +49,10 @@ export async function POST(request: NextRequest) {
     
     const data = await request.json()
     
-    // Log the received data for debugging
-    console.log("Received user gardens data:", data)
+    // Reason: Use service layer to save user garden settings
+    const result = await UserGardenService.saveUserGardenSettings(userId, data)
     
-    // Check if settings already exist for this user
-    const existingSettings = await prisma.userGardens.findFirst({
-      where: { userId }
-    })
-    
-    // Prepare garden data - Prisma will handle the JSON fields automatically
-    const gardenData = {
-      userId: userId,
-      name: data.name || "Default Garden",
-      
-      // Store as JSON arrays - frontend should send the correct format
-      locationIds: data.locationIds || [],
-      spaceAvailableIds: data.spaceAvailableIds || [],
-      soilPhIds: data.soilPhIds || [],
-      soilTextureIds: data.soilTextureIds || [],
-      soilDrainageIds: data.soilDrainageIds || [],
-      usdaZonesIds: data.usda_zones_ids || [],
-      ncRegionsIds: data.ncRegionsIds || [],
-      sunlightIds: data.sunlightIds || [],
-      gardenThemeIds: data.gardenThemeIds || [],
-      wildlifeAttractionIds: data.wildlifeAttractionIds || [],
-      resistanceChallengeIds: data.resistanceChallengeIds || [],
-      problemsToExcludeIds: data.problemsToExcludeIds || [],
-      growthRateId: data.growthRateId || null,
-      maintenanceLevelId: data.maintenanceLevelId || null,
-      texturePreferenceId: data.texturePreferenceId || null,
-      userPlantsId: data.specificPlantIds || [],
-      wantsRecommendations: data.wantsRecommendations ?? true,
-      // Additional fields
-      habitFormIds: data.habitFormIds || [],
-      plantTypeIds: data.plantTypeIds || [],
-      yearRoundInterest: data.yearRoundInterest ?? false,
-      flowerColorIds: data.flowerColorIds || [],
-      flowerBloomTimeIds: data.flowerBloomTimeIds || [],
-      flowerValueIds: data.flowerValueIds || [],
-      leafFeelIds: data.leafFeelIds || [],
-      leafColorIds: data.leafColorIds || [],
-      leafValueIds: data.leafValueIds || [],
-      fallColorIds: data.fallColorIds || [],
-      designFeatureIds: data.designFeatureIds || [],
-    }
-    
-    if (existingSettings) {
-      // Update existing settings
-      await prisma.userGardens.update({
-        where: { id: existingSettings.id },
-        data: gardenData
-      })
-      
-      console.log("Updated user gardens for user:", userId)
-    } else {
-      // Create new settings
-      await prisma.userGardens.create({
-        data: gardenData
-      })
-      
-      console.log("Created new user gardens for user:", userId)
-    }
-    
-    // Revalidate the user gardens path
-    revalidatePath('/api/user-gardens')
-    
-    return NextResponse.json({ success: true }, {
+    return NextResponse.json(result, {
       headers: {
         'Cache-Control': 'private, no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',

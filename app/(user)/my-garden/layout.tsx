@@ -1,9 +1,13 @@
-import { MaxWidthWrapper } from "@/components/maxWidthWrapper";
-
+/**
+ * My Garden Layout Component
+ *
+ * Reason: Provides specific layout for my-garden pages
+ * Authentication is handled by the parent user layout
+ */
 export default function MyGardenLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return <MaxWidthWrapper className="pt-8">{children}</MaxWidthWrapper>;
+	return <>{children}</>;
 }

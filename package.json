@@ -1,5 +1,5 @@
 {
-	"name": "website",
+	"name": "greenthumb-website",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
@@ -68,6 +68,7 @@
 		"@vercel/postgres": "^0.10.0",
 		"@vercel/speed-insights": "^1.1.0",
 		"ai": "^4.3.19",
+		"animejs": "^4.2.2",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"cmdk": "^1.0.0",
@@ -112,6 +113,7 @@
 	},
 	"devDependencies": {
 		"@lhci/cli": "^0.13.0",
+		"@types/animejs": "^3.1.13",
 		"@types/markdown-it": "^14.1.2",
 		"@types/node": "^20",
 		"@types/react": "^18",

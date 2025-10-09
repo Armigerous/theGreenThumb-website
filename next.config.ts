@@ -86,7 +86,10 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     // Reason: Optimize image loading for better LCP performance
     loader: "default",
-    unoptimized: false, // Reason: Enable optimization for better performance
+    // Reason: Disabled to stay within Vercel free tier limits (5k transformations/month)
+    // Current traffic: 1.5k visitors/month - optimization was causing limit issues
+    // To re-enable when revenue allows: set unoptimized: false
+    unoptimized: true,
   },
 };
 

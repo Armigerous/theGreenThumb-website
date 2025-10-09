@@ -1,709 +1,1543 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
   output   = "../lib/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRES_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
-// Lookup Tables
-model LandscapeLocationLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model attracts_lookup {
+  id   BigInt  @id(map: "attractsLookup_pkey")
   name String?
-
-  @@map("landscape_location_lookup")
 }
 
-model StemSurfaceLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model available_space_to_plant_lookup {
+  id           BigInt         @id(map: "availableSpaceToPlanLookup_pkey")
+  name         String?
+  user_gardens user_gardens[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model bark_attachment_lookup {
+  id   BigInt  @id(map: "barkAttachmentLookup_pkey")
   name String?
-
-  @@map("stem_surface_lookup")
 }
 
-model StemBudScalesLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model bark_color_lookup {
+  id   BigInt  @id(map: "barkColorLookup_pkey")
   name String?
-
-  @@map("stem_bud_scales_lookup")
 }
 
-model FlowerInflorescenceLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model bark_plate_shape_lookup {
+  id   BigInt  @id(map: "barkPlateShapeLookup_pkey")
   name String?
-
-  @@map("flower_inflorescence_lookup")
 }
 
-model PlantTypesLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model cached_responses {
+  id         Int                    @id @default(autoincrement())
+  query      String
+  response   String
+  context    String?
+  embedding  Unsupported("vector")?
+  created_at DateTime?              @default(now()) @db.Timestamptz(6)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model cultivars {
+  plant_id        Int?             @db.SmallInt
+  name            String?
+  description     String?
+  id              Int              @id @default(autoincrement()) @db.SmallInt
+  main_plant_data main_plant_data? @relation(fields: [plant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([plant_id], map: "idx_cultivars_plantid")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model design_feature_lookup {
+  id   Int     @id(map: "designFeatureLookup_pkey") @db.SmallInt
   name String?
-
-  @@map("plant_types_lookup")
 }
 
-model TagsLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model emails {
+  email String @id(map: "Emails_pkey")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model embeddings {
+  id          String                @id @db.VarChar(191)
+  resource_id String?               @db.VarChar(191)
+  content     String
+  embedding   Unsupported("vector")
+
+  @@index([embedding], map: "embeddingIndex")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model fire_risk_lookup {
+  id              BigInt            @id(map: "fireRiskLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model flower_bloom_time_lookup {
+  id   BigInt  @id(map: "flowerBloomTimeLookup_pkey")
   name String?
-
-  @@map("tags_lookup")
 }
 
-model Emails {
-  email String @id
-
-  @@map("emails")
-}
-
-model LeafColorLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model flower_color_lookup {
+  id   BigInt  @id(map: "flowerColorLookup_pkey")
   name String?
-
-  @@map("leaf_color_lookup")
 }
 
-model SoilPhLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model flower_inflorescence_lookup {
+  id   BigInt  @id(map: "flowerInflorescenceLookup_pkey")
   name String?
-
-  @@map("soil_ph_lookup")
 }
 
-model LeafMarginLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model flower_petals_lookup {
+  id   BigInt  @id(map: "flowerPetalsLookup_pkey")
   name String?
-
-  @@map("leaf_margin_lookup")
 }
 
-model FruitLengthLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model flower_shape_lookup {
+  id   BigInt  @id(map: "flowerShapeLookup_pkey")
   name String?
-
-  @@map("fruit_length_lookup")
 }
 
-model LeafFeelLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model flower_size_lookup {
+  id              BigInt            @id(map: "flowerSizeLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model flower_value_to_gardener_lookup {
+  id   BigInt  @id(map: "flowerValueToGardenerLookup_pkey")
   name String?
-
-  @@map("leaf_feel_lookup")
 }
 
-model LandscapeThemeLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model fruit_color_lookup {
+  id   BigInt  @id(map: "fruitColorLookup_pkey")
   name String?
-
-  @@map("landscape_theme_lookup")
 }
 
-model BarkColorLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model fruit_display_harvest_time_lookup {
+  id   BigInt  @id(map: "fruitDisplayHarvestTimeLookup_pkey")
   name String?
-
-  @@map("bark_color_lookup")
 }
 
-model GrowthRateLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model fruit_length_lookup {
+  id              BigInt            @id(map: "fruitLengthLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model fruit_type_lookup {
+  id   BigInt  @id(map: "fruitTypeLookup_pkey")
   name String?
-
-  @@map("growth_rate_lookup")
 }
 
-model SoilDrainageLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model fruit_value_to_gardener_lookup {
+  id   BigInt  @id(map: "fruitValueToGardenerLookup_pkey")
   name String?
-
-  @@map("soil_drainage_lookup")
 }
 
-model FlowerValueToGardenerLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model fruit_width_lookup {
+  id              BigInt            @id(map: "fruitWidthLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model garden_spaces_lookup {
+  id              BigInt            @id(map: "gardenSpacesLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+model garden_theme_lookup {
+  id   BigInt @id
+  name String
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model growth_rate_lookup {
+  id              BigInt            @id(map: "growthRateLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model habit_lookup {
+  id   BigInt  @id(map: "habitLookup_pkey")
   name String?
-
-  @@map("flower_value_to_gardener_lookup")
 }
 
-model PropagationLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model landscape_location_lookup {
+  id   BigInt  @id(map: "landscapeLocationLookup_pkey")
   name String?
-
-  @@map("propagation_lookup")
 }
 
-model Posts {
-  id          BigInt  @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model landscape_theme_lookup {
+  id   BigInt  @id(map: "landscapeThemeLookup_pkey")
+  name String?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model leaf_arrangement_lookup {
+  id   BigInt  @id(map: "leafArrangementLookup_pkey")
+  name String?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model leaf_characteristics_lookup {
+  id   BigInt  @id(map: "leafCharacteristicsLookup_pkey")
+  name String?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model leaf_color_lookup {
+  id   BigInt  @id(map: "leafColorLookup_pkey")
+  name String?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model leaf_fall_color_lookup {
+  id   BigInt  @id(map: "leafFallColorLookup_pkey")
+  name String?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model leaf_feel_lookup {
+  id   BigInt  @id(map: "leafFeelLookup_pkey")
+  name String?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model leaf_hairs_present_lookup {
+  id              BigInt            @id(map: "leafHairsPresentLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model leaf_length_lookup {
+  id              BigInt            @id(map: "leafLengthLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model leaf_margin_lookup {
+  id   BigInt  @id(map: "leafMarginLookup_pkey")
+  name String?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model leaf_shape_lookup {
+  id   BigInt  @id(map: "leafShapeLookup_pkey")
+  name String?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model leaf_type_lookup {
+  id   BigInt  @id(map: "leafTypeLookup_pkey")
+  name String?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model leaf_value_to_gardener_lookup {
+  id   BigInt  @id(map: "leafValueToGardenerLookup_pkey")
+  name String?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model leaf_width_lookup {
+  id              BigInt            @id(map: "leafWidthLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model life_cycle_lookup {
+  id   BigInt  @id(map: "lifeCycleLookup_pkey")
+  name String?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model light_lookup {
+  id           BigInt         @id(map: "lightLookup_pkey")
+  name         String?
+  user_gardens user_gardens[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model main_plant_data {
+  id                                                                      Int                          @id(map: "main_plant_data_pkey1") @default(autoincrement())
+  slug                                                                    String                       @unique
+  scientific_name                                                         String
+  genus                                                                   String?
+  species                                                                 String?
+  family                                                                  String?
+  sound_file                                                              String?
+  phonetic_spelling                                                       String?
+  profile_video                                                           String?
+  description                                                             String?
+  origin                                                                  String?
+  distribution                                                            String?
+  uses                                                                    String?
+  wildlife_value                                                          String?
+  edibility                                                               String?
+  flower_description                                                      String?
+  leaf_description                                                        String?
+  fruit_description                                                       String?
+  stem_description                                                        String?
+  bark_description                                                        String?
+  poison_symptoms                                                         String?
+  poison_toxic_principle                                                  String?
+  height_max                                                              Int?
+  height_min                                                              Int?
+  width_max                                                               Int?
+  width_min                                                               Int?
+  fire_risk_id                                                            BigInt?
+  flower_size_id                                                          BigInt?
+  fruit_length_id                                                         BigInt?
+  fruit_width_id                                                          BigInt?
+  garden_spaces_id                                                        BigInt?
+  growth_rate_id                                                          BigInt?
+  leaf_hairs_present_id                                                   BigInt?
+  leaf_length_id                                                          BigInt?
+  leaf_width_id                                                           BigInt?
+  poison_dermatitis_id                                                    BigInt?
+  poison_severity_id                                                      BigInt?
+  stem_aromatic_id                                                        BigInt?
+  stem_bud_scale_id                                                       BigInt?
+  stem_bud_terminal_id                                                    BigInt?
+  stem_buds_id                                                            BigInt?
+  stem_cross_section_id                                                   BigInt?
+  stem_form_id                                                            BigInt?
+  stem_leaf_scar_shape_id                                                 BigInt?
+  stem_lenticels_id                                                       BigInt?
+  stem_pith_id                                                            BigInt?
+  stem_surface_id                                                         BigInt?
+  texture_id                                                              BigInt?
+  attracts_ids                                                            Json?                        @default("[]")
+  available_space_to_plant_ids                                            Json?                        @default("[]")
+  bark_attachment_ids                                                     Json?                        @default("[]")
+  bark_color_ids                                                          Json?                        @default("[]")
+  bark_plate_shape_ids                                                    Json?                        @default("[]")
+  design_feature_ids                                                      Json?                        @default("[]")
+  flower_bloom_time_ids                                                   Json?                        @default("[]")
+  flower_color_ids                                                        Json?                        @default("[]")
+  flower_inflorescence_ids                                                Json?                        @default("[]")
+  flower_petals_ids                                                       Json?                        @default("[]")
+  flower_shape_ids                                                        Json?                        @default("[]")
+  flower_value_to_gardener_ids                                            Json?                        @default("[]")
+  fruit_color_ids                                                         Json?                        @default("[]")
+  fruit_display_harvest_time_ids                                          Json?                        @default("[]")
+  fruit_type_ids                                                          Json?                        @default("[]")
+  fruit_value_to_gardener_ids                                             Json?                        @default("[]")
+  habit_ids                                                               Json?                        @default("[]")
+  landscape_location_ids                                                  Json?                        @default("[]")
+  landscape_theme_ids                                                     Json?                        @default("[]")
+  leaf_arrangement_ids                                                    Json?                        @default("[]")
+  leaf_characteristics_ids                                                Json?                        @default("[]")
+  leaf_color_ids                                                          Json?                        @default("[]")
+  leaf_fall_color_ids                                                     Json?                        @default("[]")
+  leaf_feel_ids                                                           Json?                        @default("[]")
+  leaf_margin_ids                                                         Json?                        @default("[]")
+  leaf_shape_ids                                                          Json?                        @default("[]")
+  leaf_type_ids                                                           Json?                        @default("[]")
+  leaf_value_to_gardener_ids                                              Json?                        @default("[]")
+  life_cycle_ids                                                          Json?                        @default("[]")
+  light_ids                                                               Json?                        @default("[]")
+  maintenance_ids                                                         Json?                        @default("[]")
+  nc_region_ids                                                           Json?                        @default("[]")
+  plant_types_ids                                                         Json?                        @default("[]")
+  poison_part_ids                                                         Json?                        @default("[]")
+  problems_ids                                                            Json?                        @default("[]")
+  propagation_ids                                                         Json?                        @default("[]")
+  resistance                                                              Json?                        @default("[]")
+  soil_drainage_ids                                                       Json?                        @default("[]")
+  soil_ph_ids                                                             Json?                        @default("[]")
+  soil_texture_ids                                                        Json?                        @default("[]")
+  stem_color_ids                                                          Json?                        @default("[]")
+  tags_ids                                                                Json?                        @default("[]")
+  usda_zone_ids                                                           Json?                        @default("[]")
+  common_names                                                            Json?                        @default("[]")
+  synonyms                                                                Json?                        @default("[]")
+  appendage                                                               String?
+  similar                                                                 Int[]
+  confused_with                                                           String?
+  native_alternative                                                      String?
+  common_insect_problems                                                  String?
+  common_disease_problems                                                 String?
+  other_plant_problems                                                    String?
+  bulb_storage                                                            String?
+  cultivars                                                               cultivars[]
+  fire_risk_lookup                                                        fire_risk_lookup?            @relation(fields: [fire_risk_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  flower_size_lookup                                                      flower_size_lookup?          @relation(fields: [flower_size_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  fruit_length_lookup                                                     fruit_length_lookup?         @relation(fields: [fruit_length_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  fruit_width_lookup                                                      fruit_width_lookup?          @relation(fields: [fruit_width_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  garden_spaces_lookup                                                    garden_spaces_lookup?        @relation(fields: [garden_spaces_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  growth_rate_lookup                                                      growth_rate_lookup?          @relation(fields: [growth_rate_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  leaf_hairs_present_lookup                                               leaf_hairs_present_lookup?   @relation(fields: [leaf_hairs_present_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  leaf_length_lookup                                                      leaf_length_lookup?          @relation(fields: [leaf_length_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  leaf_width_lookup                                                       leaf_width_lookup?           @relation(fields: [leaf_width_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  poison_dermatitis_lookup                                                poison_dermatitis_lookup?    @relation(fields: [poison_dermatitis_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  poison_severity_lookup                                                  poison_severity_lookup?      @relation(fields: [poison_severity_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  stem_aromatic_lookup                                                    stem_aromatic_lookup?        @relation(fields: [stem_aromatic_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  stem_bud_scales_lookup                                                  stem_bud_scales_lookup?      @relation(fields: [stem_bud_scale_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  stem_bud_terminal_lookup                                                stem_bud_terminal_lookup?    @relation(fields: [stem_bud_terminal_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  stem_buds_lookup                                                        stem_buds_lookup?            @relation(fields: [stem_buds_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  stem_cross_section_lookup                                               stem_cross_section_lookup?   @relation(fields: [stem_cross_section_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  stem_form_lookup                                                        stem_form_lookup?            @relation(fields: [stem_form_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  stem_leaf_scar_shape_lookup                                             stem_leaf_scar_shape_lookup? @relation(fields: [stem_leaf_scar_shape_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  stem_lenticels_lookup                                                   stem_lenticels_lookup?       @relation(fields: [stem_lenticels_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  stem_pith_lookup                                                        stem_pith_lookup?            @relation(fields: [stem_pith_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  stem_surface_lookup                                                     stem_surface_lookup?         @relation(fields: [stem_surface_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  texture_lookup                                                          texture_lookup?              @relation(fields: [texture_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  plant_images                                                            plant_images[]
+  plant_similarities_plant_similarities_plant_idTomain_plant_data         plant_similarities[]         @relation("plant_similarities_plant_idTomain_plant_data")
+  plant_similarities_plant_similarities_similar_plant_idTomain_plant_data plant_similarities[]         @relation("plant_similarities_similar_plant_idTomain_plant_data")
+  user_plants                                                             user_plants[]
+
+  @@index([fire_risk_id], map: "idx_main_plant_data_fire_risk_id")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model maintenance_lookup {
+  id           BigInt         @id(map: "maintenanceLookup_pkey")
+  name         String?
+  user_gardens user_gardens[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model nc_climate_county {
+  county_id                                                        Int                 @id
+  zone_min_id                                                      BigInt
+  zone_max_id                                                      BigInt
+  last_spring_frost_doy                                            Int                 @db.SmallInt
+  first_fall_frost_doy                                             Int                 @db.SmallInt
+  avg_annual_precip_mm                                             Decimal             @db.Decimal
+  snowfall_cm                                                      Decimal?            @db.Decimal
+  soil_texture_id                                                  BigInt
+  notes                                                            String?
+  region_id                                                        BigInt?
+  nc_counties                                                      nc_counties         @relation(fields: [county_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  nc_region_lookup                                                 nc_region_lookup?   @relation(fields: [region_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  soil_texture_lookup                                              soil_texture_lookup @relation(fields: [soil_texture_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usda_zone_lookup_nc_climate_county_zone_max_idTousda_zone_lookup usda_zone_lookup    @relation("nc_climate_county_zone_max_idTousda_zone_lookup", fields: [zone_max_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usda_zone_lookup_nc_climate_county_zone_min_idTousda_zone_lookup usda_zone_lookup    @relation("nc_climate_county_zone_min_idTousda_zone_lookup", fields: [zone_min_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model nc_counties {
+  id                Int                @id @default(autoincrement())
+  name              String             @unique
+  nc_climate_county nc_climate_county?
+  user_gardens      user_gardens[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model nc_region_lookup {
+  id                BigInt              @id(map: "ncRegionLookup_pkey")
+  name              String?
+  nc_climate_county nc_climate_county[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model payment_history {
+  id                       String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id                  String
+  user_subscription_id     String?             @db.Uuid
+  stripe_payment_intent_id String?
+  stripe_invoice_id        String?
+  amount_cents             Int
+  currency                 String?             @default("usd")
+  status                   String
+  description              String?
+  created_at               DateTime?           @default(now()) @db.Timestamptz(6)
+  user_subscriptions       user_subscriptions? @relation(fields: [user_subscription_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_payment_history_user_id")
+  @@index([user_subscription_id], map: "idx_payment_history_user_subscription_id")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model plant_care_logs {
+  id            Int      @id @default(autoincrement())
+  user_plant_id String?  @db.Uuid
+  image         String
+  care_notes    String?
+  taken_care_at DateTime @default(now()) @db.Timestamptz(6)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model plant_images {
+  plant_id        Int?             @db.SmallInt
+  img             String?
+  alt_text        String?
+  caption         String?
+  attribution     String?
+  id              Int              @id(map: "plantImages_pkey") @default(autoincrement()) @db.SmallInt
+  main_plant_data main_plant_data? @relation(fields: [plant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([plant_id], map: "idx_plant_images_plant_id")
+  @@index([plant_id], map: "idx_plantimages_plantid")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model plant_missing_details {
+  id                      BigInt  @id
+  appendage               String?
+  similar                 String?
+  confused_with           String?
+  native_alternative      String?
+  common_insect_problems  String?
+  common_disease_problems String?
+  other_plant_problems    String?
+  resistance              String?
+  bulb_storage            String?
+}
+
+model plant_similarities {
+  plant_id                                                             Int
+  similar_plant_id                                                     Int
+  main_plant_data_plant_similarities_plant_idTomain_plant_data         main_plant_data @relation("plant_similarities_plant_idTomain_plant_data", fields: [plant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  main_plant_data_plant_similarities_similar_plant_idTomain_plant_data main_plant_data @relation("plant_similarities_similar_plant_idTomain_plant_data", fields: [similar_plant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([plant_id, similar_plant_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model plant_tasks {
+  id            Int         @id @default(autoincrement())
+  user_plant_id String      @db.Uuid
+  task_type     String
+  due_date      DateTime    @db.Timestamptz(6)
+  completed     Boolean     @default(false)
+  metadata      Json?
+  user_plants   user_plants @relation(fields: [user_plant_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_plant")
+
+  @@index([completed], map: "idx_plant_tasks_completed")
+  @@index([due_date], map: "idx_plant_tasks_due_date")
+  @@index([metadata], map: "idx_plant_tasks_metadata_gin", type: Gin)
+  @@index([user_plant_id], map: "idx_plant_tasks_user_plant_id")
+}
+
+model plant_type_lookup {
+  id   BigInt @id
+  name String
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model plant_types_lookup {
+  id   BigInt  @id(map: "plantTypesLookup_pkey")
+  name String?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model poison_dermatitis_lookup {
+  id              BigInt            @id(map: "poisonDermatitisLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model poison_part_lookup {
+  id   BigInt  @id(map: "poisonPartLookup_pkey")
+  name String?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model poison_severity_lookup {
+  id              BigInt            @id(map: "poisonSeverityLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model posts {
+  id          BigInt  @id(map: "Posts_pkey") @default(autoincrement())
   title       String
   slug        String?
   category    String?
   description String?
   body        String?
-
-  @@map("posts")
 }
 
-model LeafValueToGardenerLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model problems_lookup {
+  id   BigInt  @id(map: "problemsLookup_pkey")
   name String?
-
-  @@map("leaf_value_to_gardener_lookup")
 }
 
-model StemCrossSectionLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model propagation_lookup {
+  id   BigInt  @id(map: "propagationLookup_pkey")
   name String?
-
-  @@map("stem_cross_section_lookup")
 }
 
-model FruitColorLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model resistance_to_challenges_lookup {
+  id   BigInt  @id(map: "resistanceToChallengesLookup_pkey")
   name String?
-
-  @@map("fruit_color_lookup")
 }
 
-model FruitWidthLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model soil_drainage_lookup {
+  id   BigInt  @id(map: "soilDrainageLookup_pkey")
   name String?
-
-  @@map("fruit_width_lookup")
 }
 
-model PoisonSeverityLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model soil_ph_lookup {
+  id   BigInt  @id(map: "soilPhLookup_pkey")
   name String?
-
-  @@map("poison_severity_lookup")
 }
 
-model TextureLookup {
-  id   BigInt @id @default(autoincrement())
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model soil_texture_lookup {
+  id                BigInt              @id(map: "soilTextureLookup_pkey")
+  name              String?
+  nc_climate_county nc_climate_county[]
+  user_gardens      user_gardens[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model stem_aromatic_lookup {
+  id              BigInt            @id(map: "stemAromaticLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model stem_bud_scales_lookup {
+  id              BigInt            @id(map: "stemBudScalesLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model stem_bud_terminal_lookup {
+  id              BigInt            @id(map: "stemBudTerminalLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model stem_buds_lookup {
+  id              BigInt            @id(map: "stemBudsLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model stem_color_lookup {
+  id   BigInt  @id(map: "stemColorLookup_pkey")
   name String?
-
-  @@map("texture_lookup")
 }
 
-model DesignFeatureLookup {
-  id   Int    @id
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model stem_cross_section_lookup {
+  id              BigInt            @id(map: "stemCrossSectionLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model stem_form_lookup {
+  id              BigInt            @id(map: "stemFormLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model stem_leaf_scar_shape_lookup {
+  id              BigInt            @id(map: "stemLeafScarShapeLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model stem_lenticels_lookup {
+  id              BigInt            @id(map: "stemLenticelsLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model stem_pith_lookup {
+  id              BigInt            @id(map: "stemPithLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model stem_surface_lookup {
+  id              BigInt            @id(map: "stemSurfaceLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model subscription_addons {
+  id                       String                     @id
+  name                     String
+  description              String?
+  price_cents              Int
+  stripe_price_id          String?                    @unique
+  is_active                Boolean?                   @default(true)
+  created_at               DateTime?                  @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime?                  @default(now()) @db.Timestamptz(6)
+  user_subscription_addons user_subscription_addons[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model subscription_plans {
+  id                 String               @id
+  name               String
+  description        String?
+  price_cents        Int
+  interval_type      String
+  interval_count     Int                  @default(1)
+  stripe_price_id    String?              @unique
+  features           Json?                @default("[]")
+  is_active          Boolean?             @default(true)
+  created_at         DateTime?            @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime?            @default(now()) @db.Timestamptz(6)
+  user_subscriptions user_subscriptions[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model tags_lookup {
+  id   BigInt  @id(map: "tagsLookup_pkey")
   name String?
-
-  @@map("design_feature_lookup")
 }
 
-model BarkAttachmentLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("bark_attachment_lookup")
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model texture_lookup {
+  id              BigInt            @id(map: "textureLookup_pkey")
+  name            String?
+  main_plant_data main_plant_data[]
+  user_gardens    user_gardens[]
 }
 
-model TipsTricks {
-  id            BigInt    @id @default(autoincrement())
-  title         String
-  slug          String    @unique
-  views         Int       @default(0)
-  authorId      String    @map("author_id")
-  mainImageUrl  String?   @map("main_image_url")
-  publishedAt   DateTime? @map("published_at")
-  description   String?
-  body          Json?
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model tips_tricks {
+  id             BigInt    @id(map: "blog_posts_pkey") @default(autoincrement())
+  title          String
+  slug           String    @unique(map: "blog_posts_slug_key")
+  views          Int?      @default(0)
+  author_id      String
+  main_image_url String?
+  published_at   DateTime? @db.Timestamptz(6)
+  description    String?
+  body           Json?
+  created_at     DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime? @default(now()) @db.Timestamptz(6)
 
-  @@map("tips_tricks")
+  @@index([slug], map: "blog_posts_slug_idx")
 }
 
-model LeafCharacteristicsLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("leaf_characteristics_lookup")
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model usda_zone_lookup {
+  id                                                                BigInt              @id(map: "usdaZoneLookup_pkey")
+  name                                                              String?
+  nc_climate_county_nc_climate_county_zone_max_idTousda_zone_lookup nc_climate_county[] @relation("nc_climate_county_zone_max_idTousda_zone_lookup")
+  nc_climate_county_nc_climate_county_zone_min_idTousda_zone_lookup nc_climate_county[] @relation("nc_climate_county_zone_min_idTousda_zone_lookup")
 }
 
-model FlowerBloomTimeLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user_gardens {
+  id                              Int                             @id @default(autoincrement())
+  user_id                         String                          @default(dbgenerated("requesting_user_id()"))
+  name                            String
+  landscape_location_ids          Json                            @default("[]")
+  soil_drainage_ids               Json                            @default("[]")
+  soil_ph_ids                     Json                            @default("[]")
+  landscape_theme_ids             Json                            @default("[]")
+  attracts_ids                    Json                            @default("[]")
+  resistance_to_challenges_ids    Json                            @default("[]")
+  problems_ids                    Json                            @default("[]")
+  maintenance_id                  BigInt
+  texture_id                      BigInt?
+  wants_recommendations           Boolean?                        @default(true)
+  nc_region_ids                   Json                            @default("[]")
+  usda_zone_ids                   Json                            @default("[]")
+  flower_color_ids                Json                            @default("[]")
+  flower_bloom_time_ids           Json                            @default("[]")
+  flower_value_to_gardener_ids    Json                            @default("[]")
+  leaf_color_ids                  Json                            @default("[]")
+  leaf_feel_ids                   Json                            @default("[]")
+  leaf_value_ids                  Json                            @default("[]")
+  fall_color_ids                  Json                            @default("[]")
+  habit_form_ids                  Json                            @default("[]")
+  plant_type_ids                  Json                            @default("[]")
+  design_feature_ids              Json                            @default("[]")
+  created_at                      DateTime                        @default(now()) @db.Timestamp(6)
+  updated_at                      DateTime                        @default(now()) @db.Timestamp(6)
+  light_id                        BigInt
+  soil_texture_id                 BigInt
+  available_space_to_plant_id     BigInt
+  growth_rate_ids                 Json                            @default("[]")
+  zip_code                        String?
+  city                            String?
+  elevation                       Decimal?                        @db.Decimal
+  urban_index                     Decimal?                        @db.Decimal
+  county_id                       Int?
+  nc_counties                     nc_counties?                    @relation(fields: [county_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_county_id")
+  available_space_to_plant_lookup available_space_to_plant_lookup @relation(fields: [available_space_to_plant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_gardens_available_space_id")
+  light_lookup                    light_lookup                    @relation(fields: [light_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_gardens_light_id")
+  soil_texture_lookup             soil_texture_lookup             @relation(fields: [soil_texture_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_gardens_soil_texture_id")
+  maintenance_lookup              maintenance_lookup              @relation(fields: [maintenance_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  texture_lookup                  texture_lookup?                 @relation(fields: [texture_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_plants                     user_plants[]
 
-  @@map("flower_bloom_time_lookup")
+  @@index([available_space_to_plant_id], map: "idx_user_gardens_available_space_id")
+  @@index([growth_rate_ids], map: "idx_user_gardens_growth_rate_ids", type: Gin)
+  @@index([light_id], map: "idx_user_gardens_light_id")
+  @@index([soil_texture_id], map: "idx_user_gardens_soil_texture_id")
+  @@index([user_id], map: "idx_user_gardens_user_id")
 }
 
-model LeafFallColorLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("leaf_fall_color_lookup")
+model user_gardens_flat {
+  id                    Int       @id
+  user_id               String
+  name                  String?
+  wants_recommendations Boolean?
+  zip_code              String?
+  city                  String?
+  county                String?
+  elevation             Decimal?  @db.Decimal
+  urban_index           Decimal?  @db.Decimal
+  created_at            DateTime? @db.Timestamp(6)
+  updated_at            DateTime? @db.Timestamp(6)
+  growth_rates          Json?
+  maintenance_level     String?
+  texture_preference    String?
+  available_space       String?
+  sunlight              String?
+  soil_texture          String?
+  soil_drainage         Json?
+  soil_ph               Json?
+  garden_themes         Json?
+  wildlife_attractions  Json?
+  resistance_challenges Json?
+  problems              Json?
+  nc_regions            Json?
+  usda_zones            Json?
+  flower_colors         Json?
+  flower_bloom_times    Json?
+  flower_values         Json?
+  leaf_colors           Json?
+  leaf_feels            Json?
+  leaf_values           Json?
+  fall_colors           Json?
+  habit_forms           Json?
+  plant_types           Json?
+  design_features       Json?
+  landscape_locations   Json?
+  plants                Json?     @default("[]")
 }
 
-model StemFormLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user_plants {
+  id              String          @id(map: "plant_tracking_pkey") @db.Uuid
+  garden_id       Int
+  nickname        String
+  plant_id        Int
+  care_logs       Json            @default("[]")
+  images          Json            @default("[]")
+  created_at      DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime        @default(now()) @db.Timestamptz(6)
+  plant_tasks     plant_tasks[]
+  user_gardens    user_gardens    @relation(fields: [garden_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_plant_tracking_garden_id")
+  main_plant_data main_plant_data @relation(fields: [plant_id], references: [id], onDelete: Cascade)
 
-  @@map("stem_form_lookup")
+  @@index([garden_id], map: "idx_plant_tracking_garden_id")
 }
 
-model FruitValueToGardenerLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("fruit_value_to_gardener_lookup")
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user_subscription_addons {
+  id                          String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_subscription_id        String              @db.Uuid
+  addon_id                    String
+  stripe_subscription_item_id String?
+  quantity                    Int?                @default(1)
+  created_at                  DateTime?           @default(now()) @db.Timestamptz(6)
+  updated_at                  DateTime?           @default(now()) @db.Timestamptz(6)
+  subscription_addons         subscription_addons @relation(fields: [addon_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_subscriptions          user_subscriptions  @relation(fields: [user_subscription_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-model FireRiskLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user_subscriptions {
+  id                       String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id                  String
+  subscription_plan_id     String
+  stripe_customer_id       String?
+  stripe_subscription_id   String?                    @unique
+  status                   String
+  current_period_start     DateTime?                  @db.Timestamptz(6)
+  current_period_end       DateTime?                  @db.Timestamptz(6)
+  cancel_at_period_end     Boolean?                   @default(false)
+  canceled_at              DateTime?                  @db.Timestamptz(6)
+  trial_start              DateTime?                  @db.Timestamptz(6)
+  trial_end                DateTime?                  @db.Timestamptz(6)
+  created_at               DateTime?                  @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime?                  @default(now()) @db.Timestamptz(6)
+  payment_history          payment_history[]
+  user_subscription_addons user_subscription_addons[]
+  subscription_plans       subscription_plans         @relation(fields: [subscription_plan_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@map("fire_risk_lookup")
+  @@index([status], map: "idx_user_subscriptions_status")
+  @@index([stripe_customer_id], map: "idx_user_subscriptions_stripe_customer_id")
+  @@index([stripe_subscription_id], map: "idx_user_subscriptions_stripe_subscription_id")
+  @@index([user_id], map: "idx_user_subscriptions_user_id")
 }
 
-model PoisonDermatitisLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user_usage {
+  id                         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id                    String    @unique
+  gardens_count              Int?      @default(0)
+  plants_count               Int?      @default(0)
+  photos_uploaded_this_month Int?      @default(0)
+  last_reset_date            DateTime? @default(now()) @db.Timestamptz(6)
+  created_at                 DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at                 DateTime? @default(now()) @db.Timestamptz(6)
 
-  @@map("poison_dermatitis_lookup")
+  @@index([last_reset_date], map: "idx_user_usage_last_reset_date")
+  @@index([user_id], map: "idx_user_usage_user_id")
 }
 
-model FlowerSizeLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("flower_size_lookup")
-}
-
-model AvailableSpaceToPlantLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("available_space_to_plant_lookup")
-}
-
-model BarkPlateShapeLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("bark_plate_shape_lookup")
-}
-
-model FlowerShapeLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("flower_shape_lookup")
-}
-
-model HabitLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("habit_lookup")
-}
-
-model AttractsLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("attracts_lookup")
-}
-
-model LeafTypeLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("leaf_type_lookup")
-}
-
-model FruitDisplayHarvestTimeLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("fruit_display_harvest_time_lookup")
-}
-
-model StemLeafScarShapeLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("stem_leaf_scar_shape_lookup")
-}
-
-model StemAromaticLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("stem_aromatic_lookup")
-}
-
-model NcRegionLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("nc_region_lookup")
-}
-
-model LeafHairsPresentLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("leaf_hairs_present_lookup")
-}
-
-model GardenSpacesLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("garden_spaces_lookup")
-}
-
-model FlowerPetalsLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("flower_petals_lookup")
-}
-
-model ResistanceToChallengesLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("resistance_to_challenges_lookup")
-}
-
-model MaintenanceLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("maintenance_lookup")
-}
-
-model FruitTypeLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("fruit_type_lookup")
-}
-
-model StemLenticelsLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("stem_lenticels_lookup")
-}
-
-model StemBudsLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("stem_buds_lookup")
-}
-
-model UsdaZoneLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("usda_zone_lookup")
-}
-
-model LeafArrangementLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("leaf_arrangement_lookup")
-}
-
-model LeafLengthLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("leaf_length_lookup")
-}
-
-model LifeCycleLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("life_cycle_lookup")
-}
-
-model CachedResponses {
-  id        Int      @id @default(autoincrement())
-  query     String
-  response  String
-  context   String?
-  embedding Unsupported("vector(1536)")?
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@map("cached_responses")
-}
-
-model StemPithLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("stem_pith_lookup")
-}
-
-model ProblemsLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("problems_lookup")
-}
-
-model LightLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("light_lookup")
-}
-
-model Embeddings {
-  id        String  @id @db.VarChar(191)
-  resourceId String? @map("resource_id") @db.VarChar(191)
-  content   String
-  embedding Unsupported("vector(1536)")
-
-  @@map("embeddings")
-}
-
-model StemBudTerminalLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("stem_bud_terminal_lookup")
-}
-
-model LeafWidthLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("leaf_width_lookup")
-}
-
-model LeafShapeLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("leaf_shape_lookup")
-}
-
-model FlowerColorLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("flower_color_lookup")
-}
-
-model PoisonPartLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("poison_part_lookup")
-}
-
-model StemColorLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("stem_color_lookup")
-}
-
-model SoilTextureLookup {
-  id   BigInt @id @default(autoincrement())
-  name String?
-
-  @@map("soil_texture_lookup")
-}
-
-// Main Plant Data Table
-model MainPlantData {
-  id                        Int      @id @default(autoincrement())
-  slug                      String   @unique
-  scientificName            String   @map("scientific_name")
-  genus                     String?
-  species                   String?
-  family                    String?
-  soundFile                 String?  @map("sound_file")
-  phoneticSpelling          String?  @map("phonetic_spelling")
-  profileVideo              String?  @map("profile_video")
-  description               String?
-  origin                    String?
-  distribution              String?
-  uses                      String?
-  wildlifeValue             String?  @map("wildlife_value")
-  edibility                 String?
-  flowerDescription         String?  @map("flower_description")
-  leafDescription           String?  @map("leaf_description")
-  fruitDescription          String?  @map("fruit_description")
-  stemDescription           String?  @map("stem_description")
-  barkDescription           String?  @map("bark_description")
-  poisonSymptoms            String?  @map("poison_symptoms")
-  poisonToxicPrinciple      String?  @map("poison_toxic_principle")
-  heightMax                 Int?     @map("height_max")
-  heightMin                 Int?     @map("height_min")
-  widthMax                  Int?     @map("width_max")
-  widthMin                  Int?     @map("width_min")
-  fireRiskId                BigInt?  @map("fire_risk_id")
-  flowerSizeId              BigInt?  @map("flower_size_id")
-  fruitLengthId             BigInt?  @map("fruit_length_id")
-  fruitWidthId              BigInt?  @map("fruit_width_id")
-  gardenSpacesId            BigInt?  @map("garden_spaces_id")
-  growthRateId              BigInt?  @map("growth_rate_id")
-  leafHairsPresentId        BigInt?  @map("leaf_hairs_present_id")
-  leafLengthId              BigInt?  @map("leaf_length_id")
-  leafWidthId               BigInt?  @map("leaf_width_id")
-  poisonDermatitisId        BigInt?  @map("poison_dermatitis_id")
-  poisonSeverityId          BigInt?  @map("poison_severity_id")
-  stemAromaticId            BigInt?  @map("stem_aromatic_id")
-  stemBudScaleId            BigInt?  @map("stem_bud_scale_id")
-  stemBudTerminalId         BigInt?  @map("stem_bud_terminal_id")
-  stemBudsId                BigInt?  @map("stem_buds_id")
-  stemCrossSectionId        BigInt?  @map("stem_cross_section_id")
-  stemFormId                BigInt?  @map("stem_form_id")
-  stemLeafScarShapeId       BigInt?  @map("stem_leaf_scar_shape_id")
-  stemLenticelsId           BigInt?  @map("stem_lenticels_id")
-  stemPithId                BigInt?  @map("stem_pith_id")
-  stemSurfaceId             BigInt?  @map("stem_surface_id")
-  textureId                 BigInt?  @map("texture_id")
-  attractsIds               Json     @default("[]") @map("attracts_ids")
-  availableSpaceToPlantIds  Json     @default("[]") @map("available_space_to_plant_ids")
-  barkAttachmentIds         Json     @default("[]") @map("bark_attachment_ids")
-  barkColorIds              Json     @default("[]") @map("bark_color_ids")
-  barkPlateShapeIds         Json     @default("[]") @map("bark_plate_shape_ids")
-  designFeatureIds          Json     @default("[]") @map("design_feature_ids")
-  flowerBloomTimeIds        Json     @default("[]") @map("flower_bloom_time_ids")
-  flowerColorIds            Json     @default("[]") @map("flower_color_ids")
-  flowerInflorescenceIds    Json     @default("[]") @map("flower_inflorescence_ids")
-  flowerPetalsIds           Json     @default("[]") @map("flower_petals_ids")
-  flowerShapeIds            Json     @default("[]") @map("flower_shape_ids")
-  flowerValueToGardenerIds  Json     @default("[]") @map("flower_value_to_gardener_ids")
-  fruitColorIds             Json     @default("[]") @map("fruit_color_ids")
-  fruitDisplayHarvestTimeIds Json    @default("[]") @map("fruit_display_harvest_time_ids")
-  fruitTypeIds              Json     @default("[]") @map("fruit_type_ids")
-  fruitValueToGardenerIds   Json     @default("[]") @map("fruit_value_to_gardener_ids")
-  habitIds                  Json     @default("[]") @map("habit_ids")
-  landscapeLocationIds      Json     @default("[]") @map("landscape_location_ids")
-  landscapeThemeIds         Json     @default("[]") @map("landscape_theme_ids")
-  leafArrangementIds        Json     @default("[]") @map("leaf_arrangement_ids")
-  leafCharacteristicsIds    Json     @default("[]") @map("leaf_characteristics_ids")
-  leafColorIds              Json     @default("[]") @map("leaf_color_ids")
-  leafFallColorIds          Json     @default("[]") @map("leaf_fall_color_ids")
-  leafFeelIds               Json     @default("[]") @map("leaf_feel_ids")
-  leafMarginIds             Json     @default("[]") @map("leaf_margin_ids")
-  leafShapeIds              Json     @default("[]") @map("leaf_shape_ids")
-  leafTypeIds               Json     @default("[]") @map("leaf_type_ids")
-  leafValueToGardenerIds    Json     @default("[]") @map("leaf_value_to_gardener_ids")
-  lifeCycleIds              Json     @default("[]") @map("life_cycle_ids")
-  lightIds                  Json     @default("[]") @map("light_ids")
-  maintenanceIds            Json     @default("[]") @map("maintenance_ids")
-  ncRegionIds               Json     @default("[]") @map("nc_region_ids")
-  plantTypesIds             Json     @default("[]") @map("plant_types_ids")
-  poisonPartIds             Json     @default("[]") @map("poison_part_ids")
-  problemsIds               Json     @default("[]") @map("problems_ids")
-  propagationIds            Json     @default("[]") @map("propagation_ids")
-  resistanceToChallengesIds Json     @default("[]") @map("resistance_to_challenges_ids")
-  soilDrainageIds           Json     @default("[]") @map("soil_drainage_ids")
-  soilPhIds                 Json     @default("[]") @map("soil_ph_ids")
-  soilTextureIds            Json     @default("[]") @map("soil_texture_ids")
-  stemColorIds              Json     @default("[]") @map("stem_color_ids")
-  tagsIds                   Json     @default("[]") @map("tags_ids")
-  usdaZoneIds               Json     @default("[]") @map("usda_zone_ids")
-  commonNames               Json     @default("[]") @map("common_names")
-  synonyms                  Json     @default("[]")
-
+// ========================================
+// REDESIGNED PLANT SCHEMA
+// ========================================
+// The following models represent the redesigned Plant architecture
+// with modular structure and strategic denormalization for performance.
+// This replaces the monolithic main_plant_data table with 50+ lookup table JOINs.
+//
+// VALIDATION STRATEGY:
+// - JSON fields: No Prisma @default support; handle empty objects in application code
+// - Array size limits: Noted in comments but enforced via Zod schemas in lib/schemas/plant.ts
+// - PostgreSQL check constraints for critical limits
+//
+// MIGRATION NOTE: These tables will coexist with existing main_plant_data during migration.
+// Do not drop old tables until migration is complete.
+
+// Core plant table - essential information only
+model Plant {
+  id               Int      @id @default(autoincrement())
+  slug             String   @unique
+  scientificName   String   @map("scientific_name")
+  commonNames      String[] @map("common_names") // Max 10 items
+  family           String?
+  genus            String?
+  species          String?
+  cultivar         String?
+  variety          String?
+  
+  // Basic plant information
+  description      String?  // AI-rewritten, consistent description
+  origin           String?
+  distribution     String?
+  
+  // Essential environmental requirements (denormalized for performance)
+  lightRequirements String[] @map("light_requirements") // Max 5 items
+  waterNeeds       String[] @map("water_needs") // Max 5 items
+  soilTypes        String[] @map("soil_types") // Max 8 items
+  hardinessZones   String[] @map("hardiness_zones") // Max 10 items
+  
+  // Media
+  profileVideo     String?     @map("profile_video")
+  soundFile        String?     @map("sound_file")
+  
+  // AI and data quality
+  dataCompleteness Float    @default(0.0) @map("data_completeness") // 0-1 score
+  lastAiUpdate     DateTime? @map("last_ai_update")
+  aiConfidence     Float?   @map("ai_confidence")
+  
+  // Timestamps
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  
   // Relations
-  plantImages PlantImages[]
-  cultivars   Cultivars[]
-
-  @@map("main_plant_data")
+  images           PlantImage[]
+  similarPlants    PlantSimilarity[] @relation("SimilarPlants")
+  similarToPlants  PlantSimilarity[] @relation("SimilarToPlants")
+  symbioticRelationships PlantSymbiosis[] @relation("PlantSymbiosis")
+  symbioticWithPlants PlantSymbiosis[] @relation("SymbioticWithPlants")
+  aestheticPairings PlantAestheticPairing[] @relation("PlantAestheticPairings")
+  companionAestheticPairings PlantAestheticPairing[] @relation("CompanionAestheticPairings")
+  healthIssues     PlantHealthIssue[]
+  careTasks        PlantCareTask[]
+  embeddings       PlantEmbedding[]
+  
+  // Modular sub-objects
+  physicalTraits   PlantPhysicalTraits?
+  environmentalRequirements PlantEnvironmentalRequirements?
+  characteristics  PlantCharacteristics?
+  careInstructions PlantCareInstructions?
+  propagationInfo  PlantPropagationInfo?
+  
+  @@index([scientificName])
+  @@index([family])
+  @@index([genus])
+  @@index([commonNames], type: Gin)
+  @@index([lightRequirements], type: Gin)
+  @@index([soilTypes], type: Gin)
+  @@index([hardinessZones], type: Gin)
+  @@index([dataCompleteness])
+  @@map("plant_redesign")
 }
 
-model PlantImages {
-  id        Int     @id @default(autoincrement())
-  plantId   Int?    @map("plant_id")
-  img       String?
-  altText   String? @map("alt_text")
-  caption   String?
-  attribution String?
-
+// Physical characteristics of the plant
+model PlantPhysicalTraits {
+  id                Int     @id @default(autoincrement())
+  plantId           Int     @unique @map("plant_id")
+  
+  // Size information
+  heightMin         Int?    @map("height_min") // cm
+  heightMax         Int?    @map("height_max") // cm
+  widthMin          Int?    @map("width_min")  // cm
+  widthMax          Int?    @map("width_max")  // cm
+  
+  // Growth characteristics
+  growthRate        String? @map("growth_rate") // "slow", "moderate", "fast"
+  lifeSpan          String? @map("life_span")   // "annual", "perennial", "biennial"
+  habit             String? // "upright", "spreading", "climbing", "prostrate"
+  
+  // Plant structure
+  stemType          String? @map("stem_type") // "woody", "herbaceous", "succulent"
+  rootType          String? @map("root_type") // "taproot", "fibrous", "shallow"
+  
+  // Timestamps
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  
   // Relations
-  plant MainPlantData? @relation(fields: [plantId], references: [id])
-
-  @@map("plant_images")
+  plant             Plant   @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  
+  @@index([plantId])
+  @@index([growthRate])
+  @@index([lifeSpan])
+  @@map("plant_physical_traits")
 }
 
-model Cultivars {
+// Detailed environmental requirements
+model PlantEnvironmentalRequirements {
+  id                Int     @id @default(autoincrement())
+  plantId           Int     @unique @map("plant_id")
+  
+  // Soil requirements
+  soilPh            Float[] @map("soil_ph") // pH range [min, max]
+  soilDrainage      String[] @map("soil_drainage") // "well_drained", "poorly_drained"
+  soilFertility     String? @map("soil_fertility") // "low", "moderate", "high"
+  
+  // Temperature requirements
+  temperatureMin    Float?  @map("temperature_min") // Celsius
+  temperatureMax    Float?  @map("temperature_max") // Celsius
+  frostTolerance    String? @map("frost_tolerance") // "none", "light", "moderate", "heavy"
+  
+  // Humidity requirements
+  humidityMin       Float?  @map("humidity_min")    // Percentage
+  humidityMax       Float?  @map("humidity_max")    // Percentage
+  humidityPreference String? @map("humidity_preference") // "low", "moderate", "high"
+  
+  // Wind and exposure
+  windTolerance     String? @map("wind_tolerance") // "low", "moderate", "high"
+  saltTolerance     String? @map("salt_tolerance") // "none", "low", "moderate", "high"
+  
+  // Timestamps
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  plant             Plant   @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  
+  @@index([plantId])
+  @@index([temperatureMin])
+  @@index([temperatureMax])
+  @@map("plant_environmental_requirements")
+}
+
+// Plant characteristics (flower, foliage, wildlife, toxicity, aesthetics)
+model PlantCharacteristics {
+  id                Int     @id @default(autoincrement())
+  plantId           Int     @unique @map("plant_id")
+  
+  // Flower characteristics
+  flowerColor       String[] @map("flower_color") // Max 10 items
+  flowerSize        String? @map("flower_size") // "small", "medium", "large"
+  flowerShape       String? @map("flower_shape")
+  bloomTime         String[] @map("bloom_time") // Max 4 items: "spring", "summer", "fall", "winter"
+  bloomDuration     String? @map("bloom_duration") // "brief", "extended", "continuous"
+  fragrance         String? // "none", "mild", "strong", "sweet", "spicy"
+  
+  // Foliage characteristics
+  foliageColor      String[] @map("foliage_color") // Max 10 items
+  foliageTexture    String? @map("foliage_texture") // "smooth", "rough", "hairy", "waxy"
+  foliageShape      String? @map("foliage_shape") // "ovate", "lanceolate", "round", "needle"
+  foliageSize       String? @map("foliage_size") // "small", "medium", "large"
+  evergreen         Boolean? @default(false)
+  deciduous         Boolean? @default(true)
+  
+  // Fruit/seed characteristics
+  fruitColor        String[] @map("fruit_color") // Max 8 items
+  fruitSize         String? @map("fruit_size")
+  fruitEdible       Boolean? @map("fruit_edible") @default(false)
+  seedSize          String? @map("seed_size") // "small", "medium", "large"
+  
+  // Wildlife interactions
+  attractsBirds     Boolean? @map("attracts_birds") @default(false)
+  attractsBees      Boolean? @map("attracts_bees") @default(false)
+  attractsButterflies Boolean? @map("attracts_butterflies") @default(false)
+  attractsHummingbirds Boolean? @map("attracts_hummingbirds") @default(false)
+  
+  // Resistance characteristics
+  deerResistant     Boolean? @map("deer_resistant") @default(false)
+  rabbitResistant   Boolean? @map("rabbit_resistant") @default(false)
+  droughtResistant  Boolean? @map("drought_resistant") @default(false)
+  diseaseResistant  String[] @map("disease_resistant") // Max 20 items. Array of diseases
+  
+  // Aesthetic characteristics
+  aestheticStyle    String[] @map("aesthetic_style") // Max 5 items: "modern", "tropical", "minimalist", "bohemian", "scandinavian"
+  colorScheme       String[] @map("color_scheme") // Max 3 items: "monochromatic", "complementary", "analogous", "triadic"
+  primaryColors     String[] @map("primary_colors") // Max 5 items: "green", "variegated", "purple", "silver"
+  textureProfile    String[] @map("texture_profile") // Max 5 items: "smooth", "textured", "glossy", "matte", "patterned"
+  sizeCategory      String? @map("size_category") // "statement", "filler", "trailing", "upright"
+  seasonalInterest  String[] @map("seasonal_interest") // Max 8 items: "spring_flowers", "summer_foliage", "fall_color", "winter_evergreen"
+  
+  // Toxicity information
+  toxicToHumans     String? @map("toxic_to_humans") // "none", "mild", "moderate", "severe"
+  toxicToPets       String? @map("toxic_to_pets") // "none", "mild", "moderate", "severe"
+  toxicParts        String[] @map("toxic_parts") // Max 8 items: "leaves", "berries", "roots", "all"
+  toxicityNotes     String? @map("toxicity_notes")
+  
+  // Timestamps
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  plant             Plant   @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  
+  @@index([plantId])
+  @@index([flowerColor], type: Gin)
+  @@index([foliageColor], type: Gin)
+  @@index([bloomTime], type: Gin)
+  @@index([attractsBees])
+  @@index([attractsButterflies])
+  @@index([deerResistant])
+  @@index([aestheticStyle], type: Gin)
+  @@index([colorScheme], type: Gin)
+  @@index([primaryColors], type: Gin)
+  @@index([textureProfile], type: Gin)
+  @@index([sizeCategory])
+  @@index([seasonalInterest], type: Gin)
+  @@map("plant_characteristics")
+}
+
+// Detailed care instructions
+model PlantCareInstructions {
+  id                Int     @id @default(autoincrement())
+  plantId           Int     @unique @map("plant_id")
+  
+  // Watering instructions
+  wateringFrequency String? @map("watering_frequency") // "daily", "weekly", "biweekly", "monthly"
+  wateringAmount    String? @map("watering_amount") // "light", "moderate", "heavy"
+  wateringMethod    String? @map("watering_method") // "overhead", "soil_level", "drip"
+  winterWatering    String? @map("winter_watering") // "reduce", "stop", "same"
+  
+  // Fertilizing instructions
+  fertilizingFrequency String? @map("fertilizing_frequency") // "monthly", "seasonal", "yearly"
+  fertilizerType    String? @map("fertilizer_type") // "balanced", "high_nitrogen", "high_phosphorus"
+  fertilizingSeason String? @map("fertilizing_season") // "spring", "summer", "fall", "all_year"
+  
+  // Pruning instructions
+  pruningTime       String? @map("pruning_time") // "late_winter", "spring", "summer", "fall"
+  pruningType       String? @map("pruning_type") // "light", "moderate", "heavy", "deadhead"
+  pruningNotes      String? @map("pruning_notes")
+  
+  // Repotting/transplanting
+  repottingFrequency String? @map("repotting_frequency") // "yearly", "biyearly", "when_needed"
+  transplantingTime  String? @map("transplanting_time") // "spring", "fall", "dormant_season"
+  
+  // Special care requirements
+  specialCare       String? @map("special_care")
+  careNotes         String? @map("care_notes")
+  
+  // Timestamps
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  plant             Plant   @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  
+  @@index([plantId])
+  @@index([wateringFrequency])
+  @@index([fertilizingFrequency])
+  @@map("plant_care_instructions")
+}
+
+// Propagation information
+model PlantPropagationInfo {
+  id                Int     @id @default(autoincrement())
+  plantId           Int     @unique @map("plant_id")
+  
+  // Propagation methods
+  propagationMethods String[] @map("propagation_methods") // "seeds", "cuttings", "division", "layering"
+  propagationDifficulty String? @map("propagation_difficulty") // "easy", "moderate", "difficult"
+  
+  // Seed information
+  seedGerminationTime String? @map("seed_germination_time") // "1_2_weeks", "2_4_weeks", "1_2_months"
+  seedDepth          String? @map("seed_depth") // "surface", "shallow", "deep"
+  seedSpacing        String? @map("seed_spacing") // "close", "moderate", "wide"
+  seedStratification Boolean? @default(false) // Needs cold treatment
+  
+  // Cutting information
+  cuttingType        String? @map("cutting_type") // "softwood", "hardwood", "semi_hardwood", "root"
+  cuttingTime        String? @map("cutting_time") // "spring", "summer", "fall", "winter"
+  rootingHormone     Boolean? @map("rooting_hormone") @default(false)
+  
+  // Division information
+  divisionTime       String? @map("division_time") // "spring", "fall"
+  divisionFrequency  String? @map("division_frequency") // "yearly", "biyearly", "when_needed"
+  
+  // Propagation instructions
+  propagationInstructions Json? @map("propagation_instructions")
+  
+  // Timestamps
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  plant             Plant   @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  
+  @@index([plantId])
+  @@index([propagationMethods], type: Gin)
+  @@index([propagationDifficulty])
+  @@map("plant_propagation_info")
+}
+
+model PlantImage {
   id          Int     @id @default(autoincrement())
-  plantId     Int?    @map("plant_id")
-  name        String?
-  description String?
-
-  // Relations
-  plant MainPlantData? @relation(fields: [plantId], references: [id])
-
-  @@map("cultivars")
+  plantId     Int     @map("plant_id")
+  url         String
+  altText     String? @map("alt_text")
+  caption     String?
+  attribution String?
+  isPrimary   Boolean @default(false) @map("is_primary")
+  sortOrder   Int     @default(0) @map("sort_order")
+  
+  // Image metadata for AI processing
+  imageType   String? @map("image_type") // "flower", "foliage", "fruit", "seed", "bark", "root"
+  season      String? // "spring", "summer", "fall", "winter"
+  healthStatus String? @map("health_status") // "healthy", "diseased", "pest_damage"
+  
+  plant       Plant   @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  
+  @@index([plantId, isPrimary])
+  @@index([plantId, sortOrder])
+  @@index([imageType])
+  @@index([healthStatus])
+  @@map("plant_image_redesign")
 }
 
-model UserGardens {
-  id                      Int      @id @default(autoincrement())
-  userId                  String   @map("user_id")
-  name                    String
-  locationIds             Json     @default("[]") @map("location_ids")
-  spaceAvailableIds       Json     @default("[]") @map("space_available_ids")
-  sunlightIds             Json     @default("[]") @map("sunlight_ids")
-  soilTextureIds          Json     @default("[]") @map("soil_texture_ids")
-  soilDrainageIds         Json     @default("[]") @map("soil_drainage_ids")
-  soilPhIds               Json     @default("[]") @map("soil_ph_ids")
-  gardenThemeIds          Json     @default("[]") @map("garden_theme_ids")
-  wildlifeAttractionIds   Json     @default("[]") @map("wildlife_attraction_ids")
-  resistanceChallengeIds  Json     @default("[]") @map("resistance_challenge_ids")
-  problemsToExcludeIds    Json     @default("[]") @map("problems_to_exclude_ids")
-  growthRateId            BigInt?  @map("growth_rate_id")
-  maintenanceLevelId      BigInt?  @map("maintenance_level_id")
-  texturePreferenceId     BigInt?  @map("texture_preference_id")
-  userPlantsId            Json     @default("[]") @map("user_plants_id")
-  wantsRecommendations    Boolean  @default(true) @map("wants_recommendations")
-  ncRegionsIds            Json     @default("[]") @map("nc_regions_ids")
-  usdaZonesIds            Json     @default("[]") @map("usda_zones_ids")
-  flowerColorIds          Json     @default("[]") @map("flower_color_ids")
-  flowerBloomTimeIds      Json     @default("[]") @map("flower_bloom_time_ids")
-  flowerValueIds          Json     @default("[]") @map("flower_value_ids")
-  leafColorIds            Json     @default("[]") @map("leaf_color_ids")
-  leafFeelIds             Json     @default("[]") @map("leaf_feel_ids")
-  leafValueIds            Json     @default("[]") @map("leaf_value_ids")
-  fallColorIds            Json     @default("[]") @map("fall_color_ids")
-  habitFormIds            Json     @default("[]") @map("habit_form_ids")
-  plantTypeIds            Json     @default("[]") @map("plant_type_ids")
-  yearRoundInterest       Boolean  @default(false) @map("year_round_interest")
-  designFeatureIds        Json     @default("[]") @map("design_feature_ids")
-  createdAt               DateTime @default(now()) @map("created_at")
-  updatedAt               DateTime @default(now()) @updatedAt @map("updated_at")
-
-  // Relations
-  userPlants UserPlants[]
-
-  @@map("user_gardens")
+model PlantSimilarity {
+  id              Int   @id @default(autoincrement())
+  plantId         Int   @map("plant_id")
+  similarPlantId  Int   @map("similar_plant_id")
+  similarityScore Float @default(0.0) @map("similarity_score")
+  similarityType  String @map("similarity_type") // "visual", "care", "habitat"
+  
+  plant           Plant @relation("SimilarPlants", fields: [plantId], references: [id], onDelete: Cascade)
+  similarPlant    Plant @relation("SimilarToPlants", fields: [similarPlantId], references: [id], onDelete: Cascade)
+  
+  @@unique([plantId, similarPlantId])
+  @@index([plantId])
+  @@index([similarityScore])
+  @@index([similarityType])
+  @@map("plant_similarity_redesign")
 }
 
-model UserPlants {
-  id           String   @id
-  gardenId     Int      @map("garden_id")
-  customName   String   @map("custom_name")
-  botanicalName String  @map("botanical_name")
-  status       String
-  careLogs     Json     @default("[]") @map("care_logs")
-  images       Json     @default("[]")
-  locationTags Json     @default("[]") @map("location_tags")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+// ========================================
+// SYMBIOTIC RELATIONSHIPS
+// ========================================
 
+model PlantSymbiosis {
+  id                Int     @id @default(autoincrement())
+  plantId           Int     @map("plant_id")
+  symbioticPlantId  Int     @map("symbiotic_plant_id")
+  
+  // Relationship details
+  relationshipType  SymbiosisType @map("relationship_type")
+  benefitToPlant    String  @map("benefit_to_plant")
+  benefitToSymbiotic String @map("benefit_to_symbiotic")
+  distance          Int?    // Optimal distance in cm
+  notes             String?
+  
+  // Scientific backing
+  researchSource    String? @map("research_source")
+  confidence        Float   @default(0.0) // 0-1 confidence score
+  
+  // Timestamps
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  
   // Relations
-  garden UserGardens @relation(fields: [gardenId], references: [id])
+  plant             Plant   @relation("PlantSymbiosis", fields: [plantId], references: [id], onDelete: Cascade)
+  symbioticPlant    Plant   @relation("SymbioticWithPlants", fields: [symbioticPlantId], references: [id], onDelete: Cascade)
+  
+  @@unique([plantId, symbioticPlantId])
+  @@index([plantId])
+  @@index([symbioticPlantId])
+  @@index([relationshipType])
+  @@index([confidence])
+  @@map("plant_symbiosis")
+}
 
-  @@map("user_plants")
+// ========================================
+// AESTHETIC PLANT PAIRINGS
+// ========================================
+
+model PlantAestheticPairing {
+  id                Int     @id @default(autoincrement())
+  plantId           Int     @map("plant_id")
+  companionPlantId  Int     @map("companion_plant_id")
+  
+  // V1 ESSENTIALS - Keep these for MVP
+  pairingType       String  @map("pairing_type") // "color_harmony", "texture_contrast", "size_complement"
+  aestheticReason   String  @map("aesthetic_reason") // Why these plants look good together
+  containerSuitable Boolean @default(false) @map("container_suitable") // Can be planted in same container
+  confidence        Float   @default(0.0) // 0-1 confidence score
+  
+  // Timestamps
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  plant             Plant   @relation("PlantAestheticPairings", fields: [plantId], references: [id], onDelete: Cascade)
+  companionPlant    Plant   @relation("CompanionAestheticPairings", fields: [companionPlantId], references: [id], onDelete: Cascade)
+  
+  @@unique([plantId, companionPlantId])
+  @@index([plantId])
+  @@index([companionPlantId])
+  @@index([pairingType])
+  @@index([containerSuitable])
+  @@index([confidence])
+  @@map("plant_aesthetic_pairing")
+}
+
+// ========================================
+// PLANT HEALTH & DISEASE IDENTIFICATION
+// ========================================
+
+model PlantHealthIssue {
+  id                String   @id @default(dbgenerated("gen_random_uuid()"))
+  plantId           Int      @map("plant_id")
+  
+  // Issue identification
+  issueType         HealthIssueType @map("issue_type")
+  issueName         String   @map("issue_name") // "powdery_mildew", "aphid_infestation"
+  severity          IssueSeverity @default(MILD)
+  
+  // Symptoms and diagnosis
+  symptoms          String[] // Max 20 items. Validated in HealthIssueSchema
+  description       String?
+  causes            String[] // Max 15 items. Validated in HealthIssueSchema
+  
+  // Treatment and prevention
+  prevention        String[] // Max 20 items. Prevention methods
+  treatment         String[] // Max 25 items. Treatment options
+  organicTreatment  String[] @map("organic_treatment") // Max 15 items. Organic treatment options
+  chemicalTreatment String[] @map("chemical_treatment") // Max 15 items. Chemical treatment options
+  
+  // Visual identification
+  visualCues        Json?    @map("visual_cues") // AI training data for visual identification
+  // Example: {
+  //   "leaf_spots": {
+  //     "color": ["white", "gray"],
+  //     "size": "small",
+  //     "pattern": "powdery"
+  //   }
+  // }
+  
+  // AI confidence and sources
+  aiConfidence      Float?   @map("ai_confidence")
+  researchSource    String?  @map("research_source")
+  
+  // Timestamps
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  plant             Plant    @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  
+  @@index([plantId])
+  @@index([issueType])
+  @@index([severity])
+  @@index([aiConfidence])
+  @@map("plant_health_issue")
+}
+
+// ========================================
+// AUTOMATED CARE TASK SYSTEM
+// ========================================
+
+model PlantCareTask {
+  id                Int      @id @default(autoincrement())
+  plantId           Int      @map("plant_id")
+  
+  // Task details
+  taskType          CareLogType @map("task_type")
+  title             String
+  description       String?
+  priority          TaskPriority @default(MEDIUM)
+  
+  // Automated scheduling
+  frequency         String   // "daily", "weekly", "monthly", "seasonal"
+  season            String?  // "spring", "summer", "fall", "winter", null for all seasons
+  conditions        Json?    // Environmental conditions that trigger the task
+  
+  // Task instructions
+  instructions      Json
+  // Note: Empty object default handled in application code (Prisma doesn't support JSON defaults)
+  // Example: {
+  //   "steps": [
+  //     "Check soil moisture",
+  //     "Water if top inch is dry",
+  //     "Avoid getting leaves wet"
+  //   ],
+  //   "tools_needed": ["watering_can", "moisture_meter"],
+  //   "time_estimate": "5_minutes",
+  //   "difficulty": "easy"
+  //   }
+  
+  // AI-generated task
+  aiGenerated       Boolean  @default(false) @map("ai_generated")
+  aiConfidence      Float?   @map("ai_confidence")
+  
+  // Timestamps
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  plant             Plant    @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  
+  @@index([plantId])
+  @@index([taskType])
+  @@index([frequency])
+  @@index([season])
+  @@index([aiGenerated])
+  @@map("plant_care_task")
+}
+
+// ========================================
+// SEARCH & EMBEDDINGS
+// ========================================
+
+model PlantEmbedding {
+  id          String   @id @default(dbgenerated("gen_random_uuid()"))
+  plantId     Int      @map("plant_id")
+  
+  // Embedding data
+  content     String   // Text that was embedded
+  embedding   Unsupported("vector") // pgvector
+  
+  // Metadata
+  model       String   // Which embedding model
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  plant       Plant    @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  
+  @@index([plantId])
+  @@index([embedding], type: Hnsw, m: 16, ef_construction: 64)
+  @@map("plant_embedding")
+}
+
+// ========================================
+// ENUMS
+// ========================================
+
+enum SymbiosisType {
+  MUTUALISTIC    // Both plants benefit
+  COMMENSALISTIC // One benefits, other unaffected
+  PROTECTIVE     // One protects the other
+  NUTRITIVE      // One provides nutrients to the other
+  SPACE_SHARING  // Complementary space usage
+  PEST_CONTROL   // One repels pests for the other
+  AESTHETIC      // Plants that look great together visually
+}
+
+enum HealthIssueType {
+  DISEASE
+  PEST
+  NUTRITIONAL
+  ENVIRONMENTAL
+  PHYSICAL_DAMAGE
+  ROOT_ISSUE
+  LEAF_ISSUE
+  FLOWER_ISSUE
+  FRUIT_ISSUE
+}
+
+enum IssueSeverity {
+  MILD
+  MODERATE
+  SEVERE
+  CRITICAL
+}
+
+enum CareLogType {
+  WATER
+  FERTILIZE
+  PRUNE
+  REPOT
+  TREATMENT
+  OBSERVATION
+  PHOTO
+  HEALTH_CHECK
+  PEST_CONTROL
+  DISEASE_TREATMENT
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
 }

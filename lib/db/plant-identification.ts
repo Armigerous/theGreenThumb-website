@@ -123,9 +123,9 @@ export async function searchDatabaseForPlant(
     ]
 
     // Reason: Search by scientific name first (most accurate)
-    let plant = await prisma.mainPlantData.findFirst({
+    let plant = await prisma.main_plant_data.findFirst({
       where: {
-        scientificName: {
+        scientific_name: {
           contains: scientificName,
           mode: 'insensitive',
         },
@@ -141,7 +141,7 @@ export async function searchDatabaseForPlant(
       for (const term of searchTerms) {
         // Note: For complex JSON array searches, we might need raw SQL
         // This is a simplified approach - for production, consider using raw queries
-        const plants = await prisma.mainPlantData.findMany({
+        const plants = await prisma.main_plant_data.findMany({
           where: {
             OR: [
               { scientificName: { contains: term, mode: 'insensitive' } },
@@ -168,9 +168,9 @@ export async function searchDatabaseForPlant(
       const scientificParts = scientificName.toLowerCase().split(' ')
       for (const part of scientificParts) {
         if (part.length > 3) { // Reason: Only search for meaningful parts
-          const plants = await prisma.mainPlantData.findMany({
+          const plants = await prisma.main_plant_data.findMany({
             where: {
-              scientificName: {
+              scientific_name: {
                 contains: part,
                 mode: 'insensitive',
               },
@@ -294,11 +294,11 @@ export async function findSimilarPlants(
     }
 
     // Reason: Search for plants with similar characteristics
-    const plants = await prisma.mainPlantData.findMany({
+    const plants = await prisma.main_plant_data.findMany({
       where: {
         OR: [
           ...searchTerms.map(term => ({
-            scientificName: { contains: term, mode: 'insensitive' as const },
+            scientific_name: { contains: term, mode: 'insensitive' as const },
           })),
           ...searchTerms.map(term => ({
             family: { contains: term, mode: 'insensitive' as const },

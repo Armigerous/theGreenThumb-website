@@ -5,11 +5,11 @@ import { Prisma } from '@/lib/generated/prisma'
 export const queries = {
   plants: {
     // Reason: Find first plant matching criteria using Prisma where clause
-    findFirst: async (where: Prisma.MainPlantDataWhereInput) => {
-      return await prisma.mainPlantData.findFirst({
+    findFirst: async (where: Prisma.main_plant_dataWhereInput) => {
+      return await prisma.main_plant_data.findFirst({
         where,
         include: {
-          plantImages: true,
+          plant_images: true,
           cultivars: true,
         },
       })
@@ -17,19 +17,19 @@ export const queries = {
 
     // Reason: Find many plants with pagination and filtering
     findMany: async (options: {
-      where?: Prisma.MainPlantDataWhereInput
+      where?: Prisma.main_plant_dataWhereInput
       skip?: number
       take?: number
-      orderBy?: Prisma.MainPlantDataOrderByWithRelationInput
-      include?: Prisma.MainPlantDataInclude
+      orderBy?: Prisma.main_plant_dataOrderByWithRelationInput
+      include?: Prisma.main_plant_dataInclude
     } = {}) => {
-      return await prisma.mainPlantData.findMany({
+      return await prisma.main_plant_data.findMany({
         where: options.where,
         skip: options.skip,
         take: options.take,
         orderBy: options.orderBy,
         include: options.include || {
-          plantImages: true,
+          plant_images: true,
           cultivars: true,
         },
       })
@@ -37,10 +37,10 @@ export const queries = {
 
     // Reason: Find plant by slug
     findBySlug: async (slug: string) => {
-      return await prisma.mainPlantData.findUnique({
+      return await prisma.main_plant_data.findUnique({
         where: { slug },
         include: {
-          plantImages: true,
+          plant_images: true,
           cultivars: true,
         },
       })
@@ -48,10 +48,10 @@ export const queries = {
 
     // Reason: Find plant by ID
     findById: async (id: number) => {
-      return await prisma.mainPlantData.findUnique({
+      return await prisma.main_plant_data.findUnique({
         where: { id },
         include: {
-          plantImages: true,
+          plant_images: true,
           cultivars: true,
         },
       })
@@ -59,10 +59,10 @@ export const queries = {
 
     // Reason: Search plants by scientific name or common names
     search: async (searchTerm: string, limit: number = 10) => {
-      return await prisma.mainPlantData.findMany({
+      return await prisma.main_plant_data.findMany({
         where: {
           OR: [
-            { scientificName: { contains: searchTerm, mode: 'insensitive' } },
+            { scientific_name: { contains: searchTerm, mode: 'insensitive' } },
             { genus: { contains: searchTerm, mode: 'insensitive' } },
             { species: { contains: searchTerm, mode: 'insensitive' } },
             { family: { contains: searchTerm, mode: 'insensitive' } },
@@ -71,64 +71,64 @@ export const queries = {
         },
         take: limit,
         include: {
-          plantImages: true,
+          plant_images: true,
           cultivars: true,
         },
       })
     },
 
     // Reason: Count plants matching criteria
-    count: async (where?: Prisma.MainPlantDataWhereInput) => {
-      return await prisma.mainPlantData.count({ where })
+    count: async (where?: Prisma.main_plant_dataWhereInput) => {
+      return await prisma.main_plant_data.count({ where })
     },
   },
 
   userGardens: {
     // Reason: Find user gardens by user ID
     findByUserId: async (userId: string) => {
-      return await prisma.userGardens.findMany({
-        where: { userId },
+      return await prisma.user_gardens.findMany({
+        where: { user_id: userId },
         include: {
-          userPlants: true,
+          user_plants: true,
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { created_at: 'desc' },
       })
     },
 
     // Reason: Find garden by ID
     findById: async (id: number) => {
-      return await prisma.userGardens.findUnique({
+      return await prisma.user_gardens.findUnique({
         where: { id },
         include: {
-          userPlants: true,
+          user_plants: true,
         },
       })
     },
 
     // Reason: Create new garden
-    create: async (data: Prisma.UserGardensCreateInput) => {
-      return await prisma.userGardens.create({
+    create: async (data: Prisma.user_gardensCreateInput) => {
+      return await prisma.user_gardens.create({
         data,
         include: {
-          userPlants: true,
+          user_plants: true,
         },
       })
     },
 
     // Reason: Update garden
-    update: async (id: number, data: Prisma.UserGardensUpdateInput) => {
-      return await prisma.userGardens.update({
+    update: async (id: number, data: Prisma.user_gardensUpdateInput) => {
+      return await prisma.user_gardens.update({
         where: { id },
         data,
         include: {
-          userPlants: true,
+          user_plants: true,
         },
       })
     },
 
     // Reason: Delete garden
     delete: async (id: number) => {
-      return await prisma.userGardens.delete({
+      return await prisma.user_gardens.delete({
         where: { id },
       })
     },
@@ -137,29 +137,29 @@ export const queries = {
   userPlants: {
     // Reason: Find user plants by garden ID
     findByGardenId: async (gardenId: number) => {
-      return await prisma.userPlants.findMany({
-        where: { gardenId },
-        orderBy: { createdAt: 'desc' },
+      return await prisma.user_plants.findMany({
+        where: { garden_id: gardenId },
+        orderBy: { created_at: 'desc' },
       })
     },
 
     // Reason: Find plant by ID
     findById: async (id: string) => {
-      return await prisma.userPlants.findUnique({
+      return await prisma.user_plants.findUnique({
         where: { id },
       })
     },
 
     // Reason: Create new plant
-    create: async (data: Prisma.UserPlantsCreateInput) => {
-      return await prisma.userPlants.create({
+    create: async (data: Prisma.user_plantsCreateInput) => {
+      return await prisma.user_plants.create({
         data,
       })
     },
 
     // Reason: Update plant
-    update: async (id: string, data: Prisma.UserPlantsUpdateInput) => {
-      return await prisma.userPlants.update({
+    update: async (id: string, data: Prisma.user_plantsUpdateInput) => {
+      return await prisma.user_plants.update({
         where: { id },
         data,
       })
@@ -167,7 +167,7 @@ export const queries = {
 
     // Reason: Delete plant
     delete: async (id: string) => {
-      return await prisma.userPlants.delete({
+      return await prisma.user_plants.delete({
         where: { id },
       })
     },
@@ -178,25 +178,25 @@ export const queries = {
     findMany: async (options: {
       skip?: number
       take?: number
-      orderBy?: Prisma.TipsTricksOrderByWithRelationInput
+      orderBy?: Prisma.tips_tricksOrderByWithRelationInput
     } = {}) => {
-      return await prisma.tipsTricks.findMany({
+      return await prisma.tips_tricks.findMany({
         skip: options.skip,
         take: options.take,
-        orderBy: options.orderBy || { publishedAt: 'desc' },
+        orderBy: options.orderBy || { published_at: 'desc' },
       })
     },
 
     // Reason: Find tip by slug
     findBySlug: async (slug: string) => {
-      return await prisma.tipsTricks.findUnique({
+      return await prisma.tips_tricks.findUnique({
         where: { slug },
       })
     },
 
     // Reason: Increment view count
     incrementViews: async (slug: string) => {
-      return await prisma.tipsTricks.update({
+      return await prisma.tips_tricks.update({
         where: { slug },
         data: {
           views: { increment: 1 },
@@ -242,17 +242,143 @@ export const queries = {
   cachedResponses: {
     // Reason: Find cached response by query
     findByQuery: async (query: string) => {
-      return await prisma.cachedResponses.findFirst({
+      return await prisma.cached_responses.findFirst({
         where: { query },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { created_at: 'desc' },
       })
     },
 
     // Reason: Create cached response
-    create: async (data: Prisma.CachedResponsesCreateInput) => {
-      return await prisma.cachedResponses.create({
+    create: async (data: Prisma.cached_responsesCreateInput) => {
+      return await prisma.cached_responses.create({
         data,
       })
+    },
+  },
+
+  // Reason: Garden overview and statistics queries for My Garden page
+  gardenOverview: {
+    // Reason: Get all gardens for a user with plant counts and care status
+    getUserGardensWithStats: async (userId: string) => {
+      const gardens = await prisma.user_gardens.findMany({
+        where: { user_id: userId },
+        include: {
+          user_plants: {
+            select: {
+              id: true,
+              care_logs: true,
+              updated_at: true,
+            },
+          },
+        },
+        orderBy: { created_at: 'desc' },
+      })
+
+      // Reason: Calculate statistics for each garden
+      return gardens.map(garden => {
+        const plants = garden.user_plants
+        const totalPlants = plants.length
+        // Reason: Since status field doesn't exist in DB, we'll calculate from care_logs or use defaults
+        const healthyPlants = totalPlants // Default all plants as healthy for now
+        const warningPlants = 0 // TODO: Calculate from care_logs
+        const criticalPlants = 0 // TODO: Calculate from care_logs
+        
+        // Reason: Calculate plants needing care based on care logs
+        const plantsNeedingCare = plants.filter(plant => {
+          const careLogs = plant.care_logs as Array<{ date: string; type: string }>
+          if (!careLogs || careLogs.length === 0) return true
+          
+          const lastCareDate = new Date(Math.max(...careLogs.map(log => new Date(log.date).getTime())))
+          const daysSinceLastCare = (Date.now() - lastCareDate.getTime()) / (1000 * 60 * 60 * 24)
+          
+          // Reason: Consider plant needs care if no care in last 7 days
+          return daysSinceLastCare > 7
+        }).length
+
+        return {
+          ...garden,
+          statistics: {
+            totalPlants,
+            healthyPlants,
+            warningPlants,
+            criticalPlants,
+            plantsNeedingCare,
+          },
+        }
+      })
+    },
+
+    // Reason: Get garden statistics across all user gardens
+    getUserGardenStatistics: async (userId: string) => {
+      const gardens = await prisma.user_gardens.findMany({
+        where: { user_id: userId },
+        include: {
+          user_plants: {
+            select: {
+              id: true,
+              care_logs: true,
+              updated_at: true,
+            },
+          },
+        },
+      })
+
+      const allPlants = gardens.flatMap(garden => garden.user_plants)
+      const totalGardens = gardens.length
+      const totalPlants = allPlants.length
+      // Reason: Since status field doesn't exist in DB, use defaults for now
+      const healthyPlants = totalPlants // Default all plants as healthy
+      const warningPlants = 0 // TODO: Calculate from care_logs
+      const criticalPlants = 0 // TODO: Calculate from care_logs
+      
+      // Reason: Calculate plants needing care
+      const plantsNeedingCare = allPlants.filter(plant => {
+        const careLogs = plant.care_logs as Array<{ date: string; type: string }>
+        if (!careLogs || careLogs.length === 0) return true
+        
+        const lastCareDate = new Date(Math.max(...careLogs.map(log => new Date(log.date).getTime())))
+        const daysSinceLastCare = (Date.now() - lastCareDate.getTime()) / (1000 * 60 * 60 * 24)
+        
+        return daysSinceLastCare > 7
+      }).length
+
+      return {
+        totalGardens,
+        totalPlants,
+        healthyPlants,
+        warningPlants,
+        criticalPlants,
+        plantsNeedingCare,
+      }
+    },
+
+    // Reason: Get plants needing care across all gardens
+    getPlantsNeedingCare: async (userId: string) => {
+      const gardens = await prisma.user_gardens.findMany({
+        where: { user_id: userId },
+        include: {
+          user_plants: {
+            // Reason: Since status field doesn't exist, we'll filter by care_logs instead
+            include: {
+              user_gardens: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      })
+
+      const plantsNeedingCare = gardens.flatMap(garden => 
+        garden.user_plants.map(plant => ({
+          ...plant,
+          gardenName: garden.name,
+        }))
+      )
+
+      return plantsNeedingCare
     },
   },
 }

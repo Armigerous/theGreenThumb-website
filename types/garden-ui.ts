@@ -1,4 +1,8 @@
-import { GardenWithStats, userPlants, OverallGardenStatistics } from "./garden";
+import { 
+	OverallGardenStatistics,
+	OverallTaskBasedStatistics,
+	TaskBasedGardenStatistics 
+} from "./garden";
 
 /**
  * Reason: UI-specific type definitions separated from data types
@@ -23,12 +27,13 @@ export type OrganicCardProps = {
 
 /**
  * Reason: Garden card presentation props - pure data, no callbacks
+ * Updated to support both legacy care-log based and new task-based statistics
  */
 export type GardenCardContentProps = {
 	garden: {
-		id: string;
+		id: number | string;
 		name: string;
-		statistics: {
+		statistics: TaskBasedGardenStatistics | {
 			totalPlants: number;
 			healthyPlants: number;
 			plantsNeedingCare: number;
@@ -43,7 +48,7 @@ export type GardenCardContentProps = {
  * Reason: Garden interaction props - handles actions separately from presentation
  */
 export type GardenInteractionProps = {
-	gardenId: string;
+	gardenId: number | string;
 	onEdit?: () => void;
 	onDelete?: () => void;
 	onAddPlant?: () => void;
@@ -51,9 +56,10 @@ export type GardenInteractionProps = {
 
 /**
  * Reason: Statistics display props
+ * Updated to support both legacy and task-based statistics
  */
 export type GardenStatisticsProps = {
-	statistics: OverallGardenStatistics;
+	statistics: OverallTaskBasedStatistics | OverallGardenStatistics;
 	animated?: boolean;
 };
 

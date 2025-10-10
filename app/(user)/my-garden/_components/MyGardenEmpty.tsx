@@ -12,14 +12,14 @@ import { getCurrentSeason } from "@/lib/utils/seasonal";
  */
 
 export const MyGardenEmpty: React.FC = () => {
-	const currentSeason = getCurrentSeason();
+  const currentSeason = getCurrentSeason();
 
-	return (
-		<>
-			<SeasonalBackground season={currentSeason} animated={true} />
-			<div className="relative">
-				<EmptyGardenState animated={true} />
-			</div>
-		</>
-	);
+  return (
+    <>
+      <SeasonalBackground season={currentSeason} animated={true} />
+      <div className="relative">
+        <EmptyGardenState animated={true} />
+      </div>
+    </>
+  );
 };

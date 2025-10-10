@@ -19,17 +19,25 @@ export const getCurrentSeason = (): Season => {
 /**
  * getSeasonalWashColor
  *
- * Reason: Returns brand-aligned color for seasonal background wash
+ * Reason: Returns soft gradient wash for seasonal background.
+ * Creates watercolor effect - gentle color at top fading to white for readability.
  */
 export const getSeasonalWashColor = (season: Season): string => {
-	const seasonalColors: Record<Season, string> = {
-		spring: "#ECF4E7", // brand-50 - extremely light green
-		summer: "#D6E8CC", // brand-100 - light green
-		autumn: "#F2E46B", // accent-300 - soft lemon
-		winter: "#F0F4F8", // Light blue-white
+	const seasonalGradients: Record<Season, string> = {
+		// Reason: Soft spring green fading to white - gentle and fresh
+		spring: "linear-gradient(to bottom, #D6E8CC 0%, #FFFFFF 40%)", // brand-100 to white
+		
+		// Reason: Light summer green fading to white - airy and bright  
+		summer: "linear-gradient(to bottom, #BDDDB1 0%, #FFFFFF 40%)", // brand-200 to white
+		
+		// Reason: Warm autumn cream fading to white - cozy without intensity
+		autumn: "linear-gradient(to bottom, #ffea92 0%, #FFFFFF 40%)", // accent-50 to white
+		
+		// Reason: Cool winter tone fading to white - clean and serene
+		winter: "linear-gradient(to bottom, #D4E4F0 0%, #FFFFFF 40%)", // cool blue to white
 	};
 
-	return seasonalColors[season];
+	return seasonalGradients[season];
 };
 
 /**

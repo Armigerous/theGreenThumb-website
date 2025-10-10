@@ -1485,7 +1485,8 @@ model PlantEmbedding {
   plant       Plant    @relation(fields: [plantId], references: [id], onDelete: Cascade)
   
   @@index([plantId])
-  @@index([embedding], type: Hnsw, m: 16, ef_construction: 64)
+  // Note: HNSW index for vector search must be created via raw SQL migration
+  // @@index([embedding], type: Hnsw, m: 16, ef_construction: 64)
   @@map("plant_embedding")
 }
 

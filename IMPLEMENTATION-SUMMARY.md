@@ -30,7 +30,7 @@
 
 - **Created**: `lib/utils/seasonal.ts` - Season detection and theming
   - `getCurrentSeason()` - Detects current season
-  - `getSeasonalWashColor()` - Returns brand-aligned seasonal colors
+  - `getSeasonalWashColor()` - Returns soft gradient wash (brand colors to white)
   - `getSeasonalName()` - Friendly seasonal names with emojis
   - `getSeasonalMessage()` - Encouraging seasonal messages
 

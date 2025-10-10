@@ -18,7 +18,9 @@ const config: Config = {
         xs: "475px",
       },
       fontFamily: {
-        "work-sans": ["var(--font-work-sans)"],
+        // Reason: Brand fonts per brand guide - Mali for titles, Nunito for body text
+        title: ["var(--font-mali)", "serif"],
+        paragraph: ["var(--font-nunito)", "sans-serif"],
       },
       colors: {
         brand: {

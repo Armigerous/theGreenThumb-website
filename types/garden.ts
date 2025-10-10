@@ -262,4 +262,53 @@ export const getCareStatusText = (plant: userPlants): string => {
   if (plant.status === 'warning') return 'Warning';
   if (needsCare(plant)) return 'Needs Care';
   return 'Healthy';
-}; 
+};
+
+// Reason: Task-based dashboard types for My Garden page with materialized view approach
+// These types support the refactored dashboard that uses plant_tasks instead of care_logs
+export interface DashboardPlant {
+  id: string;
+  nickname: string;
+  scientificName: string;
+  commonName?: string;
+  image?: string;
+  overdueTasksCount: number;
+  urgentTasksCount: number;
+}
+
+export interface DashboardTask {
+  id: number;
+  plantId: string;
+  plantNickname: string;
+  taskType: string;
+  dueDate: Date | string;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+}
+
+export interface TaskBasedGardenStatistics {
+  totalPlants: number;
+  plantsWithOverdueTasks: number;
+  plantsWithUrgentTasks: number;
+  plantsNeedingCare: number;
+  overdueTasksCount: number;
+  upcomingTasksCount: number;
+}
+
+export interface GardenWithTaskStats {
+  id: number;
+  name: string;
+  updated_at: Date | string;
+  statistics: TaskBasedGardenStatistics;
+  plants: DashboardPlant[];
+  upcomingTasks: DashboardTask[];
+}
+
+export interface OverallTaskBasedStatistics {
+  totalGardens: number;
+  totalPlants: number;
+  plantsWithOverdueTasks: number;
+  plantsWithUrgentTasks: number;
+  plantsNeedingCare: number;
+  overdueTasksCount: number;
+  upcomingTasksCount: number;
+} 

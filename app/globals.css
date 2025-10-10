@@ -2,26 +2,78 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Reason: Ensure line-clamp utilities work properly for text truncation */
+/* Reason: Brand font classes for Mali (title) and Nunito (paragraph) with all weight variants per brand guide */
 @layer utilities {
-	.line-clamp-2 {
-		overflow: hidden;
-		display: -webkit-box;
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 2;
-	}
+  /* Mali Title Font Classes */
+  /* Reason: Regular weight for standard headings */
+  .font-title {
+    font-family: var(--font-mali), serif;
+    font-weight: 400;
+  }
 
-	.line-clamp-3 {
-		overflow: hidden;
-		display: -webkit-box;
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 3;
-	}
+  /* Reason: Medium weight for emphasized headings */
+  .font-title-medium {
+    font-family: var(--font-mali), serif;
+    font-weight: 500;
+  }
 
-	.line-clamp-4 {
-		overflow: hidden;
-		display: -webkit-box;
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 4;
-	}
+  /* Reason: Semi-bold weight for prominent headings */
+  .font-title-semibold {
+    font-family: var(--font-mali), serif;
+    font-weight: 600;
+  }
+
+  /* Reason: Bold weight for hero and important headings */
+  .font-title-bold {
+    font-family: var(--font-mali), serif;
+    font-weight: 700;
+  }
+
+  /* Nunito Paragraph Font Classes */
+  /* Reason: Regular weight for body text and paragraphs */
+  .font-paragraph {
+    font-family: var(--font-nunito), sans-serif;
+    font-weight: 400;
+  }
+
+  /* Reason: Medium weight for emphasized body text */
+  .font-paragraph-medium {
+    font-family: var(--font-nunito), sans-serif;
+    font-weight: 500;
+  }
+
+  /* Reason: Semi-bold weight for important body text */
+  .font-paragraph-semibold {
+    font-family: var(--font-nunito), sans-serif;
+    font-weight: 600;
+  }
+
+  /* Reason: Bold weight for strong emphasis in body text */
+  .font-paragraph-bold {
+    font-family: var(--font-nunito), sans-serif;
+    font-weight: 700;
+  }
+
+  /* Line Clamp Utilities */
+  /* Reason: Ensure line-clamp utilities work properly for text truncation */
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .line-clamp-4 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
 }

@@ -5,8 +5,8 @@ import { PaperTexture } from "./PaperTexture";
 import { getCurrentSeason, getSeasonalWashColor } from "@/lib/utils/seasonal";
 import { Season } from "@/types/garden-ui";
 import {
-	animateFadeUp,
-	withReducedMotion,
+  animateFadeUp,
+  withReducedMotion,
 } from "@/lib/animations/garden-animations";
 
 /**
@@ -17,37 +17,37 @@ import {
  */
 
 type SeasonalBackgroundProps = {
-	season?: Season;
-	animated?: boolean;
-	className?: string;
+  season?: Season;
+  animated?: boolean;
+  className?: string;
 };
 
 export const SeasonalBackground: React.FC<SeasonalBackgroundProps> = ({
-	season,
-	animated = true,
-	className = "",
+  season,
+  animated = true,
+  className = "",
 }) => {
-	const containerRef = useRef<HTMLDivElement>(null);
-	const currentSeason = season || getCurrentSeason();
-	const washColor = getSeasonalWashColor(currentSeason);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const currentSeason = season || getCurrentSeason();
+  const washColor = getSeasonalWashColor(currentSeason);
 
-	useEffect(() => {
-		if (animated && containerRef.current) {
-			withReducedMotion(() =>
-				animateFadeUp(containerRef.current!, { duration: 600 })
-			);
-		}
-	}, [animated]);
+  useEffect(() => {
+    if (animated && containerRef.current) {
+      withReducedMotion(() =>
+        animateFadeUp(containerRef.current!, { duration: 600 })
+      );
+    }
+  }, [animated]);
 
-	return (
-		<div
-			ref={containerRef}
-			className={`fixed inset-0 -z-10 ${className}`}
-			style={{ backgroundColor: washColor }}
-			aria-hidden="true"
-		>
-			{/* Reason: Paper texture overlay for gouache feel */}
-			<PaperTexture opacity={0.35} />
-		</div>
-	);
+  return (
+    <div
+      ref={containerRef}
+      className={`fixed inset-0 -z-10 ${className}`}
+      style={{ backgroundImage: washColor }}
+      aria-hidden="true"
+    >
+      {/* Reason: Paper texture overlay for gouache feel */}
+      <PaperTexture opacity={0.35} />
+    </div>
+  );
 };

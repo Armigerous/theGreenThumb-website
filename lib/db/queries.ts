@@ -258,6 +258,126 @@ export const queries = {
 
   // Reason: Garden overview and statistics queries for My Garden page
   gardenOverview: {
+    // Reason: Get dashboard data for user gardens with task-based statistics
+    // This replaces the need for a materialized view by querying the data directly
+    getUserGardensDashboard: async (userId: string) => {
+      // Reason: Fetch all gardens with their plants and tasks
+      const gardens = await prisma.user_gardens.findMany({
+        where: { user_id: userId },
+        include: {
+          user_plants: {
+            include: {
+              plant_tasks: {
+                orderBy: { due_date: 'asc' },
+              },
+              main_plant_data: {
+                select: {
+                  id: true,
+                  scientific_name: true,
+                  common_names: true,
+                  plant_images: {
+                    take: 1,
+                    select: {
+                      img: true,
+                      alt_text: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        orderBy: { updated_at: 'desc' },
+      })
+
+      // Reason: Transform each garden into dashboard format with task-based statistics
+      return gardens.map(garden => {
+        const now = new Date()
+        const plants = garden.user_plants
+
+        // Reason: Calculate task-based statistics for each plant
+        const plantsWithStats = plants.map(plant => {
+          const overdueTasks = plant.plant_tasks.filter(
+            task => !task.completed && new Date(task.due_date) < now
+          )
+          const urgentTasks = plant.plant_tasks.filter(
+            task => !task.completed && 
+            new Date(task.due_date) >= now &&
+            new Date(task.due_date) <= new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000) // Next 3 days
+          )
+
+          // Reason: Extract common name from JSON field with proper type handling
+          const commonNamesRaw = plant.main_plant_data?.common_names
+          let commonName: string | undefined
+          if (commonNamesRaw !== null && commonNamesRaw !== undefined) {
+            if (typeof commonNamesRaw === 'string') {
+              try {
+                const parsed = JSON.parse(commonNamesRaw)
+                commonName = Array.isArray(parsed) && parsed.length > 0 ? String(parsed[0]) : undefined
+              } catch {
+                commonName = undefined
+              }
+            } else if (Array.isArray(commonNamesRaw) && commonNamesRaw.length > 0) {
+              commonName = typeof commonNamesRaw[0] === 'string' ? commonNamesRaw[0] : String(commonNamesRaw[0])
+            }
+          }
+
+          return {
+            id: plant.id,
+            nickname: plant.nickname,
+            scientificName: plant.main_plant_data?.scientific_name || 'Unknown',
+            commonName,
+            image: plant.main_plant_data?.plant_images?.[0]?.img,
+            overdueTasksCount: overdueTasks.length,
+            urgentTasksCount: urgentTasks.length,
+          }
+        })
+
+        // Reason: Get upcoming tasks (next 7 days, not overdue)
+        const upcomingTasks = plants.flatMap(plant =>
+          plant.plant_tasks
+            .filter(task => {
+              const dueDate = new Date(task.due_date)
+              const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
+              return !task.completed && dueDate >= now && dueDate <= sevenDaysFromNow
+            })
+            .map(task => ({
+              id: task.id,
+              plantId: plant.id,
+              plantNickname: plant.nickname,
+              taskType: task.task_type,
+              dueDate: task.due_date,
+              priority: task.metadata && typeof task.metadata === 'object' && 'priority' in task.metadata
+                ? String((task.metadata as { priority?: string }).priority || 'MEDIUM')
+                : 'MEDIUM',
+            }))
+        )
+
+        // Reason: Calculate aggregate statistics for the garden
+        const totalPlants = plants.length
+        const plantsWithOverdueTasks = plantsWithStats.filter(p => p.overdueTasksCount > 0).length
+        const plantsWithUrgentTasks = plantsWithStats.filter(p => p.urgentTasksCount > 0).length
+        // Reason: Calculate unique plants needing care (plants with either overdue OR urgent tasks)
+        const plantsNeedingCare = plantsWithStats.filter(p => p.overdueTasksCount > 0 || p.urgentTasksCount > 0).length
+        const overdueTasksCount = plantsWithStats.reduce((sum, p) => sum + p.overdueTasksCount, 0)
+        const upcomingTasksCount = upcomingTasks.length
+
+        return {
+          garden_id: garden.id,
+          name: garden.name,
+          updated_at: garden.updated_at,
+          total_plants: totalPlants,
+          plants_with_overdue_tasks: plantsWithOverdueTasks,
+          plants_with_urgent_tasks: plantsWithUrgentTasks,
+          plants_needing_care: plantsNeedingCare,
+          overdue_tasks_count: overdueTasksCount,
+          upcoming_tasks_count: upcomingTasksCount,
+          plants: plantsWithStats,
+          upcoming_tasks: upcomingTasks,
+        }
+      })
+    },
+
     // Reason: Get all gardens for a user with plant counts and care status
     getUserGardensWithStats: async (userId: string) => {
       const gardens = await prisma.user_gardens.findMany({

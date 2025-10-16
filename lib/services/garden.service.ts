@@ -1,5 +1,4 @@
 import { prisma } from '@/lib/db/prisma'
-import { Prisma } from '@/lib/generated/prisma'
 import { revalidatePath } from 'next/cache'
 
 /**
@@ -176,8 +175,8 @@ export class GardenService {
         habit_form_ids: data.habitFormIds,
         plant_type_ids: data.plantTypeIds,
         design_feature_ids: data.designFeatureIds,
-        light_id: data.sunlightIds?.[0], // Convert array to single ID for now
-        soil_texture_id: data.soilTextureIds?.[0], // Convert array to single ID for now
+        light_id: data.sunlightIds?.[0] ? parseInt(data.sunlightIds[0]) : undefined, // Convert array to single ID for now
+        soil_texture_id: data.soilTextureIds?.[0] ? parseInt(data.soilTextureIds[0]) : undefined, // Convert array to single ID for now
       },
       include: {
         user_plants: true,

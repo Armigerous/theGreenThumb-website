@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { NextRequest } from 'next/server'
+// Note: NextRequest import removed as it's no longer used
 import { UserGardenService } from '@/lib/services'
 
 // Mock the service layer
@@ -59,7 +59,6 @@ describe('User Gardens API Routes', () => {
       const { GET } = await import('@/app/api/user-gardens/route')
 
       // Act
-      const request = new NextRequest('http://localhost:3000/api/user-gardens')
       const response = await GET()
       const data = await response.json()
 
@@ -76,7 +75,6 @@ describe('User Gardens API Routes', () => {
       const { GET } = await import('@/app/api/user-gardens/route')
 
       // Act
-      const request = new NextRequest('http://localhost:3000/api/user-gardens')
       const response = await GET()
       const data = await response.json()
 
@@ -93,7 +91,6 @@ describe('User Gardens API Routes', () => {
       const { GET } = await import('@/app/api/user-gardens/route')
 
       // Act
-      const request = new NextRequest('http://localhost:3000/api/user-gardens')
       const response = await GET()
       const data = await response.json()
 
@@ -116,7 +113,6 @@ describe('User Gardens API Routes', () => {
       const { GET } = await import('@/app/api/user-gardens/route')
 
       // Act
-      const request = new NextRequest('http://localhost:3000/api/user-gardens')
       const response = await GET()
 
       // Assert
@@ -145,13 +141,7 @@ describe('User Gardens API Routes', () => {
       const { POST } = await import('@/app/api/user-gardens/route')
 
       // Act
-      const request = new NextRequest('http://localhost:3000/api/user-gardens', {
-        method: 'POST',
-        body: JSON.stringify(settingsData),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      // Note: Request object removed as it's not used in the test
       const response = await POST(request)
       const data = await response.json()
 

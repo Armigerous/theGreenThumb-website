@@ -23,19 +23,7 @@ const UpdatePlantsSchema = z.object({
   plantIds: z.array(z.string())
 })
 
-// Plant interface to properly type our response
-interface Plant {
-  id: string
-  gardenId: number
-  customName: string
-  botanicalName: string
-  status: string
-  careLogs: Record<string, unknown>[]
-  images: { url: string; altText?: string }[]
-  locationTags: string[]
-  createdAt: string
-  updatedAt: string
-}
+// Note: Plant interface removed as it was unused
 
 export async function GET(request: NextRequest) {
   try {

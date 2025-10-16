@@ -5,6 +5,7 @@
  */
 
 import { vi } from 'vitest';
+import '@testing-library/jest-dom';
 
 // Mock browser environment for performance monitoring tests
 Object.defineProperty(global, 'window', {
@@ -66,7 +67,7 @@ global.NextRequest = class NextRequest {
 }
 
 global.NextResponse = {
-  json: vi.fn((data: any, init?: ResponseInit) => ({
+  json: vi.fn((data: unknown, init?: ResponseInit) => ({
     status: init?.status || 200,
     json: vi.fn().mockResolvedValue(data),
     headers: new Headers(init?.headers),
@@ -78,3 +79,6 @@ process.env.NODE_ENV = 'test'
 process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test'
 process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = 'test-key'
 process.env.CLERK_SECRET_KEY = 'test-secret'
+process.env.NEXT_PUBLIC_SANITY_DATASET = 'test'
+process.env.NEXT_PUBLIC_SANITY_PROJECT_ID = 'test'
+process.env.SANITY_API_TOKEN = 'test-token'

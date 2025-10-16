@@ -191,15 +191,15 @@ export async function POST(req: Request) {
     }
     
     // Reason: Execute query with Prisma
-    const results = await prisma.mainPlantData.findMany({
+    const results = await prisma.main_plant_data.findMany({
       where: whereClause,
       take: 10,
       include: {
-        plantImages: true,
+        plant_images: true,
         cultivars: true,
       },
       orderBy: {
-        scientificName: 'asc'
+        scientific_name: 'asc'
       }
     })
     
@@ -207,11 +207,11 @@ export async function POST(req: Request) {
     const formattedResults = results.map(plant => ({
       id: plant.id,
       slug: plant.slug,
-      scientific_name: plant.scientificName,
-      common_name: Array.isArray(plant.commonNames) ? plant.commonNames[0] : plant.commonNames || "",
+      scientific_name: plant.scientific_name,
+      common_name: Array.isArray(plant.common_names) ? plant.common_names[0] : plant.common_names || "",
       description: plant.description,
-      first_image: plant.plantImages?.[0]?.img || null,
-      first_image_alt_text: plant.plantImages?.[0]?.altText || null,
+      first_image: plant.plant_images?.[0]?.img || null,
+      first_image_alt_text: plant.plant_images?.[0]?.alt_text || null,
       first_tag: null, // Would need to resolve from tagsIds
     }))
     

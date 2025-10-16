@@ -208,7 +208,7 @@ export const respectsReducedMotion = (): boolean => {
  *
  * Reason: Execute animation only if user doesn't prefer reduced motion
  */
-export const withReducedMotion = (animationFn: () => any) => {
+export const withReducedMotion = (animationFn: () => unknown) => {
 	if (respectsReducedMotion()) {
 		// Reason: Skip animation, just show final state
 		return null;

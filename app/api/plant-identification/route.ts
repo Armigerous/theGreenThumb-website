@@ -8,11 +8,11 @@ import { searchDatabaseForPlant, findSimilarPlants } from '@/lib/db/plant-identi
 const AIPlantIdentificationSchema = z.object({
   results: z.array(z.object({
     name: z.string(),
-    scientificName: z.string(),
+    scientific_name: z.string(),
     confidence: z.number().min(0).max(1),
     description: z.string(),
     careInstructions: z.string().optional(),
-    commonNames: z.array(z.string()).optional(),
+    common_names: z.array(z.string()).optional(),
   }))
 });
 
@@ -82,11 +82,11 @@ Focus on plants that are commonly found in North Carolina gardens, houseplants, 
 
 For each result, provide:
 - name: Common name of the plant
-- scientificName: Scientific name (genus species)
+- scientific_name: Scientific name (genus species)
 - confidence: Confidence score between 0 and 1
 - description: Detailed description of the plant's appearance
 - careInstructions: Basic care tips if it's a common plant
-- commonNames: Array of alternative common names`
+- common_names: Array of alternative common names`
             },
             {
               type: 'image',
@@ -127,11 +127,11 @@ Focus on plants that are commonly found in North Carolina gardens, houseplants, 
 
 For each result, provide:
 - name: Common name of the plant
-- scientificName: Scientific name (genus species)
+- scientific_name: Scientific name (genus species)
 - confidence: Confidence score between 0 and 1
 - description: Detailed description of the plant's appearance
 - careInstructions: Basic care tips if it's a common plant
-- commonNames: Array of alternative common names`,
+- common_names: Array of alternative common names`,
         },
       ],
       maxRetries: 2,
@@ -152,8 +152,8 @@ async function enhanceResultsWithDatabase(aiResults: AIPlantResult[]): Promise<R
   for (const aiResult of aiResults) {
     const databaseMatch = await searchDatabaseForPlant(
       aiResult.name,
-      aiResult.scientificName,
-      aiResult.commonNames
+      aiResult.scientific_name,
+      aiResult.common_names
     );
 
     if (databaseMatch) {
@@ -165,7 +165,7 @@ async function enhanceResultsWithDatabase(aiResults: AIPlantResult[]): Promise<R
     } else {
       // Reason: If no database match, use AI result as-is with generated ID
       enhancedResults.push({
-        id: `ai-${aiResult.scientificName.toLowerCase().replace(/\s+/g, '-')}`,
+        id: `ai-${aiResult.scientific_name.toLowerCase().replace(/\s+/g, '-')}`,
         ...aiResult,
         databaseMatch: false,
       });

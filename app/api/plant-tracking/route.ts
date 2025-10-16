@@ -13,7 +13,7 @@ const userPlantsSchema = z.object({
   id: z.string().optional(), // Optional for creation, required for updates
   gardenId: z.number(),
   customName: z.string().min(1, "Custom name is required"),
-  botanicalName: z.string().min(1, "Botanical name is required"),
+  plantId: z.number().min(1, "Plant ID is required"), // Integer ID from main_plant_data table
   status: z.enum(["healthy", "warning", "critical", "dormant"]),
   careLogs: z.array(z.object({
     date: z.string(),
@@ -43,9 +43,9 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(url.searchParams.get("offset") || "0")
     
     // Verify the garden belongs to the user
-    const garden = await prisma.userGardens.findFirst({
+    const garden = await prisma.user_gardens.findFirst({
       where: {
-        userId,
+        user_id: userId,
         ...(gardenId ? { id: parseInt(gardenId) } : {})
       }
     })
@@ -58,27 +58,27 @@ export async function GET(request: NextRequest) {
     let plants = []
     if (gardenId) {
       // If gardenId is provided, find all plants for that garden
-      plants = await prisma.userPlants.findMany({
-        where: { gardenId: parseInt(gardenId) },
+      plants = await prisma.user_plants.findMany({
+        where: { garden_id: parseInt(gardenId) },
         take: limit,
         skip: offset,
-        orderBy: { createdAt: 'desc' }
+        orderBy: { created_at: 'desc' }
       })
     } else {
       // Otherwise find all plants from all gardens owned by the user
-      const userGardensData = await prisma.userGardens.findMany({
-        where: { userId },
+      const userGardensData = await prisma.user_gardens.findMany({
+        where: { user_id: userId },
         include: {
-          userPlants: {
+          user_plants: {
             take: limit,
             skip: offset,
-            orderBy: { createdAt: 'desc' }
+            orderBy: { created_at: 'desc' }
           }
         }
       })
       
       // Flatten the plants from all gardens
-      plants = userGardensData.flatMap(garden => garden.userPlants || [])
+      plants = userGardensData.flatMap(garden => garden.user_plants || [])
     }
     
     return NextResponse.json({ plants }, {
@@ -119,9 +119,9 @@ export async function POST(request: NextRequest) {
     const plantData = validationResult.data
     
     // Verify the garden belongs to the user
-    const garden = await prisma.userGardens.findFirst({
+    const garden = await prisma.user_gardens.findFirst({
       where: {
-        userId,
+        user_id: userId,
         id: plantData.gardenId
       }
     })
@@ -131,16 +131,14 @@ export async function POST(request: NextRequest) {
     }
     
     // Create new plant tracking entry
-    const newPlant = await prisma.userPlants.create({
+    const newPlant = await prisma.user_plants.create({
       data: {
         id: plantData.id || crypto.randomUUID(),
-        gardenId: plantData.gardenId,
-        customName: plantData.customName,
-        botanicalName: plantData.botanicalName,
-        status: plantData.status,
-        careLogs: plantData.careLogs,
+        garden_id: plantData.gardenId,
+        nickname: plantData.customName,
+        plant_id: plantData.plantId, // This should be the integer ID from main_plant_data table
+        care_logs: plantData.careLogs,
         images: plantData.images,
-        locationTags: plantData.locationTags,
       }
     })
     
@@ -188,9 +186,9 @@ export async function PATCH(request: NextRequest) {
     }
     
     // Verify the garden belongs to the user
-    const garden = await prisma.userGardens.findFirst({
+    const garden = await prisma.user_gardens.findFirst({
       where: {
-        userId,
+        user_id: userId,
         id: plantData.gardenId
       }
     })
@@ -200,10 +198,10 @@ export async function PATCH(request: NextRequest) {
     }
     
     // Verify the plant exists and belongs to this garden
-    const existingPlant = await prisma.userPlants.findFirst({
+    const existingPlant = await prisma.user_plants.findFirst({
       where: {
         id: plantData.id,
-        gardenId: plantData.gardenId
+        garden_id: plantData.gardenId
       }
     })
     
@@ -212,15 +210,13 @@ export async function PATCH(request: NextRequest) {
     }
     
     // Update plant tracking entry
-    const updatedPlant = await prisma.userPlants.update({
+    const updatedPlant = await prisma.user_plants.update({
       where: { id: plantData.id },
       data: {
-        customName: plantData.customName,
-        botanicalName: plantData.botanicalName,
-        status: plantData.status,
-        careLogs: plantData.careLogs,
+        nickname: plantData.customName,
+        plant_id: plantData.plantId, // This should be the integer ID from main_plant_data table
+        care_logs: plantData.careLogs,
         images: plantData.images,
-        locationTags: plantData.locationTags,
       }
     })
     

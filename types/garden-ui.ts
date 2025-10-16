@@ -48,7 +48,6 @@ export type GardenCardContentProps = {
  * Reason: Garden interaction props - handles actions separately from presentation
  */
 export type GardenInteractionProps = {
-	gardenId: number | string;
 	onEdit?: () => void;
 	onDelete?: () => void;
 	onAddPlant?: () => void;
@@ -76,7 +75,6 @@ export type CareAlertProps = {
  * Reason: Empty state props with brand voice
  */
 export type EmptyGardenStateProps = {
-	onCreateGarden?: () => void;
 	animated?: boolean;
 };
 

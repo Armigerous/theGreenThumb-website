@@ -111,6 +111,7 @@ export class PlantService {
     // Add plant to the garden by creating a new user_plants record
     const newPlant = await prisma.user_plants.create({
       data: {
+        id: crypto.randomUUID(), // Generate UUID for the id field
         garden_id: gardenId,
         plant_id: parseInt(plantId),
         nickname: `Plant ${plantId}`, // Default nickname
@@ -178,6 +179,7 @@ export class PlantService {
       plantIds.map(plantId => 
         prisma.user_plants.create({
           data: {
+            id: crypto.randomUUID(), // Generate UUID for the id field
             garden_id: gardenId,
             plant_id: parseInt(plantId),
             nickname: `Plant ${plantId}`, // Default nickname

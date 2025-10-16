@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CareStatusBadge } from "./CareStatusBadge";
 import { userPlants, needsCare } from "@/types/garden";
-import { Prisma } from "@/lib/generated/prisma";
 import { MoreHorizontal, Edit, Trash2, Archive } from "lucide-react";
 import {
 	DropdownMenu,

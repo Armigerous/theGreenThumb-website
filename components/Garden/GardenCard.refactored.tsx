@@ -19,51 +19,50 @@ import { GardenWithStats, GardenWithTaskStats } from "@/types/garden";
  */
 
 type GardenCardProps = {
-  garden: GardenWithStats | GardenWithTaskStats;
-  onEdit?: (garden: GardenWithStats | GardenWithTaskStats) => void;
-  onDelete?: (garden: GardenWithStats | GardenWithTaskStats) => void;
-  onAddPlant?: (garden: GardenWithStats | GardenWithTaskStats) => void;
-  variant?: "default" | "compact";
-  className?: string;
+	garden: GardenWithStats | GardenWithTaskStats;
+	onEdit?: (garden: GardenWithStats | GardenWithTaskStats) => void;
+	onDelete?: (garden: GardenWithStats | GardenWithTaskStats) => void;
+	onAddPlant?: (garden: GardenWithStats | GardenWithTaskStats) => void;
+	variant?: "default" | "compact";
+	className?: string;
 };
 
 export const GardenCard: React.FC<GardenCardProps> = ({
-  garden,
-  onEdit,
-  onDelete,
-  onAddPlant,
-  variant = "default",
-  className = "",
+	garden,
+	onEdit,
+	onDelete,
+	onAddPlant,
+	variant = "default",
+	className = "",
 }) => {
-  // Reason: Extract and validate garden id from either task-based or legacy structure
-  const gardenId = garden.id ?? 0;
+	// Reason: Extract and validate garden id from either task-based or legacy structure
+	const gardenId = garden.id ?? 0;
 
-  // Reason: Normalize garden data for the card content component
-  const normalizedGarden = {
-    id: gardenId,
-    name: garden.name,
-    statistics: garden.statistics,
-  };
+	// Reason: Normalize garden data for the card content component
+	const normalizedGarden = {
+		id: gardenId,
+		name: garden.name,
+		statistics: garden.statistics,
+	};
 
-  return (
-    <OrganicCard
-      variant={variant}
-      elevation="medium"
-      withTexture={true}
-      className={`group ${className}`}
-    >
-      {/* Reason: Actions menu in top corner, appears on hover */}
-      <div className="absolute top-4 right-4 z-20">
-        <GardenActionsMenu
-          gardenId={gardenId}
-          onEdit={onEdit ? () => onEdit(garden) : undefined}
-          onDelete={onDelete ? () => onDelete(garden) : undefined}
-          onAddPlant={onAddPlant ? () => onAddPlant(garden) : undefined}
-        />
-      </div>
+	return (
+		<OrganicCard
+			variant={variant}
+			elevation="medium"
+			withTexture={true}
+			className={`group ${className}`}
+		>
+			{/* Reason: Actions menu in top corner, appears on hover */}
+			<div className="absolute top-4 right-4 z-20">
+				<GardenActionsMenu
+					onEdit={onEdit ? () => onEdit(garden) : undefined}
+					onDelete={onDelete ? () => onDelete(garden) : undefined}
+					onAddPlant={onAddPlant ? () => onAddPlant(garden) : undefined}
+				/>
+			</div>
 
-      {/* Reason: Pure presentational content */}
-      <GardenCardContent garden={normalizedGarden} variant={variant} />
-    </OrganicCard>
-  );
+			{/* Reason: Pure presentational content */}
+			<GardenCardContent garden={normalizedGarden} variant={variant} />
+		</OrganicCard>
+	);
 };

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { queries } from '../db/queries';
+// Note: Removed unused queries import
 
 /**
  * Garden Queries Test Suite

@@ -22,7 +22,6 @@ import {
  */
 
 export const EmptyGardenState: React.FC<EmptyGardenStateProps> = ({
-	onCreateGarden,
 	animated = true,
 }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -31,7 +30,7 @@ export const EmptyGardenState: React.FC<EmptyGardenStateProps> = ({
 		if (animated && containerRef.current) {
 			const elements = containerRef.current.querySelectorAll(".animate-item");
 			withReducedMotion(() =>
-				animateStaggerFadeUp(Array.from(elements), {
+				animateStaggerFadeUp(Array.from(elements) as HTMLElement[], {
 					stagger: 150,
 					delay: 200,
 				})

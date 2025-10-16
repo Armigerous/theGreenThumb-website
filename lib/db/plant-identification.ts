@@ -5,12 +5,12 @@ import { PlantCardData, PlantCardDataScientific, PlantImage } from '@/types/plan
 export interface PlantIdentificationResult {
   id: string
   name: string
-  scientificName: string
+  scientific_name: string
   confidence: number
   description: string
   image?: string
   careInstructions?: string
-  commonNames?: string[]
+  common_names?: string[]
   // Database-specific fields
   databaseMatch?: boolean
   plantId?: number
@@ -19,22 +19,22 @@ export interface PlantIdentificationResult {
   family?: string
   genus?: string
   species?: string
-  heightMin?: number
-  heightMax?: number
-  widthMin?: number
-  widthMax?: number
+  height_min?: number
+  height_max?: number
+  width_min?: number
+  width_max?: number
   origin?: string
   distribution?: string
   uses?: string
-  wildlifeValue?: string
+  wildlife_value?: string
   edibility?: string
-  flowerDescription?: string
-  leafDescription?: string
-  fruitDescription?: string
-  stemDescription?: string
-  barkDescription?: string
-  poisonSymptoms?: string
-  poisonToxicPrinciple?: string
+  flower_description?: string
+  leaf_description?: string
+  fruit_description?: string
+  stem_description?: string
+  bark_description?: string
+  poison_symptoms?: string
+  poison_toxic_principle?: string
   fireRisk?: string
   flowerSize?: string
   fruitLength?: string
@@ -111,27 +111,27 @@ export interface PlantIdentificationResult {
 // Reason: Search database for plants matching AI identification results using Prisma
 export async function searchDatabaseForPlant(
   plantName: string,
-  scientificName: string,
-  commonNames?: string[]
+  scientific_name: string,
+  common_names?: string[]
 ): Promise<PlantIdentificationResult | null> {
   try {
     // Reason: Try multiple search strategies to find the best match
     const searchTerms = [
       plantName.toLowerCase(),
-      scientificName.toLowerCase(),
-      ...(commonNames || []).map(name => name.toLowerCase())
+      scientific_name.toLowerCase(),
+      ...(common_names || []).map(name => name.toLowerCase())
     ]
 
     // Reason: Search by scientific name first (most accurate)
     let plant = await prisma.main_plant_data.findFirst({
       where: {
         scientific_name: {
-          contains: scientificName,
+          contains: scientific_name,
           mode: 'insensitive',
         },
       },
       include: {
-        plantImages: true,
+        plant_images: true,
         cultivars: true,
       },
     })
@@ -144,13 +144,13 @@ export async function searchDatabaseForPlant(
         const plants = await prisma.main_plant_data.findMany({
           where: {
             OR: [
-              { scientificName: { contains: term, mode: 'insensitive' } },
+              { scientific_name: { contains: term, mode: 'insensitive' } },
               { genus: { contains: term, mode: 'insensitive' } },
               { species: { contains: term, mode: 'insensitive' } },
             ],
           },
           include: {
-            plantImages: true,
+            plant_images: true,
             cultivars: true,
           },
           take: 1,
@@ -165,7 +165,7 @@ export async function searchDatabaseForPlant(
 
     // Reason: If still no match, try partial matches on scientific name
     if (!plant) {
-      const scientificParts = scientificName.toLowerCase().split(' ')
+      const scientificParts = scientific_name.toLowerCase().split(' ')
       for (const part of scientificParts) {
         if (part.length > 3) { // Reason: Only search for meaningful parts
           const plants = await prisma.main_plant_data.findMany({
@@ -176,7 +176,7 @@ export async function searchDatabaseForPlant(
               },
             },
             include: {
-              plantImages: true,
+              plant_images: true,
               cultivars: true,
             },
             take: 1,
@@ -197,13 +197,13 @@ export async function searchDatabaseForPlant(
     // Reason: Convert database plant to identification result format with PlantCardData
     return {
       id: plant.slug || plant.id?.toString() || 'unknown',
-      name: (Array.isArray(plant.commonNames) ? String(plant.commonNames[0] || '') : String(plant.commonNames || '')) || plant.scientificName || 'Unknown Plant',
-      scientificName: plant.scientificName || 'Unknown',
+      name: (Array.isArray(plant.common_names) ? String(plant.common_names[0] || '') : String(plant.common_names || '')) || plant.scientific_name || 'Unknown Plant',
+      scientific_name: plant.scientific_name || 'Unknown',
       confidence: 0.9, // Reason: High confidence for database matches
       description: plant.description || 'No description available',
-      image: plant.plantImages?.[0]?.img || undefined,
+      image: plant.plant_images?.[0]?.img || undefined,
       careInstructions: generateCareInstructions(),
-      commonNames: Array.isArray(plant.commonNames) ? plant.commonNames.map(String) : (plant.commonNames ? [String(plant.commonNames)] : []),
+      common_names: Array.isArray(plant.common_names) ? plant.common_names.map(String) : (plant.common_names ? [String(plant.common_names)] : []),
       databaseMatch: true,
       plantId: plant.id || undefined,
       slug: plant.slug || undefined,
@@ -211,26 +211,26 @@ export async function searchDatabaseForPlant(
       family: plant.family || undefined,
       genus: plant.genus || undefined,
       species: plant.species || undefined,
-      heightMin: plant.heightMin || undefined,
-      heightMax: plant.heightMax || undefined,
-      widthMin: plant.widthMin || undefined,
-      widthMax: plant.widthMax || undefined,
+      height_min: plant.height_min || undefined,
+      height_max: plant.height_max || undefined,
+      width_min: plant.width_min || undefined,
+      width_max: plant.width_max || undefined,
       origin: plant.origin || undefined,
       distribution: plant.distribution || undefined,
       uses: plant.uses || undefined,
-      wildlifeValue: plant.wildlifeValue || undefined,
+      wildlife_value: plant.wildlife_value || undefined,
       edibility: plant.edibility || undefined,
-      flowerDescription: plant.flowerDescription || undefined,
-      leafDescription: plant.leafDescription || undefined,
-      fruitDescription: plant.fruitDescription || undefined,
-      stemDescription: plant.stemDescription || undefined,
-      barkDescription: plant.barkDescription || undefined,
-      poisonSymptoms: plant.poisonSymptoms || undefined,
-      poisonToxicPrinciple: plant.poisonToxicPrinciple || undefined,
-      images: plant.plantImages?.map(img => ({
+      flower_description: plant.flower_description || undefined,
+      leaf_description: plant.leaf_description || undefined,
+      fruit_description: plant.fruit_description || undefined,
+      stem_description: plant.stem_description || undefined,
+      bark_description: plant.bark_description || undefined,
+      poison_symptoms: plant.poison_symptoms || undefined,
+      poison_toxic_principle: plant.poison_toxic_principle || undefined,
+      images: plant.plant_images?.map(img => ({
         id: img.id,
         img: img.img || '',
-        alt_text: img.altText || '',
+        alt_text: img.alt_text || '',
         caption: img.caption || '',
         attribution: img.attribution || '',
       })) || undefined,
@@ -238,12 +238,12 @@ export async function searchDatabaseForPlant(
       plantCardData: {
         id: plant.id,
         slug: plant.slug,
-        scientific_name: plant.scientificName,
+        scientific_name: plant.scientific_name,
         description: plant.description,
-        common_name: Array.isArray(plant.commonNames) ? plant.commonNames[0] : plant.commonNames,
+        common_name: Array.isArray(plant.common_names) ? plant.common_names[0] : plant.common_names,
         first_tag: null, // Would need to resolve from tagsIds
-        first_image: plant.plantImages?.[0]?.img || null,
-        first_image_alt_text: plant.plantImages?.[0]?.altText || null,
+        first_image: plant.plant_images?.[0]?.img || null,
+        first_image_alt_text: plant.plant_images?.[0]?.alt_text || null,
       } as PlantCardDataScientific,
     }
   } catch (error) {
@@ -306,7 +306,7 @@ export async function findSimilarPlants(
         ],
       },
       include: {
-        plantImages: true,
+        plant_images: true,
         cultivars: true,
       },
       take: limit,
@@ -319,13 +319,13 @@ export async function findSimilarPlants(
     // Reason: Convert database results to identification format - these are similar plants, not direct matches
     return plants.map(plant => ({
       id: plant.slug || plant.id?.toString() || 'unknown',
-      name: (Array.isArray(plant.commonNames) ? String(plant.commonNames[0] || '') : String(plant.commonNames || '')) || plant.scientificName || 'Unknown Plant',
-      scientificName: plant.scientificName || 'Unknown',
+      name: (Array.isArray(plant.common_names) ? String(plant.common_names[0] || '') : String(plant.common_names || '')) || plant.scientific_name || 'Unknown Plant',
+      scientific_name: plant.scientific_name || 'Unknown',
       confidence: 0.7, // Reason: Lower confidence for similar plants
       description: plant.description || 'No description available',
-      image: plant.plantImages?.[0]?.img || undefined,
+      image: plant.plant_images?.[0]?.img || undefined,
       careInstructions: generateCareInstructions(),
-      commonNames: Array.isArray(plant.commonNames) ? plant.commonNames.map(String) : (plant.commonNames ? [String(plant.commonNames)] : []),
+      common_names: Array.isArray(plant.common_names) ? plant.common_names.map(String) : (plant.common_names ? [String(plant.common_names)] : []),
       databaseMatch: true, // Reason: Will be overridden in API to false for similar plants
       plantId: plant.id || undefined,
       slug: plant.slug || undefined,

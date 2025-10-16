@@ -19,7 +19,6 @@ import { GardenInteractionProps } from "@/types/garden-ui";
  */
 
 export const GardenActionsMenu: React.FC<GardenInteractionProps> = ({
-	gardenId,
 	onEdit,
 	onDelete,
 	onAddPlant,

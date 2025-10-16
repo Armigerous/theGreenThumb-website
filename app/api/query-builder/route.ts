@@ -150,14 +150,14 @@ const executePlantSearch = async (filters: QueryFilter[]) => {
   
   if (conditions.length === 0) {
     // Return some default plants if no specific filters
-    return await prisma.mainPlantData.findMany({
+    return await prisma.main_plant_data.findMany({
       take: 6,
       include: {
-        plantImages: true,
+        plant_images: true,
         cultivars: true,
       },
       orderBy: {
-        scientificName: 'asc'
+        scientific_name: 'asc'
       }
     })
   }
@@ -165,15 +165,15 @@ const executePlantSearch = async (filters: QueryFilter[]) => {
   // Combine conditions with OR logic for multiple filters
   const whereClause = conditions.length > 1 ? { OR: conditions } : conditions[0]
 
-  return await prisma.mainPlantData.findMany({
+  return await prisma.main_plant_data.findMany({
     where: whereClause,
     take: 6,
     include: {
-      plantImages: true,
+      plant_images: true,
       cultivars: true,
     },
     orderBy: {
-      scientificName: 'asc'
+      scientific_name: 'asc'
     }
   })
 }
@@ -242,12 +242,12 @@ export async function POST(req: Request) {
       
       // Transform result to match expected format
       const transformedResult = result.map(plant => ({
-        scientific_name: plant.scientificName,
-        common_name: Array.isArray(plant.commonNames) ? plant.commonNames[0] : plant.commonNames,
+        scientific_name: plant.scientific_name,
+        common_name: Array.isArray(plant.common_names) ? plant.common_names[0] : plant.common_names,
         slug: plant.slug,
         first_tag: null, // Would need to resolve from tagsIds
-        first_image: plant.plantImages?.[0]?.img || null,
-        first_image_alt_text: plant.plantImages?.[0]?.altText || null,
+        first_image: plant.plant_images?.[0]?.img || null,
+        first_image_alt_text: plant.plant_images?.[0]?.alt_text || null,
         description: plant.description,
       }))
 

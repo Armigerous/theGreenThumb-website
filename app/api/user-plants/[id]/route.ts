@@ -15,7 +15,7 @@ export const revalidate = 0;
  */
 const UpdatePlantSchema = z.object({
   customName: z.string().min(1, "Custom name is required").optional(),
-  botanicalName: z.string().min(1, "Botanical name is required").optional(),
+  plantId: z.number().min(1, "Plant ID is required").optional(),
   status: z.enum(["healthy", "warning", "critical", "dormant"]).optional(),
   careLogs: z.array(z.object({
     date: z.string(),
@@ -49,17 +49,17 @@ export async function GET(
 
     const { id: plantId } = await params;
 
-    const plant = await prisma.userPlants.findFirst({
+    const plant = await prisma.user_plants.findFirst({
       where: { 
         id: plantId,
-        garden: { userId }
+        user_gardens: { user_id: userId }
       },
       include: {
-        garden: {
+        user_gardens: {
           select: {
             id: true,
             name: true,
-            userId: true
+            user_id: true
           }
         }
       }
@@ -109,10 +109,10 @@ export async function PATCH(
     const plantData = validationResult.data;
 
     // Reason: Verify plant ownership before updating
-    const existingPlant = await prisma.userPlants.findFirst({
+    const existingPlant = await prisma.user_plants.findFirst({
       where: { 
         id: plantId,
-        garden: { userId }
+        user_gardens: { user_id: userId }
       }
     });
 
@@ -120,13 +120,13 @@ export async function PATCH(
       return NextResponse.json({ error: "Plant not found or unauthorized" }, { status: 404 });
     }
 
-    const updatedPlant = await prisma.userPlants.update({
+    const updatedPlant = await prisma.user_plants.update({
       where: { id: plantId },
       data: {
-        ...plantData,
-        careLogs: plantData.careLogs ? plantData.careLogs : existingPlant.careLogs,
-        images: plantData.images ? plantData.images : existingPlant.images,
-        locationTags: plantData.locationTags ? plantData.locationTags : existingPlant.locationTags,
+        ...(plantData.customName && { nickname: plantData.customName }),
+        ...(plantData.plantId && { plant_id: plantData.plantId }),
+        ...(plantData.careLogs && { care_logs: plantData.careLogs }),
+        ...(plantData.images && { images: plantData.images }),
       }
     });
 
@@ -159,10 +159,10 @@ export async function DELETE(
     const { id: plantId } = await params;
 
     // Reason: Verify plant ownership before deleting
-    const existingPlant = await prisma.userPlants.findFirst({
+    const existingPlant = await prisma.user_plants.findFirst({
       where: { 
         id: plantId,
-        garden: { userId }
+        user_gardens: { user_id: userId }
       }
     });
 
@@ -170,7 +170,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Plant not found or unauthorized" }, { status: 404 });
     }
 
-    await prisma.userPlants.delete({
+    await prisma.user_plants.delete({
       where: { id: plantId }
     });
 

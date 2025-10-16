@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { NextRequest } from 'next/server'
+// Note: NextRequest import removed as it's no longer used
 import { GardenService } from '@/lib/services'
 
 // Mock the service layer
@@ -81,7 +81,6 @@ describe('Garden Overview API Routes', () => {
       const { GET } = await import('@/app/api/gardens/overview/route')
 
       // Act
-      const request = new NextRequest('http://localhost:3000/api/gardens/overview')
       const response = await GET()
       const data = await response.json()
 
@@ -103,7 +102,6 @@ describe('Garden Overview API Routes', () => {
       const { GET } = await import('@/app/api/gardens/overview/route')
 
       // Act
-      const request = new NextRequest('http://localhost:3000/api/gardens/overview')
       const response = await GET()
       const data = await response.json()
 
@@ -119,7 +117,6 @@ describe('Garden Overview API Routes', () => {
       const { GET } = await import('@/app/api/gardens/overview/route')
 
       // Act
-      const request = new NextRequest('http://localhost:3000/api/gardens/overview')
       const response = await GET()
       const data = await response.json()
 
@@ -146,7 +143,6 @@ describe('Garden Overview API Routes', () => {
       const { GET } = await import('@/app/api/gardens/overview/route')
 
       // Act
-      const request = new NextRequest('http://localhost:3000/api/gardens/overview')
       const response = await GET()
 
       // Assert
@@ -173,7 +169,6 @@ describe('Garden Overview API Routes', () => {
       const { GET } = await import('@/app/api/gardens/overview/route')
 
       // Act
-      const request = new NextRequest('http://localhost:3000/api/gardens/overview')
       const response = await GET()
       const data = await response.json()
 

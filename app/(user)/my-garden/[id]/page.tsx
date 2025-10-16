@@ -154,17 +154,19 @@ const GardenDetailPage = async ({
 				orderBy: { scientific_name: "asc" },
 			});
 
-			recommendations = recommendationsData.map((plant) => ({
-				id: plant.id,
-				slug: plant.slug,
-				scientificName: plant.scientific_name,
-				commonName: Array.isArray(plant.common_names)
-					? String(plant.common_names[0] || "")
-					: String(plant.common_names || ""),
-				description: plant.description || null,
-				image: plant.plant_images?.[0]?.img || null,
-				imageAlt: plant.plant_images?.[0]?.alt_text || null,
-			}));
+			recommendations = recommendationsData.map(
+				(plant) => ({
+					id: plant.id,
+					slug: plant.slug,
+					scientificName: plant.scientific_name,
+					commonName: Array.isArray(plant.common_names)
+						? String(plant.common_names[0] || "")
+						: String(plant.common_names || ""),
+					description: plant.description || null,
+					image: plant.plant_images?.[0]?.img || null,
+					imageAlt: plant.plant_images?.[0]?.alt_text || null,
+				})
+			);
 		}
 	} catch (err) {
 		console.error("Error fetching garden data:", err);

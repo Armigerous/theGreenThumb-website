@@ -119,7 +119,7 @@ const GardenDetailPage = async ({
 		const warningPlants = 0;
 		const criticalPlants = 0;
 
-		const plantsNeedingCare = plants.filter((plant) => {
+		const plantsNeedingCare = plants.filter((plant: GardenWithPlants['user_plants'][0]) => {
 			const rawCareLogs = plant.care_logs as unknown;
 			const careLogs = Array.isArray(rawCareLogs)
 				? (rawCareLogs as Array<{ date: string; type: string }>)

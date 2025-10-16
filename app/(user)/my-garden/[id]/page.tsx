@@ -119,19 +119,21 @@ const GardenDetailPage = async ({
 		const warningPlants = 0;
 		const criticalPlants = 0;
 
-		const plantsNeedingCare = plants.filter((plant: GardenWithPlants['user_plants'][0]) => {
-			const rawCareLogs = plant.care_logs as unknown;
-			const careLogs = Array.isArray(rawCareLogs)
-				? (rawCareLogs as Array<{ date: string; type: string }>)
-				: [];
-			if (careLogs.length === 0) return true;
-			const lastCareDate = new Date(
-				Math.max(...careLogs.map((log) => new Date(log.date).getTime()))
-			);
-			const daysSinceLastCare =
-				(Date.now() - lastCareDate.getTime()) / (1000 * 60 * 60 * 24);
-			return daysSinceLastCare > 7;
-		}).length;
+		const plantsNeedingCare = plants.filter(
+			(plant: GardenWithPlants["user_plants"][0]) => {
+				const rawCareLogs = plant.care_logs as unknown;
+				const careLogs = Array.isArray(rawCareLogs)
+					? (rawCareLogs as Array<{ date: string; type: string }>)
+					: [];
+				if (careLogs.length === 0) return true;
+				const lastCareDate = new Date(
+					Math.max(...careLogs.map((log) => new Date(log.date).getTime()))
+				);
+				const daysSinceLastCare =
+					(Date.now() - lastCareDate.getTime()) / (1000 * 60 * 60 * 24);
+				return daysSinceLastCare > 7;
+			}
+		).length;
 
 		gardenData = {
 			...garden,

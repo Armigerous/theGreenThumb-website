@@ -118,7 +118,7 @@ const TipSkeleton = () => (
 		</div>
 
 		{/* Tip Details Skeleton */}
-		<div className="py-2 my-10 flex items-center border-2 justify-around flex-wrap font-medium rounded-lg text-lg sm:text-xl px-2 md:px-10 bg-primary text-cream-50 border-cream-800">
+		<div className="py-2 my-10 flex items-center border-2 justify-around flex-wrap font-paragraph-semibold rounded-lg text-lg sm:text-xl px-2 md:px-10 bg-primary text-cream-50 border-cream-800">
 			<Skeleton className="h-6 w-32" /> {/* Date */}
 			<Skeleton className="h-6 w-16" /> {/* Views */}
 			<Skeleton className="h-6 w-20" /> {/* Read Time */}

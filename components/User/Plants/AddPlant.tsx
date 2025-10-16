@@ -315,7 +315,7 @@ const AddPlant = ({ gardenId, existingPlants = [] }: AddPlantProps) => {
 					<div className="p-6 border-b">
 						<div className="flex items-center justify-between">
 							<div>
-								<DialogTitle className="text-2xl font-bold">
+								<DialogTitle className="text-2xl font-title-bold">
 									Add a New Plant to Your Garden
 								</DialogTitle>
 								<p className="text-muted-foreground">
@@ -431,7 +431,7 @@ const AddPlant = ({ gardenId, existingPlants = [] }: AddPlantProps) => {
 																									: "opacity-0"
 																							)}
 																						/>
-																						<span className="font-medium">
+																						<span className="font-paragraph-semibold">
 																							{useCommonNames
 																								? result.common_name
 																								: result.scientific_name}
@@ -489,7 +489,7 @@ const AddPlant = ({ gardenId, existingPlants = [] }: AddPlantProps) => {
 										) : (
 											<>
 												<div className="space-y-6 flex-1">
-													<h3 className="text-lg font-medium">
+													<h3 className="text-lg font-paragraph-semibold">
 														Selected Plant: {selectedPlant?.scientific_name}
 													</h3>
 
@@ -580,7 +580,7 @@ const AddPlant = ({ gardenId, existingPlants = [] }: AddPlantProps) => {
 								{selectedPlant && plantDetails ? (
 									<div className="p-6">
 										<div className="mb-6">
-											<h3 className="text-2xl font-semibold mb-2">
+											<h3 className="text-2xl font-paragraph-semibold mb-2">
 												{plantDetails.scientific_name}
 											</h3>
 											{plantDetails.common_name && (
@@ -608,7 +608,7 @@ const AddPlant = ({ gardenId, existingPlants = [] }: AddPlantProps) => {
 											{/* Description */}
 											{plantDetails.description && (
 												<div className="mb-6">
-													<h4 className="text-lg font-medium mb-2">
+													<h4 className="text-lg font-paragraph-semibold mb-2">
 														Description
 													</h4>
 													<div
@@ -623,7 +623,9 @@ const AddPlant = ({ gardenId, existingPlants = [] }: AddPlantProps) => {
 											{/* Plant Tags */}
 											{plantDetails.tags && plantDetails.tags.length > 0 && (
 												<div className="mb-6">
-													<h4 className="text-lg font-medium mb-2">Tags</h4>
+													<h4 className="text-lg font-paragraph-semibold mb-2">
+														Tags
+													</h4>
 													<div className="flex flex-wrap gap-2">
 														{plantDetails.tags.map((tag, index) => (
 															<Badge key={index} variant="outline">
@@ -783,7 +785,7 @@ const AddPlant = ({ gardenId, existingPlants = [] }: AddPlantProps) => {
 									<div className="h-full flex items-center justify-center p-6">
 										<div className="text-center max-w-md">
 											<Info className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
-											<h3 className="text-lg font-medium mb-2">
+											<h3 className="text-lg font-paragraph-semibold mb-2">
 												Select a plant to view details
 											</h3>
 											<p className="text-sm text-muted-foreground">

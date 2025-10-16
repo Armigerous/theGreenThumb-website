@@ -46,7 +46,7 @@ const MobileNavMenu = memo(() => {
 						<div className="px-6 py-8 border-b border-muted flex-shrink-0">
 							<NextLink
 								href="/"
-								className="text-4xl font-bold text-foreground hover:text-primary transition-colors duration-200"
+								className="text-4xl font-title-bold text-foreground hover:text-primary transition-colors duration-200"
 								onClick={() => setOpen(false)}
 							>
 								GreenThumb
@@ -58,12 +58,12 @@ const MobileNavMenu = memo(() => {
 							<div className="py-6 space-y-6">
 								{/* Features Section */}
 								<div className="space-y-3">
-									<h3 className="text-lg font-semibold text-muted-foreground px-4">
+									<h3 className="text-lg font-paragraph-semibold text-muted-foreground px-4">
 										Features
 									</h3>
 									<NextLink
 										href="/#ProductFeatures"
-										className="flex items-center gap-3 text-xl font-medium px-4 py-3 rounded-md transition-colors duration-200 hover:bg-brand-25 hover:text-primary"
+										className="flex items-center gap-3 text-xl font-paragraph-semibold px-4 py-3 rounded-md transition-colors duration-200 hover:bg-brand-25 hover:text-primary"
 										onClick={() => setOpen(false)}
 									>
 										<ListChecks className="h-5 w-5" />
@@ -71,7 +71,7 @@ const MobileNavMenu = memo(() => {
 									</NextLink>
 									<NextLink
 										href="/#AppFeatures"
-										className="flex items-center gap-3 text-xl font-medium px-4 py-3 rounded-md transition-colors duration-200 hover:bg-brand-25 hover:text-primary"
+										className="flex items-center gap-3 text-xl font-paragraph-semibold px-4 py-3 rounded-md transition-colors duration-200 hover:bg-brand-25 hover:text-primary"
 										onClick={() => setOpen(false)}
 									>
 										<Smartphone className="h-5 w-5" />
@@ -81,7 +81,7 @@ const MobileNavMenu = memo(() => {
 
 								{/* Main Navigation Items */}
 								<div className="space-y-3">
-									<h3 className="text-lg font-semibold text-muted-foreground px-4">
+									<h3 className="text-lg font-paragraph-semibold text-muted-foreground px-4">
 										Navigation
 									</h3>
 									{navMenuItems
@@ -91,7 +91,7 @@ const MobileNavMenu = memo(() => {
 												key={`${item.label}-${index}`}
 												href={item.href}
 												prefetch={item.href === "/plants" ? true : undefined}
-												className="text-xl font-medium px-4 py-3 rounded-md transition-colors duration-200 hover:bg-brand-25 hover:text-primary block"
+												className="text-xl font-paragraph-semibold px-4 py-3 rounded-md transition-colors duration-200 hover:bg-brand-25 hover:text-primary block"
 												onClick={() => setOpen(false)}
 											>
 												{item.label}

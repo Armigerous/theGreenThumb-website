@@ -176,7 +176,7 @@ export function FilterPanel() {
 								<SlidersHorizontal className="size-4" />
 							</div>
 							<div className="grid flex-1 text-left text-sm leading-tight">
-								<span className="font-semibold">Filter Plants</span>
+								<span className="font-paragraph-semibold">Filter Plants</span>
 							</div>
 						</SidebarMenuButton>
 					</SidebarMenuItem>

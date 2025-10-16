@@ -28,7 +28,7 @@ const NavBar = memo(() => {
 					{/* Logo - Left Side */}
 					<div className="flex-shrink-0">
 						<NextLink href="/" className="flex items-center h-full">
-							<p className="font-bold text-2xl lg:text-3xl text-foreground hover:text-primary transition-colors duration-200">
+							<p className="font-title-bold text-2xl lg:text-3xl text-foreground hover:text-primary transition-colors duration-200">
 								GreenThumb
 							</p>
 						</NextLink>
@@ -46,7 +46,7 @@ const NavBar = memo(() => {
 											prefetch={true}
 											className={cn(
 												navigationMenuTriggerStyle(),
-												"text-xl font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+												"text-xl font-paragraph-semibold px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
 											)}
 										>
 											Plants
@@ -59,7 +59,7 @@ const NavBar = memo(() => {
 											href="/tips"
 											className={cn(
 												navigationMenuTriggerStyle(),
-												"text-xl font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+												"text-xl font-paragraph-semibold px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
 											)}
 										>
 											Tips
@@ -72,7 +72,7 @@ const NavBar = memo(() => {
 											href="/contact"
 											className={cn(
 												navigationMenuTriggerStyle(),
-												"text-xl font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+												"text-xl font-paragraph-semibold px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
 											)}
 										>
 											Contact
@@ -85,7 +85,7 @@ const NavBar = memo(() => {
 											href="/about"
 											className={cn(
 												navigationMenuTriggerStyle(),
-												"text-xl font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
+												"text-xl font-paragraph-semibold px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200"
 											)}
 										>
 											About

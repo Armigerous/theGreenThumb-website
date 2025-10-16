@@ -18,7 +18,8 @@ const config: Config = {
         xs: "475px",
       },
       fontFamily: {
-        "work-sans": ["var(--font-work-sans)"],
+        title: ["var(--font-mali)", "serif"],
+        paragraph: ["var(--font-nunito)", "sans-serif"],
       },
       colors: {
         brand: {

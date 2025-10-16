@@ -65,7 +65,7 @@ const Footer: React.FC = () => {
 				{showConfetti && <Confetti />} {/* Render Confetti conditionally */}
 				<Card className="my-10 rounded-2xl bg-cream-300/70 text-cream-800 shadow-lg">
 					<CardHeader>
-						<h3 className="px-4 text-center capitalize text-lg sm:text-3xl lg:text-4xl mt-8 sm:mt-16 font-bold flex items-center justify-center gap-2">
+						<h3 className="px-4 text-center capitalize text-lg sm:text-3xl lg:text-4xl mt-8 sm:mt-16 font-title-bold flex items-center justify-center gap-2">
 							<Sprout className="size-9 text-primary" /> Gardening Tips{" "}
 							<span className="text-primary">|</span>
 							Seasonal Advice <span className="text-primary">|</span> Community
@@ -74,7 +74,7 @@ const Footer: React.FC = () => {
 						</h3>
 					</CardHeader>
 					<CardContent className="flex flex-col items-center">
-						<p className="mt-5 px-4 text-center w-full sm:w-3/5 text-sm sm:text-base">
+						<p className="mt-5 px-4 text-center w-full sm:w-3/5 text-sm sm:text-base font-paragraph">
 							Subscribe to explore the world of gardening with tips, tools, and
 							updates. Join over 2000+ green thumbs staying connected!
 						</p>
@@ -143,7 +143,7 @@ const Footer: React.FC = () => {
 								setIsDialogOpen(false);
 								setShowConfetti(false); // Hide confetti when dialog is closed
 							}}
-							className="bg-primary text-cream-50 font-semibold"
+							className="bg-primary text-cream-50 font-paragraph-semibold"
 						>
 							Close
 						</Button>

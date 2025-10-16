@@ -12,7 +12,7 @@ import { memo } from "react";
 const DropdownFeatures = memo(() => {
 	return (
 		<>
-			<NavigationMenuTrigger className="text-xl font-medium px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200">
+			<NavigationMenuTrigger className="text-xl font-paragraph-semibold px-6 py-2 hover:bg-brand-25 hover:text-primary transition-colors duration-200">
 				Features
 			</NavigationMenuTrigger>
 			<NavigationMenuContent>
@@ -21,7 +21,7 @@ const DropdownFeatures = memo(() => {
 						<NavigationMenuLink asChild>
 							<Link
 								href="/#ProductFeatures"
-								className="flex items-center gap-3 w-full px-3 py-2 text-xl font-medium rounded-md transition-colors duration-200 hover:bg-brand-25 hover:text-primary"
+								className="flex items-center gap-3 w-full px-3 py-2 text-xl font-paragraph-semibold rounded-md transition-colors duration-200 hover:bg-brand-25 hover:text-primary"
 							>
 								<ListChecks className="h-5 w-5" />
 								Product Features
@@ -32,7 +32,7 @@ const DropdownFeatures = memo(() => {
 						<NavigationMenuLink asChild>
 							<Link
 								href="/#AppFeatures"
-								className="flex items-center gap-3 w-full px-3 py-2 text-xl font-medium rounded-md transition-colors duration-200 hover:bg-brand-25 hover:text-primary"
+								className="flex items-center gap-3 w-full px-3 py-2 text-xl font-paragraph-semibold rounded-md transition-colors duration-200 hover:bg-brand-25 hover:text-primary"
 							>
 								<Smartphone className="h-5 w-5" />
 								App Features

@@ -18,7 +18,9 @@ const Featured = async () => {
 		<section className="py-4">
 			<div className="flex items-end justify-between">
 				<div className="flex items-end gap-4">
-					<h2 className="text-2xl md:text-4xl font-bold">Featured Posts</h2>
+					<h2 className="text-2xl md:text-4xl font-title-bold">
+						Featured Posts
+					</h2>
 					<Link href="/tips/search">
 						<p className="hover:underline text-primary text-right cursor-pointer">
 							See More

@@ -113,7 +113,7 @@ const CategoryPage = async ({
 			/>
 			<div className="container mx-auto py-8">
 				<header className="mb-6">
-					<h1 className="text-3xl font-bold text-cream-800">
+					<h1 className="text-3xl font-title-bold text-cream-800">
 						{categoryDetails?.title || "Category"}
 					</h1>
 					<p className="text-sm text-muted-foreground">
@@ -122,7 +122,9 @@ const CategoryPage = async ({
 				</header>
 				<section className="mb-6">
 					<div className="flex items-end">
-						<h2 className="text-xl font-semibold">Browse Categories</h2>
+						<h2 className="text-xl font-paragraph-semibold">
+							Browse Categories
+						</h2>
 						<Link
 							href={"/tips/categories"}
 							className="hover:underline text-primary pl-2"

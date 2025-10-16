@@ -7,22 +7,25 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Mali, Nunito } from "next/font/google";
 import "./globals.css";
 
 // Reason: Enable Partial Prerendering for optimal NavBar performance across navigation
 export const experimental_ppr = true;
 
-const geistSans = localFont({
-	src: "./fonts/GeistVF.woff",
-	variable: "--font-geist-sans",
-	weight: "100 900",
+// Reason: Import brand-specified fonts from Google Fonts with optimal loading strategy
+const mali = Mali({
+	subsets: ["latin"],
+	weight: ["400", "700"],
+	variable: "--font-mali",
+	display: "swap", // Reason: Optimize font loading performance
 });
 
-const geistMono = localFont({
-	src: "./fonts/GeistMonoVF.woff",
-	variable: "--font-geist-mono",
-	weight: "100 900",
+const nunito = Nunito({
+	subsets: ["latin"],
+	weight: ["400", "600", "700"],
+	variable: "--font-nunito",
+	display: "swap", // Reason: Optimize font loading performance
 });
 
 export const metadata: Metadata = {
@@ -98,7 +101,7 @@ export default function RootLayout({
 		>
 			<html lang="en" className="scroll-smooth">
 				<body
-					className={`${geistSans.variable} ${geistMono.variable} antialiased bg-cream-50`}
+					className={`${mali.variable} ${nunito.variable} antialiased bg-cream-50`}
 				>
 					<NavBar />
 					{children}

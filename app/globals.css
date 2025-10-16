@@ -2,6 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Reason: Brand-specified font utility classes for consistent typography hierarchy */
+@layer utilities {
+	/* Mali Font Family - For headlines and decorative elements (less readable, use sparingly) */
+	.font-title {
+		font-family: var(--font-mali), serif;
+		font-weight: 400;
+	}
+
+	.font-title-bold {
+		font-family: var(--font-mali), serif;
+		font-weight: 700;
+	}
+
+	/* Nunito Font Family - For body text and UI elements (highly readable) */
+	.font-paragraph {
+		font-family: var(--font-nunito), sans-serif;
+		font-weight: 400;
+	}
+
+	.font-paragraph-semibold {
+		font-family: var(--font-nunito), sans-serif;
+		font-weight: 600;
+	}
+
+	.font-paragraph-bold {
+		font-family: var(--font-nunito), sans-serif;
+		font-weight: 700;
+	}
+}
+
 /* Reason: Ensure line-clamp utilities work properly for text truncation */
 @layer utilities {
 	.line-clamp-2 {

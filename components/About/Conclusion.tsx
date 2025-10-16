@@ -5,7 +5,7 @@ const Conclusion: React.FC = () => {
 	return (
 		<section className="py-12 bg-cream-200 rounded-lg shadow-xl">
 			<div className="mx-auto px-4 text-center">
-				<h2 className="text-2xl md:text-3xl font-bold text-primary mb-4">
+				<h2 className="text-2xl md:text-3xl font-title-bold text-primary mb-4">
 					Stay Connected
 				</h2>
 				<p className="text-lg md:text-xl text-cream-800 mb-6">

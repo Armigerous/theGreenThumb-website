@@ -43,7 +43,7 @@ const Contact: React.FC = () => {
 					// Styling the form container to be responsive and adaptable to light/dark modes
 				>
 					<h2
-						className="font-bold capitalize 
+						className="font-title-bold capitalize 
           text-2xl xs:text-3xl sm:text-4xl"
 						// Styling the heading to be responsive
 					>

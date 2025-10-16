@@ -51,7 +51,7 @@ const PlantArrayFact = memo(
 
 		return (
 			<>
-				<span className="font-semibold text-cream-800">{label}:</span>
+				<span className="font-paragraph-semibold text-cream-800">{label}:</span>
 				{filteredData.length > 0 ? (
 					<ul className="list-disc ml-6">
 						{filteredData.map((item: string, index: number) => (
@@ -72,7 +72,7 @@ PlantArrayFact.displayName = "PlantArrayFact";
 const PlantFact = memo(
 	({ label, data }: { label: string; data?: string | null }) => (
 		<p>
-			<span className="font-semibold text-cream-800">{label}:</span>
+			<span className="font-paragraph-semibold text-cream-800">{label}:</span>
 			<span className="ml-1">{data || "Not specified"}</span>
 		</p>
 	)
@@ -178,7 +178,7 @@ const BasicInfo = memo(
 
 		return (
 			<>
-				<h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
+				<h1 className="text-3xl font-title-bold mb-2 flex items-center gap-2">
 					{scientificName}
 					{soundFile && <AudioPlayerButton soundFile={soundFile} />}
 				</h1>
@@ -194,7 +194,7 @@ const BasicInfo = memo(
 				)}
 				{commonNames && commonNames.length > 0 && (
 					<div className="mb-4">
-						<h3 className="text-lg font-semibold">Common Names:</h3>
+						<h3 className="text-lg font-paragraph-semibold">Common Names:</h3>
 						<ul className="list-disc ml-6">
 							{commonNames.map((name: string | null, index: number) =>
 								name ? <li key={index}>{name}</li> : null
@@ -213,7 +213,7 @@ BasicInfo.displayName = "BasicInfo";
 // Tags component
 const Tags = memo(({ tags }: { tags?: (string | null)[] }) => (
 	<div className="my-8">
-		<h2 className="text-lg font-semibold mb-2">Tags</h2>
+		<h2 className="text-lg font-paragraph-semibold mb-2">Tags</h2>
 		<div className="flex flex-wrap gap-2">
 			{tags && tags.length > 0 ? (
 				tags
@@ -461,16 +461,20 @@ const PlantDetails: React.FC<{ plant: PlantData }> = ({ plant }) => {
 				<CardContent className="pt-6">
 					<div className="grid gap-4 md:grid-cols-2">
 						<div>
-							<h3 className="text-lg font-semibold mb-2">Quick Facts</h3>
+							<h3 className="text-lg font-paragraph-semibold mb-2">
+								Quick Facts
+							</h3>
 							<ul className="space-y-2">
 								<li>
-									<span className="font-medium">Height:</span> {heightRange}
+									<span className="font-paragraph-semibold">Height:</span>{" "}
+									{heightRange}
 								</li>
 								<li>
-									<span className="font-medium">Width:</span> {widthRange}
+									<span className="font-paragraph-semibold">Width:</span>{" "}
+									{widthRange}
 								</li>
 								<li>
-									<span className="font-medium">USDA Zones:</span>{" "}
+									<span className="font-paragraph-semibold">USDA Zones:</span>{" "}
 									{filteredUsdaZones.length > 0 ? (
 										<ul className="list-disc ml-6">
 											{filteredUsdaZones.map((zone: string, index: number) => (
@@ -499,9 +503,13 @@ const PlantDetails: React.FC<{ plant: PlantData }> = ({ plant }) => {
 							</ul>
 						</div>
 						<div>
-							<h3 className="text-lg font-semibold mb-2">Distribution</h3>
+							<h3 className="text-lg font-paragraph-semibold mb-2">
+								Distribution
+							</h3>
 							<p>{distribution || "N/A"}</p>
-							<h3 className="text-lg font-semibold mt-4 mb-2">Uses</h3>
+							<h3 className="text-lg font-paragraph-semibold mt-4 mb-2">
+								Uses
+							</h3>
 							<p>{uses || "N/A"}</p>
 						</div>
 					</div>
@@ -528,11 +536,13 @@ const PlantDetails: React.FC<{ plant: PlantData }> = ({ plant }) => {
 				<CardContent className="pt-6">
 					<div className="grid gap-6 md:grid-cols-2">
 						<div>
-							<h3 className="text-lg font-semibold mb-2">Wildlife Value</h3>
+							<h3 className="text-lg font-paragraph-semibold mb-2">
+								Wildlife Value
+							</h3>
 							<p>{wildlifeValue || "Not specified"}</p>
 						</div>
 						<div>
-							<h3 className="text-lg font-semibold mb-2">Attracts</h3>
+							<h3 className="text-lg font-paragraph-semibold mb-2">Attracts</h3>
 							<div>
 								{filteredAttracts.length > 0 ? (
 									<ul className="list-disc ml-6">
@@ -783,7 +793,7 @@ const PlantDetails: React.FC<{ plant: PlantData }> = ({ plant }) => {
 						<CardContent className="pt-6">
 							<div className="grid gap-6 md:grid-cols-2">
 								<div>
-									<h3 className="text-lg font-semibold mb-2 flex items-center">
+									<h3 className="text-lg font-paragraph-semibold mb-2 flex items-center">
 										<SunIcon className="w-5 h-5 mr-2" />
 										Growing Conditions
 									</h3>
@@ -797,7 +807,7 @@ const PlantDetails: React.FC<{ plant: PlantData }> = ({ plant }) => {
 									/>
 								</div>
 								<div>
-									<h3 className="text-lg font-semibold mb-2 flex items-center">
+									<h3 className="text-lg font-paragraph-semibold mb-2 flex items-center">
 										<SproutIcon className="w-5 h-5 mr-2" />
 										Maintenance
 									</h3>
@@ -823,7 +833,9 @@ const PlantDetails: React.FC<{ plant: PlantData }> = ({ plant }) => {
 					<Card>
 						<CardContent className="grid pt-6 md:grid-cols-2">
 							<section>
-								<h3 className="text-lg font-semibold mb-2">Landscape Use</h3>
+								<h3 className="text-lg font-paragraph-semibold mb-2">
+									Landscape Use
+								</h3>
 								<div className="grid gap-4">
 									<PlantFact label="Garden Spaces" data={gardenSpaces} />
 									<PlantArrayFact
@@ -841,7 +853,7 @@ const PlantDetails: React.FC<{ plant: PlantData }> = ({ plant }) => {
 								</div>
 							</section>
 							<section>
-								<h3 className="text-lg font-semibold mt-4 mb-2">
+								<h3 className="text-lg font-paragraph-semibold mt-4 mb-2">
 									Environmental Factors
 								</h3>
 								<PlantFact label="Fire Risk" data={fireRisk} />
@@ -901,7 +913,9 @@ const PlantDetails: React.FC<{ plant: PlantData }> = ({ plant }) => {
 									<AccordionContent>
 										{profileVideo && (
 											<div className="mb-4">
-												<h4 className="font-medium mb-2">Profile Video</h4>
+												<h4 className="font-paragraph-semibold mb-2">
+													Profile Video
+												</h4>
 												<video
 													src={profileVideo}
 													controls

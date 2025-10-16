@@ -13,7 +13,7 @@ const Recent = async () => {
 
 	return (
 		<section>
-			<h2 className="text-5xl font-bold">Recent Posts</h2>
+			<h2 className="text-5xl font-title-bold">Recent Posts</h2>
 			<ul className="my-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 grid-rows-2 gap-8">
 				{data.map((tip) => (
 					<TipCard key={tip._id} tip={tip} />

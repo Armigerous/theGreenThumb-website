@@ -1,5 +1,5 @@
 import { prisma } from './prisma'
-import { Prisma } from '@/lib/generated/prisma'
+import { Prisma } from '../generated/prisma'
 
 // Reason: Prisma-based query builder replacing Drizzle queries
 export const queries = {

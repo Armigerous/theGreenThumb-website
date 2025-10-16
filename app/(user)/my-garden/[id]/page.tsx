@@ -14,7 +14,7 @@ import { Plus, ArrowLeft, Users, Leaf } from "lucide-react";
 import Link from "next/link";
 import { prisma } from "@/lib/db/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { Prisma } from "@/lib/generated/prisma";
+import { Prisma } from "../../../../lib/generated/prisma";
 // Note: Prisma types are available via generated client, but not needed in this file
 
 interface GardenDetailPageProps {

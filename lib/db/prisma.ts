@@ -1,4 +1,4 @@
-import { PrismaClient } from '../generated/prisma'
+import { PrismaClient } from '@prisma/client'
 
 // Reason: Global Prisma client instance for database operations
 const globalForPrisma = globalThis as unknown as {

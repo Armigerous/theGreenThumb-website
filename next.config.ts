@@ -86,7 +86,7 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     // Reason: Optimize image loading for better LCP performance
     loader: "default",
-    unoptimized: false, // Reason: Enable optimization for better performance
+    unoptimized: true, // Reason: Disable Vercel image optimization to prevent quota exhaustion
   },
 };
 
